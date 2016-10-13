@@ -31,16 +31,16 @@ class serial_comms():
 	def send_packet(self, m1_dir, m1_step, m1_step_time, 
 						  m2_dir, m2_step, m2_step_time):
 
-		x = self.convert(m1_dir)
+		length = 2
 		# Write Command to Arduino
 		self.ser.write(b'\xfe')
 		self.ser.write(chr(m1_dir))
-		self.ser.write(chr(m1_step))
-		self.ser.write(chr(m1_step_time))
+		self.ser.write(('%%0%dx' % (length << 1) % m1_step).decode('hex')[-length:])
+		self.ser.write(('%%0%dx' % (length << 1) % m1_step_time).decode('hex')[-length:])
 
 		self.ser.write(chr(m2_dir))
-		self.ser.write(chr(m2_step))
-		self.ser.write(chr(m2_step_time))
+		self.ser.write(('%%0%dx' % (length << 1) % m2_step).decode('hex')[-length:])
+		self.ser.write(('%%0%dx' % (length << 1) % m2_step_time).decode('hex')[-length:])
 		self.ser.write(b'\xef')
 
 	'Read data from the PCB'
@@ -55,15 +55,10 @@ class serial_comms():
 
 	'Parse recieved data'
 	def parse_packet(self, response):
-		return response
-
-	def convert(self, int_value):
-	   encoded = format(int_value, 'x')
-
-	   length = len(encoded)
-	   encoded = encoded.zfill(length+length%2)
-
-	   return encoded.decode('hex')
+		if(len(response) >= 3):
+			return response[1]
+		else :
+			return -1
 
 
 

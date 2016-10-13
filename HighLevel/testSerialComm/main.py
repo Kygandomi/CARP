@@ -10,23 +10,38 @@ sleep(1)
 # Connect to Arduino over serial
 baud = 115200
 #port = '/dev/tty.usbserial-A902U9B9'
-port = '/dev/tty.usbmodem1411'
+port = '/dev/tty.usbmodem1421'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 
 sleep(1)
 
-# Send a packet
+# Send A Single Packet to the Arduino
 m1_dir = 1 # +X 
-m1_steps = 200 # 1 Revolution
-m1_step_time = 200 # In microseconds
+m1_steps = 1600 # 4 Revolutions
+m1_step_time = 800 # In microseconds
 
 m2_dir = 1 # +Y
-m2_steps =  200 # 0.5 Revolution
-m2_step_time = 200 # In microseconds
+m2_steps =  1600 # 4 Revolution
+m2_step_time = 800 # In microseconds
 
-# Send this to the Arduino por favor
 arduino_ser.send_packet(m1_dir, m1_steps, m1_step_time, m2_dir, m2_steps, m2_step_time)
 
+# Send Commands Arduino One After the Other
+# index = 0
+# directions_m1 = [1, 0, 0, 1]
+# directions_m2 = [1, 1, 0, 0]
 
-# arduino_ser.disconnect()
+# steps = [800, 800, 800, 800]
+# step_time = [800, 800, 800, 800]
+# while(index < 4):
+# 	read_val = arduino_ser.recieve_packet()
+# 	if(arduino_ser.parse_packet(read_val) == -1):
+# 		print "Sending Data"
+# 		print index
+# 		arduino_ser.send_packet(directions_m1[index], steps[index], step_time[index], directions_m2[index], steps[index], step_time[index])
+# 		index+=1
+
+
+# Disconnect Stream
+arduino_ser.disconnect()
