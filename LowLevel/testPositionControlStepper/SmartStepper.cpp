@@ -39,8 +39,9 @@ SmartStepper::SmartStepper(unsigned int pin_pulse,unsigned int pin_dir){
 boolean SmartStepper::run(){
 //  Serial.println("RUN!");
 	// Get the current time 
-  if(!movementRequired()) 
+  if(!movementRequired()){
     return false;
+  }
   
 	unsigned long currentTime = micros();
 
@@ -61,7 +62,7 @@ boolean SmartStepper::run(){
     // Pull Motor Pulse Pin High
     setBits(_port[0],_pinMask[0]);
 
-    // Increment the current position based on current direction
+    // Increment or Decrement the current position based on current direction
     _currentPos+=_dirValue?1:-1;
 
     //shouldnt change..?
@@ -161,12 +162,12 @@ uint8_t SmartStepper::getBits(volatile uint8_t *port, uint8_t mask){
   return *port & mask;
 }
 
-// Pulls Pin High
+// Pulls Pin High (use _pinMask)
 void SmartStepper::setBits(volatile uint8_t *port, uint8_t mask){
   *port |= mask;
 }
 
-// Pulls Pin Low
+// Pulls Pin Low (use _pinMask_Inv)
 void SmartStepper::resetBits(volatile uint8_t *port, uint8_t mask){
   *port &= mask;
 }
