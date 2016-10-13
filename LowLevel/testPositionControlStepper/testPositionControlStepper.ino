@@ -12,7 +12,7 @@
 #define MAX_BUF        64  
 
 SmartStepper stepper1(M1_PUL,M1_DIR);
-SmartStepper stepper2(M1_PUL,M1_DIR);
+SmartStepper stepper2(M2_PUL,M2_DIR);
 
 // Global Variables
 int buffer[MAX_BUF];
