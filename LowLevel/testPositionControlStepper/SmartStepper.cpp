@@ -35,21 +35,25 @@ SmartStepper::SmartStepper(unsigned int pin_pulse,unsigned int pin_dir){
   _prevStepTime = 0;
 }
 	
-// Main Method for Pulsing Stepper Motors
+  // Main Method for Pulsing Stepper Motors
 boolean SmartStepper::run(){
-        Serial.println("RUN!");
+//  Serial.println("RUN!");
 	// Get the current time 
+  if(!movementRequired()) 
+    return false;
+  
 	unsigned long currentTime = micros();
 
   // Find the change in time
 	unsigned long delta_t = currentTime -_prevStepTime;
 	
-  // ?
+  //If pulse is high, reset to low after minimum time has passed
 	if(getBits(_port[0],_pinMask[0])){
     // Then if the change in time is greater than the min width of the square wave
-		if(delta_t>_minWidth){
+		if(delta_t>(_minWidth-(_loopPeriod))){
       // Pull Motor Pulse Pin Low
       resetBits(_port[0],_pinMask_inv[0]);
+      return false;
 		}
 	}
   // If the change in time is greater than the signal period minus the natural delay of the Atmega2560
@@ -57,20 +61,27 @@ boolean SmartStepper::run(){
     // Pull Motor Pulse Pin High
     setBits(_port[0],_pinMask[0]);
 
-    // Increment the current position
-    _currentPos++;
-    
-    _desiredPos++;
+    // Increment the current position based on current direction
+    _currentPos+=_dirValue?1:-1;
+
+    //shouldnt change..?
+    //_desiredPos++;
 
     // Record latest time
     _prevStepTime = micros();
+    return true;
 	}
 }
 
 // Set the period of the stepper motor pulse signal
 void SmartStepper::setPeriod(long per){
-  Serial.println("Set Period...");
+//  Serial.println("Set Period...");
   _period = per;
+}
+
+void SmartStepper::resetCurrentPos(){
+  _desiredPos-=_currentPos;
+  _currentPos=0;
 }
 
 // Get the current position of the stepper motor (the where we are now)
@@ -79,23 +90,25 @@ long SmartStepper::getCurrentPos(){
 }
 
 // Set the Desired Position of the stepper motor (the where we want to go)
-void SmartStepper::setDesiredPos(long desPos){
-  Serial.println("Set Desired Pos...");
-  //this->_desiredPos = desPos;
-  _desiredPos = desPos;
-  Serial.println(_desiredPos);
-  Serial.println(_currentPos);
+// optionally specify absolute or relative (DEFAULT ABSOLUTE)
+void SmartStepper::setDesiredPos(long desPos,bool relative){
+//  Serial.println("Set Desired Pos...");
+  _desiredPos = desPos + relative?_currentPos:0;
+
+  setDirection(_desiredPos>_currentPos);
+//  Serial.println(_desiredPos);
+//  Serial.println(_currentPos);
 }
 
 // If the current position is the desired position no movement is required
 boolean SmartStepper::movementRequired(){
-  Serial.print(_currentPos);
-  Serial.print(" ");
-  Serial.print(_desiredPos);
-  Serial.print(" ");
-  Serial.print(_period);
-  Serial.print(" ");
-  Serial.println(_currentPos != _desiredPos);
+//  Serial.print(_currentPos);
+//  Serial.print(" ");
+//  Serial.print(_desiredPos);
+//  Serial.print(" ");
+//  Serial.print(_period);
+//  Serial.print(" ");
+//  Serial.println(_currentPos != _desiredPos);
   return (_currentPos != _desiredPos);
 }
 
@@ -104,7 +117,7 @@ void SmartStepper::setDirection(bool desiredDir){
   _dirValue = desiredDir;
   if(_dirValue){
     // Pull direction High
-    setBits(_port[1],_pinMask_inv[1]);
+    setBits(_port[1],_pinMask[1]);
   } else {
     // Pull Direction Low
     resetBits(_port[1],_pinMask_inv[1]);
@@ -143,17 +156,17 @@ uint8_t SmartStepper::getPinMask(unsigned int pin){
     return 0x80;
 }
 
-// ?????
+// returns the current value of the selected port and pin
 uint8_t SmartStepper::getBits(volatile uint8_t *port, uint8_t mask){
   return *port & mask;
 }
 
-// Pulls Motors High
+// Pulls Pin High
 void SmartStepper::setBits(volatile uint8_t *port, uint8_t mask){
   *port |= mask;
 }
 
-// Pulls Motors Low
+// Pulls Pin Low
 void SmartStepper::resetBits(volatile uint8_t *port, uint8_t mask){
   *port &= mask;
 }

@@ -28,8 +28,8 @@ void setup() {
 	// Open Serial Port
 	Serial.begin(BAUD);
 
-	// stepper1.setPeriod(800);
-	// stepper2.setPeriod(1000);
+	stepper1.setPeriod(1000);
+	stepper2.setPeriod(1000);
 
 	// Set up Motor Pin Modes
 	pinMode(M1_ENB,OUTPUT);
@@ -48,7 +48,7 @@ void setup() {
 // put your main code here, to run repeatedly:
 void loop() {
 	if(!stepper1.movementRequired() && !stepper2.movementRequired() && Serial.available()){
-                Serial.println("?");
+    Serial.println("?");
 		int c = Serial.read();
 
 		if(c == int(0xFE)){
@@ -70,57 +70,48 @@ void loop() {
 			processBuffer();
 		}
 	}
-
-	if(flag){
-            if(s1_count < 800){
-               Serial.println("On the Move 1!");
-	       stepper1.run(); 
-                s1_count++;
-            }
-	}
-
-	if(flag){
-              if(s1_count < 800){
-                 Serial.println("On the Move 2!");
-	         stepper2.run();
-                 s2_count++;
-              }
+ else{
+    stepper1.run(); 
+    stepper2.run();
 	}
 }
 
-void move(SmartStepper stepper, long new_pos, bool moveAbsolute, unsigned long period){
-        Serial.println("Move Methods...");
-	int current_pos = stepper.getCurrentPos();
-
-	if(!moveAbsolute){
-		new_pos += current_pos;
-	} 
-
-	int change_pos = new_pos - current_pos;
-
-	int pos_direction = change_pos>0?1:-1;
-
-	if(pos_direction > 0){
-  	stepper.setDirection(HIGH);
-  }else {
-  	stepper.setDirection(LOW);
-  }
-
-  int abs_pos = abs(change_pos);
-
-  Serial.println("More Methods...");
-  Serial.println(abs_pos);
-  stepper.setDesiredPos(abs_pos);
-  stepper.setPeriod(period);
-}
+//Should be internal to stepper...
+//void move(SmartStepper stepper, long new_pos, bool moveAbsolute, unsigned long period){
+//  Serial.println("Move Methods...");
+//	int current_pos = stepper.getCurrentPos();
+//
+//	if(!moveAbsolute){
+//		new_pos += current_pos;
+//	} 
+//
+//	int change_pos = new_pos - current_pos;
+//
+//	int pos_direction = change_pos>0?1:-1;
+//
+//	if(pos_direction > 0){
+//  	stepper.setDirection(HIGH);
+//  }else {
+//  	stepper.setDirection(LOW);
+//  }
+//
+//  int abs_pos = abs(change_pos);
+//
+//  Serial.println("More Methods...");
+//  Serial.println(abs_pos);
+//  stepper.setDesiredPos(abs_pos);
+//  stepper.setPeriod(period);
+//}
 
 void processBuffer(){
-        flag = true;
-	// Read and Interpret from Buffer
-        Serial.println("PROCESS BUFFER!!");
+  flag = true;
+  // Read and Interpret from Buffer
+//  Serial.println("PROCESS BUFFER!!");
 	// Set Stepper to move
-	move(stepper1, 1600, 1, 800);
-	move(stepper2, 1600, 1, 800);
+//	move(stepper1, 1600, 1, 800);
+//	move(stepper2, 1600, 1, 800);
+  stepper1.setDesiredPos(800);
+  stepper2.setDesiredPos(400);
 }
 
 
