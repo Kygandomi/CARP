@@ -25,12 +25,15 @@ m2_dir = 1 # +Y
 m2_steps =  1600 # 4 Revolution
 m2_step_time = 800 # In microseconds
 
-arduino_ser.send_packet(m1_dir, m1_steps, m1_step_time, m2_dir, m2_steps, m2_step_time)
+fergelli_pos = 500
+
+arduino_ser.send_packet(m1_dir, m1_steps, m1_step_time, m2_dir, m2_steps, m2_step_time, fergelli_pos)
 
 # Send Commands Arduino One After the Other
 # index = 0
 # directions_m1 = [1, 0, 0, 1]
 # directions_m2 = [1, 1, 0, 0]
+# fergelli_pos = 500
 
 # steps = [800, 800, 800, 800]
 # step_time = [800, 800, 800, 800]
@@ -39,7 +42,7 @@ arduino_ser.send_packet(m1_dir, m1_steps, m1_step_time, m2_dir, m2_steps, m2_ste
 # 	if(arduino_ser.parse_packet(read_val) == -1):
 # 		print "Sending Data"
 # 		print index
-# 		arduino_ser.send_packet(directions_m1[index], steps[index], step_time[index], directions_m2[index], steps[index], step_time[index])
+# 		arduino_ser.send_packet(directions_m1[index], steps[index], step_time[index], directions_m2[index], steps[index], step_time[index], fergelli_pos)
 # 		index+=1
 
 

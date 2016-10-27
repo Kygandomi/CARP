@@ -29,7 +29,8 @@ class serial_comms():
 
 	'Write data to the Arduino'
 	def send_packet(self, m1_dir, m1_step, m1_step_time, 
-						  m2_dir, m2_step, m2_step_time):
+						  m2_dir, m2_step, m2_step_time,
+						  fergelli_pos):
 
 		length = 2
 		# Write Command to Arduino
@@ -41,6 +42,7 @@ class serial_comms():
 		self.ser.write(chr(m2_dir))
 		self.ser.write(('%%0%dx' % (length << 1) % m2_step).decode('hex')[-length:])
 		self.ser.write(('%%0%dx' % (length << 1) % m2_step_time).decode('hex')[-length:])
+		self.ser.write(('%%0%dx' % (length << 1) % fergelli_pos).decode('hex')[-length:])
 		self.ser.write(b'\xef')
 
 	'Read data from the PCB'
