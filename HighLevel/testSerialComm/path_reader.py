@@ -43,7 +43,7 @@ def forward_kinematics(desired_x, desired_y):
 #######################################################
 
 # file to read from 
-fname = "orders.txt"
+fname = "orders2.txt"
 
 # Connect to Arduino over serial
 baud = 115200
