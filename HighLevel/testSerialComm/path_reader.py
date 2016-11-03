@@ -38,6 +38,19 @@ def forward_kinematics(desired_x, desired_y):
 	return m1_steps, m2_steps, m1_dir, m2_dir
 
 
+def stepTimes(m1_steps,m2_steps,t_max):
+	t_m1=t_max
+	t_m2=t_max
+
+	if(m1_steps >= m2_steps):
+		t_m1 = int(t_max*float(m1_steps/m2_steps))
+		t_m2 = t_max
+	else:
+		t_m1 = t_max
+		t_m2 = int(t_max*float(m2_steps/m1_steps))
+
+	return t_m1,t_m2
+
 #######################################################
 ####################   MAIN  ##########################
 #######################################################
@@ -96,8 +109,10 @@ with open(fname) as f:
 			# Get motor steps and direction
 			m1_steps, m2_steps, m1_dir, m2_dir = forward_kinematics(delta_x1, delta_y1)
 
+			m1_step_time,m2_step_time = stepTimes(m1_steps,m2_steps,step_time)
+
 			# Move the gantry
-			arduino_ser.send_packet(m1_dir, m1_steps, step_time, m2_dir, m2_steps, step_time, 700)
+			arduino_ser.send_packet(m1_dir, m1_steps, m1_step_time, m2_dir, m2_steps, m2_step_time, 700)
 
 			# Wait for gantry routine to complete
 			read_val = arduino_ser.recieve_packet()
@@ -115,8 +130,10 @@ with open(fname) as f:
 			# Get motor steps and direction
 			m1_steps, m2_steps, m1_dir, m2_dir = forward_kinematics(delta_x2, delta_y2)
 
+			m1_step_time, m2_step_time = stepTimes(m1_steps, m2_steps, step_time)
+
 			# Move the gantry
-			arduino_ser.send_packet(m1_dir, m1_steps, step_time, m2_dir, m2_steps, step_time, 175)
+			arduino_ser.send_packet(m1_dir, m1_steps, m1_step_time, m2_dir, m2_steps, m2_step_time, 175)
 
 			# Wait for gantry routine to complete
 			read_val = arduino_ser.recieve_packet()
@@ -136,7 +153,7 @@ with open(fname) as f:
 
 print "END"
 
-    
+
 
 
 
