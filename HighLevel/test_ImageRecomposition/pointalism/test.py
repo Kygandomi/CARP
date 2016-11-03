@@ -17,31 +17,19 @@ def makeStroke(canvas, stroke, pos):
 	stroke_rows, stroke_cols, stroke_channels = strokeImg.shape
 	for x in range(0, stroke_rows):
 		for y in range (0, stroke_cols):
-			canvas[offsetx + x, offsety + y] = stroke[x, y]
+			if ((strokeImg[x, y])[3] > 3):
+				canvas[offsetx + x, offsety + y] = stroke[x, y]
 	return canvas
 
 def calcMSE(img1, img2):
 	sum = 0.0
-	resized_img1 = cv2.resize(img1, (256, 256)) 
-	resized_img2 = cv2.resize(img2, (256, 256)) 
-
+	resized_img1 = cv2.resize(img1, (100, 100)) 
+	resized_img2 = cv2.resize(img2, (100, 100)) 
 	return cv2.norm(resized_img1, resized_img2, cv2.NORM_L1)
 
-	# r,c,l = resized_img1.shape
-	# R,C,L = resized_img2.shape 
-	# if r == R and c == C:
-	# 	for x in range(0, r):
-	# 	   for y in range(0, c):
-	# 	      difference = (resized_img1[x,y] - resized_img2[x,y])
-	# 	      sum = sum + difference*difference
-	# mse = sum /(r*c)
-	# print mse
-	# return mse[0]
-
-
-strokeImg = cv2.imread('stroke.png')
-desiredImg = cv2.imread('box.png')
-canvasImg = cv2.imread('canvas.png')
+strokeImg = cv2.imread('stroke.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('circle.png', cv2.IMREAD_UNCHANGED)
+canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
 
 display(desiredImg, 'desiredImg')
 display(canvasImg, 'canvasImg')
@@ -50,32 +38,38 @@ display(strokeImg, 'strokeImg')
 canvas_rows, canvas_cols, canvas_channels = canvasImg.shape
 stroke_rows, stroke_cols, stroke_channels = strokeImg.shape
 
-
 strokes = 0
-strokesToMake = 100
+strokesToMake = 60
 
-childrenPerGeneration = 10
+childrenPerGeneration = 18
 
 currentBestCanvas = canvasImg.copy()
 
+orders = open("orders.txt", 'w')
+
 while(strokes < strokesToMake):
 	possible_canvases = []
-	bestError = 9999999999
+	strokeCoordinates = [] 
+
+	bestError = 9999999999 # @TODO: Make this not stupid
 	numBestError = 0
 
 	for i in range(0, childrenPerGeneration):
 		canvas = currentBestCanvas.copy()
 		possible_canvases.append(canvas)
 
+	i = 0
 	for canvas_to_paint_randomly in possible_canvases:
 		limit_x = canvas_cols - stroke_cols
 		limit_y = canvas_rows - stroke_rows
 		x = random.randint(0,limit_x)
 		y = random.randint(0,limit_y)
 		canvas_to_paint_randomly = makeStroke(canvas_to_paint_randomly, strokeImg, (x, y))
-		mse = calcMSE(canvas_to_paint_randomly, desiredImg)
+		strokeCoordinates.append(str((x*1.0)*(8.5*25.4/1000)) + " " + str((y*1.0)*(11*25.4/1000)))
 		# print "MSE for current canvas:", mse
 		# display(canvas_to_paint_randomly, "New canvas")
+		# cv2.imwrite("zimg" + str(strokes) + "_" + str(i) + ".png", canvas_to_paint_randomly)
+		i+=1
 		
 
 
@@ -86,12 +80,11 @@ while(strokes < strokesToMake):
 			numBestError = i
 	print "Best one was number ", numBestError
 	currentBestCanvas = possible_canvases[numBestError]
+	orders.write(strokeCoordinates[numBestError] + '\n')
 	
 
 	strokes += 1
 display(currentBestCanvas, "Hey did it work?")
 display(currentBestCanvas, "Hey did it work?")
-display(currentBestCanvas, "Hey did it work?")
 
-# print "The mean square errors are:",mse2, mse3, mse4, mse5
 print "Done"
