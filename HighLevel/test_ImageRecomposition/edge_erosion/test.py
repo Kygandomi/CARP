@@ -72,7 +72,7 @@ def edgeIm_to_binImg(edgeImg):
 	pass
 
 	
-desiredImg = cv2.imread('circle.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('fish.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
@@ -91,12 +91,16 @@ binImg = 255-binImg
 contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 hierarchy = hierarchy[0]
 
-rawPolyDist = -1*np.ones((desired_cols,desired_rows))
+rawPolyDist = -1*np.ones((desired_rows,desired_cols))
 
 contourImg = desiredImg_grey.copy()
 
 cntr_pts = ptsInContours(contours,desiredImg_grey.shape)
-for cnt_i in parents(hierarchy):
+i_parents = parents(hierarchy)
+count = 1
+max_count = len(i_parents)
+for cnt_i in i_parents:
+	print "Analyzing Contour "+str(count)+" of "+str(max_count)
 	list_pts = cntr_pts[cnt_i]
 	for pt in list_pts:
 		value = cv2.pointPolygonTest(contours[cnt_i],pt,True)
@@ -107,7 +111,8 @@ for cnt_i in parents(hierarchy):
 				min_val2 = min(min_val2,value2)
 			value = min(value,-min_val2)
 		rawPolyDist.itemset((pt[1],pt[0]),value)
-	print "Contour " + str(cnt_i) + " complete"
+	count = count + 1
+print "Contour Analysis Complete"
 
 mini,maxi = np.abs(cv2.minMaxLoc(rawPolyDist)[:2])          # Find minimum and maximum to adjust colors
 mini = 255.0/mini
