@@ -73,12 +73,13 @@ def ptsInContours(contours,hierarchy,shape):
 		# Create a mask image that contains the contour filled in
 		cimg = np.zeros(shape)
 		cv2.drawContours(cimg, contours, i, color=255, thickness=-1)
-		cimg = cv2.erode(cimg, np.ones((5, 5)))
+		
 		if(hierarchy[i][2]!=-1):
+			cimg = cv2.erode(cimg, np.ones((5, 5)))
 			for child_i in childrenOf(hierarchy,i):
 				cv2.drawContours(cimg, contours, child_i, color=0, thickness=-1)
+			cimg = cv2.dilate(cimg, np.ones((5, 5)))
 		# Access the image pixels and create a 1D numpy array then add to list
-		cimg = cv2.dilate(cimg, np.ones((5, 5)))
 		cntr_pts.append(blackPoints(cimg))
 	return cntr_pts
 
