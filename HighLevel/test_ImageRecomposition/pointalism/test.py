@@ -12,13 +12,15 @@ def display(img, name):
 	cv2.destroyAllWindows()
 
 def makeStroke(canvas, stroke, pos):
-	offsetx , offsety = pos
-	canvas_rows, canvas_cols, canvas_channels = canvas.shape
-	stroke_rows, stroke_cols, stroke_channels = strokeImg.shape
-	for x in range(0, stroke_rows):
-		for y in range (0, stroke_cols):
-			if ((strokeImg[x, y])[3] > 3):
-				canvas[offsetx + x, offsety + y] = stroke[x, y]
+	"""Places nontransperant pixels from the stroke image into the canvas image.
+	pos is the position on the CANVAS where the (0,0) pixel from the STROKE will be placed."""
+	offsetx, offsety = pos # Depackage the x and y positions
+	canvas_rows, canvas_cols, canvas_channels = canvas.shape # Get the canvas image info
+	stroke_rows, stroke_cols, stroke_channels = stroke.shape # Get the strome image info
+	for x in range(0, stroke_cols): # For each column in the stroke
+		for y in range (0, stroke_rows): # For each row in the stroke
+			if ((stroke[x, y])[3] > 120): # If it is a nontransperant pixel
+				canvas[offsetx + x, offsety + y] = stroke[x, y] # Attempt to paint that pixel to the canvas
 	return canvas
 
 def calcMSE(img1, img2):
@@ -27,25 +29,30 @@ def calcMSE(img1, img2):
 	resized_img2 = cv2.resize(img2, (100, 100)) 
 	return cv2.norm(resized_img1, resized_img2, cv2.NORM_L1)
 
-strokeImg = cv2.imread('stroke.png', cv2.IMREAD_UNCHANGED)
-desiredImg = cv2.imread('circle.png', cv2.IMREAD_UNCHANGED)
+strokeImg = cv2.imread('smallstroke.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('cat.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
 
 display(desiredImg, 'desiredImg')
-display(canvasImg, 'canvasImg')
-display(strokeImg, 'strokeImg')
+# display(canvasImg, 'canvasImg')
+# display(strokeImg, 'strokeImg')
 
 canvas_rows, canvas_cols, canvas_channels = canvasImg.shape
 stroke_rows, stroke_cols, stroke_channels = strokeImg.shape
 
 strokes = 0
-strokesToMake = 60
+strokesToMake = 200
 
-childrenPerGeneration = 18
+childrenPerGeneration = 200
 
 currentBestCanvas = canvasImg.copy()
 
-orders = open("orders.txt", 'w')
+orders = open("catordersSmallBrush2.txt", 'w')
+
+
+#canvasImg = makeStroke(canvasImg, strokeImg, (50,250))
+
+display(canvasImg, 'canvasImg')
 
 while(strokes < strokesToMake):
 	possible_canvases = []
@@ -65,14 +72,9 @@ while(strokes < strokesToMake):
 		x = random.randint(0,limit_x)
 		y = random.randint(0,limit_y)
 		canvas_to_paint_randomly = makeStroke(canvas_to_paint_randomly, strokeImg, (x, y))
-		strokeCoordinates.append(str((x*1.0)*(8.5*25.4/1000)) + " " + str((y*1.0)*(11*25.4/1000)))
-		# print "MSE for current canvas:", mse
-		# display(canvas_to_paint_randomly, "New canvas")
-		# cv2.imwrite("zimg" + str(strokes) + "_" + str(i) + ".png", canvas_to_paint_randomly)
+		strokeCoordinates.append(str((y*1.0)*(8.5*25.4/1000)) + " " + str((x*1.0)*(11*25.4/1000)))
 		i+=1
 		
-
-
 	for i in range(0, childrenPerGeneration):
 		mse = calcMSE(possible_canvases[i], desiredImg)
 		if mse < bestError:
@@ -80,11 +82,13 @@ while(strokes < strokesToMake):
 			numBestError = i
 	print "Best one was number ", numBestError
 	currentBestCanvas = possible_canvases[numBestError]
+	print strokeCoordinates[numBestError]
 	orders.write(strokeCoordinates[numBestError] + '\n')
+	print "Strokes left: ", strokesToMake - strokes -1
 	
 
 	strokes += 1
 display(currentBestCanvas, "Hey did it work?")
-display(currentBestCanvas, "Hey did it work?")
+cv2.imwrite("paintedcatSmallBrush2.png", currentBestCanvas)
 
 print "Done"
