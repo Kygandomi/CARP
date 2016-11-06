@@ -72,7 +72,7 @@ def edgeIm_to_binImg(edgeImg):
 	pass
 
 	
-desiredImg = cv2.imread('cat.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('circle.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
@@ -91,9 +91,6 @@ binImg = 255-binImg
 contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 hierarchy = hierarchy[0]
 
-print hierarchy
-print parents(hierarchy)
-
 rawPolyDist = -1*np.ones((desired_cols,desired_rows))
 
 contourImg = desiredImg_grey.copy()
@@ -103,11 +100,13 @@ for cnt_i in parents(hierarchy):
 	list_pts = cntr_pts[cnt_i]
 	for pt in list_pts:
 		value = cv2.pointPolygonTest(contours[cnt_i],pt,True)
-		min_val2 = 0
-		for child_i in childrenOf(hierarchy,cnt_i):
-			value2 = cv2.pointPolygonTest(contours[child_i],pt,True)
-			#min_val2 = min(min_val2,value2)
-		rawPolyDist.itemset((pt[1],pt[0]),value-min_val2)
+		if(hierarchy[cnt_i][2]!=-1):
+			min_val2 = 1
+			for child_i in childrenOf(hierarchy,cnt_i):
+				value2 = cv2.pointPolygonTest(contours[child_i],pt,True)
+				min_val2 = min(min_val2,value2)
+			value = min(value,-min_val2)
+		rawPolyDist.itemset((pt[1],pt[0]),value)
 	print "Contour " + str(cnt_i) + " complete"
 
 mini,maxi = np.abs(cv2.minMaxLoc(rawPolyDist)[:2])          # Find minimum and maximum to adjust colors
