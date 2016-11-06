@@ -30,6 +30,14 @@ def autoCanny(image, sigma=0.33):
 	# return the edged image
 	return edged
 
+def edgeIm_to_binImg(edgeImg):
+	# TODO: convert edges to contoured regions (eliminate duplicate contours)
+	pass
+
+#######################################################################################
+###################     Required Helper Functions      ################################
+#######################################################################################
+
 def parents(hierarchy):
 	# [Next, Prev, 1st Child, Parent]
 	i=0
@@ -67,10 +75,6 @@ def ptsInContours(contours,shape):
 	    cntr_pts.append(real_pts)
 	return cntr_pts
 
-def edgeIm_to_binImg(edgeImg):
-	# TODO: convert edges to contoured regions (eliminate duplicate contours)
-	pass
-
 def rawPolyDist(bin_img):
 	contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 	hierarchy = hierarchy[0]
@@ -97,6 +101,9 @@ def rawPolyDist(bin_img):
 	print "Contour Analysis Complete"
 	return rawPolyImg
 
+#######################################################################################
+###################     Required Helper Functions      ################################
+#######################################################################################
 	
 desiredImg = cv2.imread('fish.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
