@@ -71,14 +71,37 @@ def edgeIm_to_binImg(edgeImg):
 	# TODO: convert edges to contoured regions (eliminate duplicate contours)
 	pass
 
+def rawPolyDist(bin_img):
+	contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
+	hierarchy = hierarchy[0]
+
+	rawPolyImg = -1*np.ones(bin_img.shape)
+
+	cntr_pts = ptsInContours(contours,binImg.shape)
+	i_parents = parents(hierarchy)
+	count = 1
+	max_count = len(i_parents)
+	for cnt_i in i_parents:
+		print "Analyzing Contour "+str(count)+" of "+str(max_count)
+		list_pts = cntr_pts[cnt_i]
+		for pt in list_pts:
+			value = cv2.pointPolygonTest(contours[cnt_i],pt,True)
+			if(hierarchy[cnt_i][2]!=-1):
+				min_val2 = 1
+				for child_i in childrenOf(hierarchy,cnt_i):
+					value2 = cv2.pointPolygonTest(contours[child_i],pt,True)
+					min_val2 = min(min_val2,value2)
+				value = min(value,-min_val2)
+			rawPolyImg.itemset((pt[1],pt[0]),value)
+		count = count + 1
+	print "Contour Analysis Complete"
+	return rawPolyImg
+
 	
 desiredImg = cv2.imread('fish.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
-
-# display(desiredImg, 'desiredImg')
-# display(canvasImg, 'canvasImg')
 
 desired_rows, desired_cols = desiredImg_grey.shape
 canvas_rows, canvas_cols, canvas_channels = canvasImg.shape
@@ -88,33 +111,9 @@ canvas_rows, canvas_cols, canvas_channels = canvasImg.shape
 
 binImg = 255-binImg
 
-contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
-hierarchy = hierarchy[0]
+rawPolyImg = rawPolyDist(binImg)
 
-rawPolyDist = -1*np.ones((desired_rows,desired_cols))
-
-contourImg = desiredImg_grey.copy()
-
-cntr_pts = ptsInContours(contours,desiredImg_grey.shape)
-i_parents = parents(hierarchy)
-count = 1
-max_count = len(i_parents)
-for cnt_i in i_parents:
-	print "Analyzing Contour "+str(count)+" of "+str(max_count)
-	list_pts = cntr_pts[cnt_i]
-	for pt in list_pts:
-		value = cv2.pointPolygonTest(contours[cnt_i],pt,True)
-		if(hierarchy[cnt_i][2]!=-1):
-			min_val2 = 1
-			for child_i in childrenOf(hierarchy,cnt_i):
-				value2 = cv2.pointPolygonTest(contours[child_i],pt,True)
-				min_val2 = min(min_val2,value2)
-			value = min(value,-min_val2)
-		rawPolyDist.itemset((pt[1],pt[0]),value)
-	count = count + 1
-print "Contour Analysis Complete"
-
-mini,maxi = np.abs(cv2.minMaxLoc(rawPolyDist)[:2])          # Find minimum and maximum to adjust colors
+mini,maxi = np.abs(cv2.minMaxLoc(rawPolyImg)[:2])          # Find minimum and maximum to adjust colors
 mini = 255.0/mini
 maxi = 255.0/maxi
 
@@ -122,14 +121,14 @@ polyDist = desiredImg.copy()
 
 for i in xrange(desired_rows):                              
     for j in xrange(desired_cols):
-        if rawPolyDist.item((i,j))<0:
-            polyDist.itemset((i,j,0),255-int(abs(rawPolyDist.item(i,j))*mini))   # If outside, blue color
+        if rawPolyImg.item((i,j))<0:
+            polyDist.itemset((i,j,0),255-int(abs(rawPolyImg.item(i,j))*mini))   # If outside, blue color
             polyDist.itemset((i,j,1),0)
             polyDist.itemset((i,j,2),0)
-        elif rawPolyDist.item((i,j))>0:
+        elif rawPolyImg.item((i,j))>0:
         	polyDist.itemset((i,j,0),0)
     		polyDist.itemset((i,j,1),0)
-    		polyDist.itemset((i,j,2),255-int(rawPolyDist.item(i,j)*maxi))        # If inside, red color
+    		polyDist.itemset((i,j,2),255-int(rawPolyImg.item(i,j)*maxi))        # If inside, red color
         else:
             polyDist.itemset((i,j,0),255)
             polyDist.itemset((i,j,1),255)
