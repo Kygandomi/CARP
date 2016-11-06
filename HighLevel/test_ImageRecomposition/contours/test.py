@@ -59,22 +59,27 @@ def childrenOf(hierarchy, i):
 			h_out.append(count)
 	return h_out
 
+def blackPoints(img):
+	pts = np.where(img == 255)
+	real_pts = []
+	for j in range(len(pts[0])):
+		real_pts.append((pts[1][j],pts[0][j]))
+	return real_pts
+
 def ptsInContours(contours,hierarchy,shape):
 	cntr_pts = []
 	# For each list of contour points...
 	for i in range(len(contours)):
-	    # Create a mask image that contains the contour filled in
-	    cimg = np.zeros(shape)
-	    cv2.drawContours(cimg, contours, i, color=255, thickness=-1)
-	    if(hierarchy[i][2]!=-1):
+		# Create a mask image that contains the contour filled in
+		cimg = np.zeros(shape)
+		cv2.drawContours(cimg, contours, i, color=255, thickness=-1)
+		cimg = cv2.erode(cimg, np.ones((5, 5)))
+		if(hierarchy[i][2]!=-1):
 			for child_i in childrenOf(hierarchy,i):
 				cv2.drawContours(cimg, contours, child_i, color=0, thickness=-1)
-	    # Access the image pixels and create a 1D numpy array then add to list
-	    pts = np.where(cimg == 255)
-	    real_pts = []
-	    for j in range(len(pts[0])):
-	    	real_pts.append((pts[1][j],pts[0][j]))
-	    cntr_pts.append(real_pts)
+		# Access the image pixels and create a 1D numpy array then add to list
+		cimg = cv2.dilate(cimg, np.ones((5, 5)))
+		cntr_pts.append(blackPoints(cimg))
 	return cntr_pts
 
 def rawPolyDist(bin_img):
@@ -97,7 +102,7 @@ def rawPolyDist(bin_img):
 				for child_i in childrenOf(hierarchy,cnt_i):
 					value2 = cv2.pointPolygonTest(contours[child_i],pt,True)
 					min_val2 = min(min_val2,value2)
-				value = min(value,-(int(min_val2+0.25)))
+				value = min(value,-(min_val2))
 			rawPolyImg.itemset((pt[1],pt[0]),value)
 		count = count + 1
 	print "Contour Analysis Complete"
