@@ -59,14 +59,16 @@ def childrenOf(hierarchy, i):
 			h_out.append(count)
 	return h_out
 
-def ptsInContours(contours,shape):
+def ptsInContours(contours,hierarchy,shape):
 	cntr_pts = []
 	# For each list of contour points...
 	for i in range(len(contours)):
 	    # Create a mask image that contains the contour filled in
 	    cimg = np.zeros(shape)
 	    cv2.drawContours(cimg, contours, i, color=255, thickness=-1)
-
+	    if(hierarchy[i][2]!=-1):
+			for child_i in childrenOf(hierarchy,i):
+				cv2.drawContours(cimg, contours, child_i, color=0, thickness=-1)
 	    # Access the image pixels and create a 1D numpy array then add to list
 	    pts = np.where(cimg == 255)
 	    real_pts = []
@@ -81,7 +83,7 @@ def rawPolyDist(bin_img):
 
 	rawPolyImg = -1*np.ones(bin_img.shape)
 
-	cntr_pts = ptsInContours(contours,binImg.shape)
+	cntr_pts = ptsInContours(contours,hierarchy,binImg.shape)
 	i_parents = parents(hierarchy)
 	count = 1
 	max_count = len(i_parents)
@@ -95,7 +97,7 @@ def rawPolyDist(bin_img):
 				for child_i in childrenOf(hierarchy,cnt_i):
 					value2 = cv2.pointPolygonTest(contours[child_i],pt,True)
 					min_val2 = min(min_val2,value2)
-				value = min(value,-min_val2)
+				value = min(value,-(int(min_val2+0.25)))
 			rawPolyImg.itemset((pt[1],pt[0]),value)
 		count = count + 1
 	print "Contour Analysis Complete"
@@ -105,7 +107,7 @@ def rawPolyDist(bin_img):
 ###################     Required Helper Functions      ################################
 #######################################################################################
 	
-desiredImg = cv2.imread('fish.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('circle.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
@@ -134,7 +136,7 @@ for i in xrange(desired_rows):
             polyDist.itemset((i,j,2),0)
         elif rawPolyImg.item((i,j))>0:
         	polyDist.itemset((i,j,0),0)
-    		polyDist.itemset((i,j,1),0)
+    		polyDist.itemset((i,j,1),0)#+int(rawPolyImg.item(i,j)*maxi))
     		polyDist.itemset((i,j,2),255-int(rawPolyImg.item(i,j)*maxi))        # If inside, red color
         else:
             polyDist.itemset((i,j,0),255)
