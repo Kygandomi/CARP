@@ -8,24 +8,25 @@ import random
 import math
 
 def display(img, name):
+	"""Displays an image with a given name as a string. 
+	Will pause until the user hits the space bar so you can actually see it."""
 	cv2.imshow(name, img)
-	cv2.waitKey(0)
+	cv2.waitKey(0) # This makes it actually wait for the user.
 	cv2.destroyAllWindows()
 
 def makeStroke(canvas, stroke, pos):
 	"""Places nontransperant pixels from the stroke image into the canvas image.
 	pos is the position on the CANVAS where the (0,0) pixel from the STROKE will be placed."""
-	offsetx , offsety = pos
-	canvas_cols, canvas_rows, canvas_channels = canvas.shape
-	stroke_cols, stroke_rows, stroke_channels = stroke.shape
-	for x in range(0, stroke_cols):
-		for y in range (0, stroke_rows):
-			if ((stroke[x, y])[3] > 3):
-				#print "painting position: ", offsetx + x, " ", offsety + y
+	offsetx , offsety = pos # Depackage the x and y positions
+	canvas_cols, canvas_rows, canvas_channels = canvas.shape # Get the canvas image info
+	stroke_cols, stroke_rows, stroke_channels = stroke.shape # Get the strome image info
+	for x in range(0, stroke_cols): # For each column in the stroke
+		for y in range (0, stroke_rows): # For each row in the stroke
+			if ((stroke[x, y])[3] > 3): # If it is a nontransperant pixel
 				try:
-					canvas[offsetx + x, offsety + y] = stroke[x, y]
-				except IndexError:
-					pass
+					canvas[offsetx + x, offsety + y] = stroke[x, y] # Attempt to paint that pixel to the canvas
+				except IndexError: # If we index out, just don't worry about it.
+					pass # @TODO: Perhaps we want to raise an error here.
 	return canvas
 
 def makeStrokeResize(canvas, stroke, pos):
@@ -64,7 +65,7 @@ def convertPix_mm_string(pix, canvas_dimensions):
 	Pix should be a tuple, canvas dimension an int or float."""
 	x, y = pix
 	canvas_cols, canvas_rows = canvas_dimensions
-	return str(((y)*1.0)*(8.5*25.4/canvas_cols)) + " " + str(((x)*1.0)*(11*25.4/canvas_rows))
+	return str(((y)*1.0)*(8.5*25.4/canvas_cols)) + " " + str(((x)*1.0)*(11*25.4/canvas_rows)) + " "
 
 stroke1Img = cv2.imread('stroke1.png', cv2.IMREAD_UNCHANGED)
 stroke2Img = cv2.imread('stroke2.png', cv2.IMREAD_UNCHANGED)
@@ -83,11 +84,11 @@ canvas_cols, canvas_rows, canvas_channels = canvasImg.shape
 strokeLibrary = [stroke1Img, stroke2Img]#, stroke3Img, stroke4Img]
 
 strokes = 0
-strokesToMake = 50
+strokesToMake = 40
 
 childrenPerGeneration = 50
 
-orders = open("orders.txt", 'w')
+orders = open("boxorders.txt", 'w')
 
 currentBestCanvas = canvasImg.copy()
 
@@ -124,9 +125,9 @@ while(strokes < strokesToMake):
 		strokeEndCoord = (0,0) # Initialize, but do not ever use this val.
 
 		if strokeType == 0: # Horisontal strokes
-			strokeEndCoord = convertPix_mm_string((y+stroke_cols, x), (canvas_cols, canvas_rows))
+			strokeEndCoord = convertPix_mm_string((y+stroke_cols*4, x), (canvas_cols, canvas_rows))
 		elif strokeType == 1: # Vertial strokes
-			strokeEndCoord = convertPix_mm_string((y, x+stroke_rows), (canvas_cols, canvas_rows))
+			strokeEndCoord = convertPix_mm_string((y, x+stroke_rows*4), (canvas_cols, canvas_rows))
 		strokeCoordinates.append(str(strokeStartCoord + strokeEndCoord))
 		i+=1
 
