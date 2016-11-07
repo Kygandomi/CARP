@@ -1,8 +1,14 @@
 // Painting Robot MQP 
 // Low Level Code V1
+#include <PID_v1.h>
 
 #define BAUD           115200
 #define MAX_BUF        64  
+
+#define F1 52
+#define F2 53
+#define POT A1
+#define pwm 12
 
 #define M1_PUL 34
 #define M1_ENB 36
@@ -11,7 +17,6 @@
 #define M2_PUL 35
 #define M2_ENB 37
 #define M2_DIR 39
-
 
 // Global Variables
 int buffer[MAX_BUF];
@@ -28,8 +33,27 @@ int m2_steps = 0;
 int m2_step_time = 500;
 unsigned long m2_start_time = 0;
 
+// Controller Variables
+double Setpoint, Input, Output;
+
+//Define the aggressive and conservative Tuning Parameters
+//double aggKp=4, aggKi=0.2, aggKd=1;
+//double consKp=1, consKi=0.05, consKd=0.25;
+
+double aggKp=1, aggKi=0, aggKd=0;
+double consKp=1, consKi=0.05, consKd=0.25;
+
+//Specify the links and initial tuning parameters
+PID myPID(&Input, &Output, &Setpoint, consKp, consKi, consKd, DIRECT);
+
+// Motor Direction
+int fergelli_direction = 0;
+
 void setup_motors() {
     // Set up Pin Modes
+    pinMode(F1,OUTPUT);
+    pinMode(F2,OUTPUT);
+    
     pinMode(M1_ENB,OUTPUT);
     pinMode(M1_DIR,OUTPUT);
     pinMode(M1_PUL,OUTPUT);
@@ -42,7 +66,7 @@ void setup_motors() {
     digitalWrite(M1_ENB,LOW);
     digitalWrite(M2_ENB,LOW);
     
-    digitalWrite(M1_DIR,LOW);
+    digitalWrite(M1_DIR,HIGH);
     digitalWrite(M2_DIR,HIGH);
 }
 
@@ -52,14 +76,22 @@ void setup(){
   
   // Set up Motors
   setup_motors();
+  
+  // Set output limits 
+  myPID.SetOutputLimits(-255,255);
+  
+  // Initial Fergelli Setpoint
+  Setpoint = 700;
+  
+  // Turn on PID
+  myPID.SetMode(AUTOMATIC);
 }
 
 void loop(){
         if(m1_steps == 0 && m2_steps == 0 && !Serial.available()){
-            Serial.println("?");
-//            Serial.write(0xFE);
-//            Serial.write(0x00);
-//            Serial.write(0xEF);
+            Serial.write(0xFE);
+            Serial.write(0x00);
+            Serial.write(0xEF);
         }
   
 	if(m1_steps == 0 && m2_steps == 0 && Serial.available()){
@@ -108,6 +140,38 @@ void loop(){
 			PORTC &= ~_BV(PC2);
 		}
 	}
+
+        // Figure out where to go and how to move
+        Input = analogRead(POT);
+        
+        double gap = abs(Setpoint-Input); //distance away from setpoint
+        if(gap<10)
+        {  //we're close to setpoint, use conservative tuning parameters
+          myPID.SetTunings(consKp, consKi, consKd);
+        }
+        else
+        {
+           //we're far from setpoint, use aggressive tuning parameters
+           myPID.SetTunings(aggKp, aggKi, aggKd);
+        }
+        
+        // Compute PID
+        myPID.Compute();
+        
+        // Set Direction of Fergelli
+        if(Output == 0){
+          digitalWrite(F1, LOW);
+          digitalWrite(F2, LOW);
+          analogWrite(pwm, Output); 
+        } else if(Output < 0){
+          digitalWrite(F1, HIGH);
+          digitalWrite(F2, LOW); 
+          analogWrite(pwm, -1*Output);
+        } else {
+          digitalWrite(F1, LOW);
+          digitalWrite(F2, HIGH);
+          analogWrite(pwm, Output);
+        }
 }
 
 void processBuffer(){
@@ -119,6 +183,8 @@ void processBuffer(){
         m2_dir = buffer[6];
 	m2_steps = (buffer[7] << 8) + buffer[8];
 	m2_step_time = (buffer[9] << 8) + buffer[10];
+
+        Setpoint = (buffer[11] << 8) + buffer[12];
 
         // Set M1 Direction
         if(m1_dir > 0){
@@ -133,14 +199,5 @@ void processBuffer(){
         } else {
           PORTG &= ~_BV(PG2);
         }
-
-        // Print for Debugging
-        Serial.println("Data:");
-        Serial.println(m1_dir);
-        Serial.println(m1_steps);
-        Serial.println(m1_step_time);
-        Serial.println(m2_dir);
-        Serial.println(m2_steps);
-        Serial.println(m2_step_time);
 }
 
