@@ -11,10 +11,10 @@ def display(img, name=""):
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 
-def save(img, name="outImg"):
+def save(img, name="output"):
 	cv2.imwrite(name+".png", img)
 
-def output(img,name="outImg"):
+def output(img,name="output"):
 	save(img,name)
 	display(img,name)
 
@@ -25,8 +25,6 @@ def autoCanny(image, sigma=0.33):
 	# apply automatic Canny edge detection using the computed median
 	lower = int(max(0, (1.0 - sigma) * v))
 	upper = int(min(255, (1.0 + sigma) * v))
-	print lower
-	print upper
 	edged = cv2.Canny(image, lower, upper)
  
 	# return the edged image
@@ -40,8 +38,8 @@ def edgeIm_to_binImg(edgeImg):
 ###################     Required Helper Functions      ################################
 #######################################################################################
 
-def circleKernal(radius, value=1):
-	brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,value,-1).astype('uint8')
+def circleKernal(radius):
+	brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,-1).astype('uint8')
 
 def parents(hierarchy):
 	# [Next, Prev, 1st Child, Parent]
@@ -80,10 +78,11 @@ def ptsInContours(contours,hierarchy,shape):
 		cv2.drawContours(cimg, contours, i, color=255, thickness=-1)
 		
 		if(hierarchy[i][2]!=-1):
-			cimg = cv2.erode(cimg, circleKernal(5))
+			radius = 2
+			cimg = cv2.erode(cimg, circleKernal(radius))
 			for child_i in childrenOf(hierarchy,i):
 				cv2.drawContours(cimg, contours, child_i, color=0, thickness=-1)
-			cimg = cv2.dilate(cimg, circleKernal(5))
+			cimg = cv2.dilate(cimg, circleKernal(radius))
 		# Access the image pixels and create a 1D numpy array then add to list
 		cntr_pts.append(blackPoints(cimg))
 	return cntr_pts
@@ -114,53 +113,18 @@ def rawPolyDist(bin_img):
 	print "Contour Analysis Complete"
 	return rawPolyImg
 
-def scaledPolyDist(rawPolyImg):
-	mini,maxi = np.abs(cv2.minMaxLoc(rawPolyImg)[:2])          # Find minimum and maximum to adjust colors
-	#print "Min: "+str(mini)+" | Max: "+str(maxi)
-	maxi = 255.0/maxi
-
-	scaledPolyImg = np.array(-1*np.ones(rawPolyImg.shape),dtype='uint8')
-
-	for i in xrange(rawPolyImg.shape[0]):                              
-	    for j in xrange(rawPolyImg.shape[1]):
-	        if rawPolyImg.item((i,j))>0:
-	        	scaledPolyImg.itemset((i,j),255-int(rawPolyImg.item(i,j)*maxi))        # If inside, gradient to dark
-	        else:
-	        	scaledPolyImg.itemset((i,j),255)        # If outside, white
-
-	return scaledPolyImg
-
-def visualPolyDist(rawPolyImg):
-	mini,maxi = np.abs(cv2.minMaxLoc(rawPolyImg)[:2])          # Find minimum and maximum to adjust colors
-	#print "Min: "+str(mini)+" | Max: "+str(maxi)
-	mini = 255.0/mini
-	maxi = 255.0/maxi
-
-	visualPolyImg = cv2.cvtColor(np.array(-1*np.ones(rawPolyImg.shape),dtype='uint8'),cv2.COLOR_GRAY2RGB)
-
-	for i in xrange(desired_rows):                              
-	    for j in xrange(desired_cols):
-	        if rawPolyImg.item((i,j))<0:
-	            visualPolyImg.itemset((i,j,0),255-int(abs(rawPolyImg.item(i,j))*mini))   # If outside, blue color
-	            visualPolyImg.itemset((i,j,1),0)
-	            visualPolyImg.itemset((i,j,2),0)
-	        elif rawPolyImg.item((i,j))>0:
-	        	visualPolyImg.itemset((i,j,0),0)
-	    		visualPolyImg.itemset((i,j,1),0)#+int(rawPolyImg.item(i,j)*maxi))
-	    		visualPolyImg.itemset((i,j,2),255-int(rawPolyImg.item(i,j)*maxi))        # If inside, red color
-	        else:
-	            visualPolyImg.itemset((i,j,0),255)
-	            visualPolyImg.itemset((i,j,1),255)
-	            visualPolyImg.itemset((i,j,2),255)                            # If on the contour, white color.
-	return visualPolyImg
-
 #######################################################################################
 ###################     Required Helper Functions      ################################
 #######################################################################################
 	
-desiredImg = cv2.imread('cat.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('circle.png', cv2.IMREAD_UNCHANGED)
+canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
+
+desired_rows, desired_cols = desiredImg_grey.shape
+canvas_rows, canvas_cols, canvas_channels = canvasImg.shape
+
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 #binImg = autoCanny(desiredImg)
 
@@ -172,24 +136,57 @@ rawPolyImg = rawPolyDist(binImg)
 ############################################################################
 ############################################################################
 
-polyImg = scaledPolyDist(rawPolyImg)
+# # display(rawPolyImg,"raw")
 
-display(polyImg)
+# brush_radius = 10
+# (ret, binImg) = cv2.threshold(rawPolyImg.copy(),brush_radius,255,cv2.THRESH_BINARY)
+# binImg = binImg.astype('uint8')
 
-#Somewhat decent, parameters must be tuned to specific image
-#pathImg = cv2.adaptiveThreshold(polyImg,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,3,2)
+# # display(binImg,"bin")
+
+# contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE)
+# hierarchy = hierarchy[0]
+
+# orders = open("orders.txt", 'w')
+
+# n_points = 0
+# for cnt_i in range(len(contours)):
+# 	cnt = contours[cnt_i]
+# 	for pt_i in range(0,len(cnt),10):
+# 		pt=cnt[pt_i][0]
+# 		orders.write(str(pt[0]*8.5*25.4/1000) + ' '+ str(pt[1]*8.5*25.4/1000) + '\n')
+# 		n_points = n_points + 1
+# 	orders.write('\n')
+# orders.close()
+# print n_points
 
 ############################################################################
-
-orders = open("orders.txt", 'w')
-orders.write('\n')
-orders.close()
-
-############################################################################
 ############################################################################
 ############################################################################
 
+mini,maxi = np.abs(cv2.minMaxLoc(rawPolyImg)[:2])          # Find minimum and maximum to adjust colors
+print "Min: "+str(mini)+" | Max: "+str(maxi)
+mini = 255.0/mini
+maxi = 255.0/maxi
 
-output(pathImg)
+polyDist = desiredImg.copy()
+
+for i in xrange(desired_rows):                              
+    for j in xrange(desired_cols):
+        if rawPolyImg.item((i,j))<0:
+            polyDist.itemset((i,j,0),255-int(abs(rawPolyImg.item(i,j))*mini))   # If outside, blue color
+            polyDist.itemset((i,j,1),0)
+            polyDist.itemset((i,j,2),0)
+        elif rawPolyImg.item((i,j))>0:
+        	polyDist.itemset((i,j,0),0)
+    		polyDist.itemset((i,j,1),0)#+int(rawPolyImg.item(i,j)*maxi))
+    		polyDist.itemset((i,j,2),255-int(rawPolyImg.item(i,j)*maxi))        # If inside, red color
+        else:
+            polyDist.itemset((i,j,0),255)
+            polyDist.itemset((i,j,1),255)
+            polyDist.itemset((i,j,2),255)                            # If on the contour, white color.
+
+output(rawPolyImg,"raw")
+
 
 print "Done"
