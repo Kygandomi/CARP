@@ -176,9 +176,29 @@ polyImg = scaledPolyDist(rawPolyImg)
 
 display(polyImg)
 
-#Somewhat decent, parameters must be tuned to specific image
+##Adaptive Threshold: Gaussian
+## Somewhat decent, parameters must be tuned to specific image
+## Not ideal because doesnt take derivitive
 #pathImg = cv2.adaptiveThreshold(polyImg,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,3,2)
 
+## Sobel/Scharr
+# sobelx = cv2.Sobel(polyImg,cv2.CV_64F,1,0,ksize=-1)
+# sobely = cv2.Sobel(polyImg,cv2.CV_64F,0,1,ksize=-1)
+
+# output(sobelx,'sobelx')
+# output(sobely,'sobely')
+
+## laplacian
+laplace = cv2.Laplacian(polyImg,-1,ksize=3, delta = 0)
+mini,maxi = np.abs(cv2.minMaxLoc(laplace)[:2])
+mid = np.median(laplace[np.nonzero(laplace)])
+sigma = 1-4.0*mid/maxi
+(thresh, pathImg) = cv2.threshold(laplace,sigma*maxi+(1-sigma)*mid, 255, cv2.THRESH_BINARY)
+
+print str(mini) +" "+ str(mid)+" "+str(maxi)
+print sigma
+output(laplace,"Laplacian")
+output(pathImg,"Path")
 ############################################################################
 
 orders = open("orders.txt", 'w')
@@ -190,6 +210,5 @@ orders.close()
 ############################################################################
 
 
-output(pathImg)
 
 print "Done"
