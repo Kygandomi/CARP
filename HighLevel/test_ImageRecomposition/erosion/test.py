@@ -56,8 +56,10 @@ def draw(pts,img,thicnkess=3):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('cat.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('circle.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
+
+paper_size = (11*25.4,8.5*25.4)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 
@@ -87,7 +89,7 @@ for cnt_i in range(len(contours)):
 		pt=cnt[pt_i][0]
 
 		#pt=(8.5*25.4/1000)*pt
-		pt=map(pt,desiredImg.shape[:2])
+		pt=map(pt,desiredImg.shape[:2],paper_size)
 
 		orders.write(str(pt[0]) + ' '+ str(pt[1]) + '\n')
 
@@ -99,7 +101,7 @@ for cnt_i in range(len(contours)):
 orders.close()
 print n_points
 
-drawnImg = draw(out_pts,np.array(255*np.ones((int(8.5*25.4),int(11*25.4))),dtype='uint8'),2)
+drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
 
 output(drawnImg, 'outImg')
 
