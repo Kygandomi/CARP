@@ -72,6 +72,6 @@ with open(fname) as f:
 # print n_points
 
 drawnImg = drawLines(in_pts,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),2)
-output(drawnImg, 'outImg')
+display(drawnImg, 'outImg')
 
 print "Done"
