@@ -3,8 +3,8 @@
 #include <PID_v1.h>
 
 #define BAUD           115200
-#define MAX_BUF        64  
-#define MAX_COMMANDS   1000
+#define MAX_BUF        3000  
+#define MAX_COMMANDS   100
 
 #define SERIAL_ELEMENT_LEN 10
 
@@ -20,6 +20,25 @@
 #define M2_PUL 35
 #define M2_ENB 37
 #define M2_DIR 39
+
+// Command Structure
+struct command_t{
+  int m1_steps;
+  int m2_steps;
+  
+  boolean m1_dir;
+  boolean m2_dir;
+  
+  unsigned int m1_step_time;
+  unsigned int m2_step_time;
+    
+  int fergelli_pos;
+} ;
+
+// For Command Buffer
+int current_command_index = 0;
+int length_command = 0;
+command_t command_list[MAX_COMMANDS];
 
 // Global Variables
 int buffer[MAX_BUF];
@@ -49,26 +68,6 @@ double consKp=1, consKi=0.05, consKd=0.25;
 
 //Specify the links and initial tuning parameters
 PID myPID(&Input, &Output, &Setpoint, consKp, consKi, consKd, DIRECT);
-
-// Command Structure
-typedef struct{
-  long m1_steps;
-  long m2_steps;
-  
-  boolean m1_dir;
-  boolean m2_dir;
-  
-  long m1_step_time;
-  long m2_step_time;
-    
-  int fergelli_pos;
-  
-} command;
-
-// For Command Buffer
-int current_command_index = 0;
-int length_command = 0;
-command command_list[MAX_COMMANDS];
 
 void setup_motors() {
     // Set up Pin Modes
@@ -111,7 +110,6 @@ void setup(){
 
 
 void loop(){
-  Serial.println("loop");
         if(current_command_index >= length_command && !Serial.available()){
 //            Serial.write(0xFE);
 //            Serial.write(0x00);
@@ -119,26 +117,27 @@ void loop(){
         }
   
 	else if(current_command_index >= length_command && Serial.available()){
-//		int c = Serial.read();
-//
-//		if(c == int(0xFE)){
-//			startbit = true;
-//		}
-//
-//		if(startbit){
-//			if(buffer_pos < MAX_BUF) buffer[buffer_pos++]=c;
-//    		
-//      		        if(buffer_pos == MAX_BUF && c != int(0xFE)){
-//      			    buffer_pos = 0;
-//      			    startbit = false;
-//      		        } 
-//		}
-//
-//		if(startbit && c == int(0xEF)){
-//			startbit = false;
-//			processBuffer();
-//                        buffer_pos = 0;
-//		}
+		int c = Serial.read();
+
+		if(c == int(0xFE)){
+			startbit = true;
+		}
+
+		if(startbit){
+			if(buffer_pos < MAX_BUF) buffer[buffer_pos++]=c;
+
+ 
+      		        if(buffer_pos == MAX_BUF && c != int(0xFE)){
+      			    buffer_pos = 0;
+      			    startbit = false;
+      		        } 
+		}
+
+		if(startbit && c == int(0xEF)){
+			startbit = false;
+			processBuffer();
+                        buffer_pos = 0;
+		}
 	} 
 
         //move to position
@@ -154,7 +153,7 @@ void loop(){
        runFergelli();
 }
 
-void forwardKinematics(long delta_x, long delta_y, boolean* m1_dir, boolean* m2_dir, long* m1_steps, long* m2_steps){
+void forwardKinematics(long delta_x, long delta_y, boolean* m1_dir, boolean* m2_dir, long* m1_steps_local, long* m2_steps_local){
 	
         float mag = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
 	float angle =atan2(delta_y, delta_x); 
@@ -171,45 +170,60 @@ void forwardKinematics(long delta_x, long delta_y, boolean* m1_dir, boolean* m2_
 	else
 	  *m2_dir = false;
 
-	*m1_steps = long(abs(s1));
-	*m2_steps = long(abs(s2));
+	*m1_steps_local = long(abs(s1));
+	*m2_steps_local = long(abs(s2));
 }
 
 void startCommand(){
   current_command_index++;
-  Serial.println(current_command_index);
-//  m1_steps = command_list[current_command_index].m1_steps;
-//  m2_steps = command_list[current_command_index].m2_steps;
-//          
-//  m1_step_time = command_list[current_command_index].m1_step_time;
-//  m2_step_time = command_list[current_command_index].m2_step_time;
-//  
-//  boolean m1_dir = command_list[current_command_index].m1_dir;
-//  boolean m2_dir = command_list[current_command_index].m2_dir;
-//  
-//  Setpoint = command_list[current_command_index].fergelli_pos;
-//  
-//  current_m1 += command_list[current_command_index].m1_steps*(m1_dir ? -1 : 1);
-//  current_m2 += command_list[current_command_index].m2_steps*(m2_dir ? -1 : 1);
-//  current_f = command_list[current_command_index].fergelli_pos;
-//  
-//  // Set M1 Direction
-//  if(m1_dir){
-//    PORTD |= _BV(PD7);
-//  } else {
-//    PORTD &= ~_BV(PD7);
-//  }
-//          
-//  // Set M2 Direction
-//  if(m2_dir){
-//    PORTG |= _BV(PG2);
-//   } else {
-//    PORTG &= ~_BV(PG2);
-//   }
- 
+  command_t current_command = command_list[current_command_index];
+  
+  m1_steps = current_command.m1_steps;
+  m2_steps = current_command.m2_steps;
+          
+  m1_step_time = current_command.m1_step_time;
+  m2_step_time = current_command.m2_step_time;
+  
+  boolean m1_dir = current_command.m1_dir;
+  boolean m2_dir = current_command.m2_dir;
+  
+  Setpoint = current_command.fergelli_pos;
+  
+  current_m1 += command_list[current_command_index].m1_steps*(m1_dir ? -1 : 1);
+  current_m2 += command_list[current_command_index].m2_steps*(m2_dir ? -1 : 1);
+  current_f = command_list[current_command_index].fergelli_pos;
+  
+  // Set M1 Direction
+  if(m1_dir){
+    PORTD |= _BV(PD7);
+  } else {
+    PORTD &= ~_BV(PD7);
+  }
+          
+  // Set M2 Direction
+  if(m2_dir){
+    PORTG |= _BV(PG2);
+   } else {
+    PORTG &= ~_BV(PG2);
+   }
+   
 }
 
 boolean run(){
+//  Serial.print("Vars: ");
+//  Serial.print(current_command_index);
+//  Serial.print(" of ");
+//  Serial.print(length_command);
+//  Serial.print(" | ");
+//  Serial.print(m1_steps);
+//  Serial.print(" ");
+//  Serial.print(m2_steps);
+//  Serial.print(" | ");
+//  Serial.print(m1_step_time);
+//  Serial.print(" ");
+//  Serial.print(m2_step_time);
+//  Serial.println(" ");
+  
    if(m1_steps == 0 && m2_steps == 0){
      return true;
    } 
@@ -289,38 +303,41 @@ void processBuffer(){
   
   for(int i=1; i<buffer_pos; i+=SERIAL_ELEMENT_LEN){
     if(i+SERIAL_ELEMENT_LEN < buffer_pos){
-      long x = (buffer[i] << 8) + buffer[i+1];
-      long y = (buffer[i+2] << 8) + buffer[i+3];
+      int x = (buffer[i] << 8) + buffer[i+1];
+      int y = (buffer[i+2] << 8) + buffer[i+3];
       boolean xy_abs_flag = buffer[i+4];
       
-      long z = (buffer[i+5] << 8) + buffer[i+6];
+      int z = (buffer[i+5] << 8) + buffer[i+6];
       boolean z_abs_flag = buffer[i+7];
       
-      long min_step_time = (buffer[i+8] << 8) + buffer[i+9];
+      int min_step_time = (buffer[i+8] << 8) + buffer[i+9];
       
-      long delta_m1 = 0;
-      long delta_m2 = 0;
-      
-      long abs_z = z;
+      int delta_m1 = 0;
+      int delta_m2 = 0;
+
       
       
       boolean m1_dir = 0; 
       boolean m2_dir = 0;
-      long m1_steps = 0;
-      long m2_steps = 0;
+      long m1_steps_local = 0;
+      long m2_steps_local = 0;
       
-      forwardKinematics(x, y, &m1_dir, &m2_dir, &m1_steps, &m2_steps);
+      Serial.print(x);
+      Serial.print(",");
+      Serial.println(y);
+      forwardKinematics(x, y, &m1_dir, &m2_dir, &m1_steps_local, &m2_steps_local);
+      
       
       if(xy_abs_flag){
-        delta_m1 = m1_steps-sim_m1;
-        delta_m2 = m2_steps-sim_m2;
-        sim_m1 = m1_steps;
-        sim_m2 = m2_steps;
+        delta_m1 = m1_steps_local-sim_m1;
+        delta_m2 = m2_steps_local-sim_m2;
+        sim_m1 = m1_steps_local;
+        sim_m2 = m2_steps_local;
       } else {
-        delta_m1 = m1_steps;
-        delta_m2 = m2_steps;
-        sim_m1 += m1_dir ? -m1_steps:m1_steps;
-        sim_m2 += m2_dir ? -m2_steps:m2_steps;
+        delta_m1 = m1_steps_local;
+        delta_m2 = m2_steps_local;
+        sim_m1 += m1_dir ? -m1_steps_local:m1_steps_local;
+        sim_m2 += m2_dir ? -m2_steps_local:m2_steps_local;
       }
       
       if(!z_abs_flag){
@@ -328,6 +345,11 @@ void processBuffer(){
       }else{
        sim_f = z; 
       }
+      
+      Serial.print(delta_m1);
+      Serial.print(",");
+      Serial.println(delta_m2);
+      Serial.println("-----------------");
       
       if(delta_m1<0){
         delta_m1 = abs(delta_m1);
@@ -339,7 +361,7 @@ void processBuffer(){
         m2_dir = !m2_dir;
       }
       
-      command c1 = {
+      command_t c1 = {
         delta_m1,
         delta_m2,
         m1_dir,

@@ -45,6 +45,11 @@ class serial_comms():
 		self.ser.write(('%%0%dx' % (length << 1) % fergelli_pos).decode('hex')[-length:])
 		self.ser.write(b'\xef')
 
+	def special_packet(self):
+		self.ser.write(b'\xfe')
+		self.ser.write(b'\xee')
+		self.ser.write(b'\xef')		
+
 	def send_long_packet(self, packet):
 		length = 2
 		self.ser.write(b'\xfe')
@@ -52,6 +57,9 @@ class serial_comms():
 		for element in packet:
 			x = element[0]
 			y = element[1]
+
+			print str(x) + " " + str(y)
+
 			xy_abs_flag = element[2]
 			z = element[3]
 			z_abs_flag = element[4]
@@ -79,7 +87,9 @@ class serial_comms():
 	'Parse recieved data'
 	def parse_packet(self, response):
 		if(len(response) >= 3):
-			return response[1]
+			for i in range(len(response)):
+				if(response[i] == 254):
+					return response[i+1]
 		else :
 			return -1
 

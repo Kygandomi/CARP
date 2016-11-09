@@ -12,6 +12,7 @@ def send_commands(packet):
 
 	# Wait for gantry routine to complete
 	read_val = arduino_ser.recieve_packet()
+	print "READ VALUE WAS : " + str(read_val)
 	while(arduino_ser.parse_packet(read_val) != -1):
 		read_val = arduino_ser.recieve_packet()
 		sleep(1)
@@ -41,10 +42,11 @@ with open(fname) as f:
 
 		# Get the coordinates
 		if(line == '\n'):
-			fergelli_up = [0, 0, 0, 400, 1]
+			fergelli_up = [0, 0, 0, 400, 1, 800]
 			commands.append(fergelli_up)
 			
 			# Send commands and wait 
+			print "Newline Commands"
 			send_commands(commands)
 
 			# Sleep for a second for the fergelli
@@ -54,12 +56,15 @@ with open(fname) as f:
 			
 		# Do stuff	
 		else:
-			element = [line[0] * 10.9, line[1] * 10.9, 1, 0, 0]
+			print "In here"
+			coords = line.split(" ")
+			element = [int(float(coords[0]) * 10.9), int(float(coords[1]) * 10.9), 1, 0, 0, 800]
 			commands.append(element)
 
 			if(first_elem):
+				print "First Element"
 				first_elem = False
-				fergelli_down = [line[0] * 10.9, line[1] * 10.9, 1, 175, 1]
+				fergelli_down = [int(float(coords[0]) * 10.9), int(float(coords[1]) * 10.9), 1, 175, 1, 800]
 				commands.append(fergelli_down)
 				
 				# Send commands and wait 
