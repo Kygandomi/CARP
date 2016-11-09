@@ -140,53 +140,66 @@ def paint_lines(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_b
 		# Return the new current position
 		return x2, y2
 
-	def paint_contours(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_bound_y, step_time, fergelli_delay, fergelli_up, fergelli_down_dist, contour_flag, prev_contour_flag):
-		# If the contour flag has been signalled
-		if(contour_flag):
-			# Move the Fergelli Up
-			fergelli_up(fergelli_delay, fergelli_up_dist)
+def paint_contours(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_bound_y, step_time, fergelli_delay, fergelli_up, fergelli_down_dist, contour_flag, prev_contour_flag):
+	# If the contour flag has been signalled
+	if(contour_flag):
+		# Move the Fergelli Up
+		m1_dir = 0
+		m2_dir = 0
+		fergelli_up(m1_dir, m2_dir, step_time, fergelli_delay, fergelli_up_dist)
+		
+		contour_flag = False
+		prev_contour_flag = True
+		x1 = current_x
+		y1 = current_y
+
+	# Else the contour flag has not been signaled 
+	else:
+		# Get desired x and y
+		x1 = float(coords[0]) * mm_to_step
+		y1 = float(coords[1]) * mm_to_step
+
+		# Get Change in pos
+		delta_x1 = x1 - current_x
+		delta_y1 = y1 - current_y
+
+		# Verify that the data is valid
+		if(x1 > upper_bound_x or y1 > upper_bound_y ):
+			print "Error: Coordinate too Large"
+		elif(x1 < 0 or y1 < 0 ):
+			print "Error: Coordinate too Small"
+
+		# If the last point was the contour flag
+		if(prev_contour_flag):
+			# Get motor steps and direction
+			m1_steps, m2_steps, m1_dir, m2_dir = forward_kinematics(delta_x1, delta_y1)
+
+			# Move the gantry
+			gantry_movement_routine(m1_steps, m2_steps, m1_dir, m2_dir, step_time, fergelli_up_dist)
+
+			# Move the Fergelli Down
+			m1_dir = 0
+			m2_dir = 0
+			fergelli_down(m1_dir, m2_dir, step_time, fergelli_delay, fergelli_down_dist)
 			contour_flag = False
-			prev_contour_flag = True
+			prev_contour_flag = False
 
-		# Else the contour flag has not been signaled 
 		else:
-			# Get desired x and y
-			x1 = float(coords[0]) * mm_to_step
-			y1 = float(coords[1]) * mm_to_step
+			# Get motor steps and direction
+			m1_steps, m2_steps, m1_dir, m2_dir = forward_kinematics(delta_x1, delta_y1)
 
-			# Get Change in pos
-			delta_x1 = x1 - current_x
-			delta_y1 = y1 - current_y
+			# Move the gantry
+			gantry_movement_routine(m1_steps, m2_steps, m1_dir, m2_dir, step_time, fergelli_down_dist)
+			contour_flag = False
+			prev_contour_flag = False
 
-			# Verify that the data is valid
-			if(x1 > upper_bound_x or y1 > upper_bound_y ):
-				print "Error: Coordinate too Large"
-			elif(x1 < 0 or y1 < 0 ):
-				print "Error: Coordinate too Small"
-
-			# If the last point was the contour flag
-			if(prev_contour_flag):
-				# Move the gantry
-				gantry_movement_routine(m1_steps_2, m2_steps_2, m1_dir_2, m2_dir_2, step_time, fergelli_up_dist)
-
-				# Move the Fergelli Down
-				fergelli_down(fergelli_delay, fergelli_down_dist)
-				contour_flag = False
-				prev_contour_flag = False
-
-			else:
-				# Move the gantry
-				gantry_movement_routine(m1_steps_2, m2_steps_2, m1_dir_2, m2_dir_2, step_time, fergelli_down_dist)
-				contour_flag = False
-				prev_contour_flag = False
-
-			return x1, x2, contour_flag, prev_contour_flag
+	return x1, y1, contour_flag, prev_contour_flag
 
 
 ####################### MAIN #########################
 
 # file to read from 
-fname = "catordersSmallBrush3.txt"
+fname = "../test_ImageRecomposition/erosion/orders_cat.txt"
 
 # Connect to Arduino over serial
 baud = 115200
@@ -224,7 +237,7 @@ current_y = 0
 line_counter = 0
 
 # Painting mode
-mode = 'points'
+mode = 'contours'
 
 
 # Open the given file
@@ -235,6 +248,7 @@ with open(fname) as f:
 		# Get the coordinates
 		if(line == '\n'):
 			contour_flag = True
+			coords = [0, 0]
 		else:
 			coords = line.split(" ")
 			contour_flag = False
@@ -249,6 +263,10 @@ with open(fname) as f:
 			x, y, f1, f2 = paint_contours(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_bound_y, step_time, fergelli_delay, fergelli_up, fergelli_down_dist, contour_flag, prev_contour_flag)
 			contour_flag = f1
 			prev_contour_flag = f2
+		elif(mode == 'contours_v2'):
+			x = 0
+			y = 0
+			paint_contours()
 		else:
 			print 'Error: Invalid Mode'
 			break

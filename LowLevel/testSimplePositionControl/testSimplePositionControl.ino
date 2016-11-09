@@ -87,6 +87,8 @@ void setup(){
   myPID.SetMode(AUTOMATIC);
 }
 
+
+
 void loop(){
         if(m1_steps == 0 && m2_steps == 0 && !Serial.available()){
             Serial.write(0xFE);

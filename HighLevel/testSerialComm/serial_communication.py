@@ -45,6 +45,27 @@ class serial_comms():
 		self.ser.write(('%%0%dx' % (length << 1) % fergelli_pos).decode('hex')[-length:])
 		self.ser.write(b'\xef')
 
+	def send_long_packet(self, packet):
+		length = 2
+		self.ser.write(b'\xfe')
+
+		for element in packet:
+			x = element[0]
+			y = element[1]
+			xy_abs_flag = element[2]
+			z = element[3]
+			z_abs_flag = element[4]
+			min_step_time = element[5]
+
+			self.ser.write(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
+			self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
+			self.ser.write(chr(xy_abs_flag))
+			self.ser.write(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
+			self.ser.write(chr(z_abs_flag))
+			self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
+		
+		self.ser.write(b'\xef')
+
 	'Read data from the PCB'
 	def recieve_packet(self):
 		# Collect output response
