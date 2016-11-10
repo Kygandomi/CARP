@@ -27,6 +27,9 @@ class serial_comms():
 	def disconnect(self):
 		self.ser.close()
 
+	def flush(self):
+		self.ser.flushInput()
+
 	'Write data to the Arduino'
 	def send_packet(self, m1_dir, m1_step, m1_step_time, 
 						  m2_dir, m2_step, m2_step_time,
@@ -45,32 +48,31 @@ class serial_comms():
 		self.ser.write(('%%0%dx' % (length << 1) % fergelli_pos).decode('hex')[-length:])
 		self.ser.write(b'\xef')
 
-	def special_packet(self):
+	def send_special_packet(self):
 		self.ser.write(b'\xfe')
 		self.ser.write(b'\xee')
 		self.ser.write(b'\xef')		
 
-	def send_long_packet(self, packet):
+	def send_standard_packet(self, element):
 		length = 2
 		self.ser.write(b'\xfe')
 
-		for element in packet:
-			x = element[0]
-			y = element[1]
+		x = element[0]
+		y = element[1]
 
-			print str(x) + " " + str(y)
+		xy_abs_flag = element[2]
+		z = element[3]
+		z_abs_flag = element[4]
+		min_step_time = element[5]
 
-			xy_abs_flag = element[2]
-			z = element[3]
-			z_abs_flag = element[4]
-			min_step_time = element[5]
+		# print str(x) + " " + str(y)
 
-			self.ser.write(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
-			self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
-			self.ser.write(chr(xy_abs_flag))
-			self.ser.write(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
-			self.ser.write(chr(z_abs_flag))
-			self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
+		self.ser.write(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
+		self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
+		self.ser.write(chr(xy_abs_flag))
+		self.ser.write(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
+		self.ser.write(chr(z_abs_flag))
+		self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
 		
 		self.ser.write(b'\xef')
 
