@@ -36,6 +36,10 @@ def edgeIm_to_binImg(edgeImg):
 	# TODO: convert edges to contoured regions (eliminate duplicate contours)
 	pass
 
+def findRidges(polyImg):
+	# TODO: find ridges, "lines" which are as far from edges as possible
+	pass
+
 #######################################################################################
 ###################     Required Helper Functions      ################################
 #######################################################################################
@@ -64,14 +68,14 @@ def childrenOf(hierarchy, i):
 			h_out.append(count)
 	return h_out
 
-def blackPoints(img):
+def getPoints(img,color=255):
 	pts = np.where(img == 255)
 	real_pts = []
 	for j in range(len(pts[0])):
 		real_pts.append((pts[1][j],pts[0][j]))
 	return real_pts
 
-def ptsInContours(contours,hierarchy,shape):
+def ptsInContours(contours,hierarchy,shape,):
 	cntr_pts = []
 	# For each list of contour points...
 	for i in range(len(contours)):
@@ -85,14 +89,14 @@ def ptsInContours(contours,hierarchy,shape):
 				cv2.drawContours(cimg, contours, child_i, color=0, thickness=-1)
 			cimg = cv2.dilate(cimg, circleKernal(5))
 		# Access the image pixels and create a 1D numpy array then add to list
-		cntr_pts.append(blackPoints(cimg))
+		cntr_pts.append(getPoints(cimg))
 	return cntr_pts
 
 def rawPolyDist(bin_img):
 	contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 	hierarchy = hierarchy[0]
 
-	rawPolyImg = np.array(-1*np.ones(bin_img.shape),dtype='float32')
+	rawPolyImg = np.array(-1.0*np.ones(bin_img.shape),dtype='float32')
 
 	cntr_pts = ptsInContours(contours,hierarchy,binImg.shape)
 	i_parents = parents(hierarchy)
@@ -112,7 +116,7 @@ def rawPolyDist(bin_img):
 			rawPolyImg.itemset((pt[1],pt[0]),value)
 		count = count + 1
 	print "Contour Analysis Complete"
-	return rawPolyImg
+	return rawPolyImg, contours, hierarchy, cntr_pts
 
 def scaledPolyDist(rawPolyImg):
 	mini,maxi = np.abs(cv2.minMaxLoc(rawPolyImg)[:2])          # Find minimum and maximum to adjust colors
@@ -166,7 +170,7 @@ desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 
 binImg = 255-binImg
 
-rawPolyImg = rawPolyDist(binImg)
+rawPolyImg = rawPolyDist(binImg)[0]
 
 ############################################################################
 ############################################################################
@@ -188,10 +192,32 @@ display(polyImg)
 # output(sobelx,'sobelx')
 # output(sobely,'sobely')
 
+## gaussian
+#gauss = cv2.GaussianBlur(polyImg,(3,3),0)
+
+## sharpen
+# kernel_sharpen_1 = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+# kernel_sharpen_2 = np.array([[1,1,1], [1,-7,1], [1,1,1]])
+# kernel_sharpen_3 = np.array([[-1,-1,-1,-1,-1],
+#                              [-1,2,2,2,-1],
+#                              [-1,2,8,2,-1],
+#                              [-1,2,2,2,-1],
+#                              [-1,-1,-1,-1,-1]]) / 8.0
+
+# output_1 = cv2.filter2D(polyImg, -1, kernel_sharpen_1)
+# output_2 = cv2.filter2D(polyImg, -1, kernel_sharpen_2)
+# output_3 = cv2.filter2D(polyImg, -1, kernel_sharpen_3)
+
+# output(output_1)
+# output(output_2)
+# output(output_3)
+
 ## laplacian
-laplace = cv2.Laplacian(polyImg,-1,ksize=3, delta = 0)
-mini,maxi = np.abs(cv2.minMaxLoc(laplace)[:2])
-mid = np.median(laplace[np.nonzero(laplace)])
+#laplace = cv2.Laplacian(polyImg,cv2.CV_32F,ksize=1, delta = 0)
+laplace = cv2.Laplacian(polyImg,cv2.CV_32F,ksize=1, delta = 0)
+mini,maxi = cv2.minMaxLoc(laplace)[:2]
+nonzero = laplace[laplace > 0]
+mid = np.median(nonzero)
 sigma = 1-4.0*mid/maxi
 (thresh, pathImg) = cv2.threshold(laplace,sigma*maxi+(1-sigma)*mid, 255, cv2.THRESH_BINARY)
 

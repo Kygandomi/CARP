@@ -43,6 +43,7 @@ def map(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False)
 	return pt_new
 
 def draw(pts,img,thicnkess=3):
+	'''this is what this does'''
 	for i in range(len(pts)):
 		if len(pts[i])==1:
 			cv2.circle(img,(int(pts[i][0][0]),int(pts[i][0][1])),0,thicnkess*3)
@@ -68,15 +69,16 @@ canvas_rows, canvas_cols, canvas_channels = canvasImg.shape
 
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU) 
 #binImg = autoCanny(desiredImg)
-binImg = 255-binImg
 
 display(binImg)
-brush_thickness = 2
-binImg = cv2.erode(binImg, circleKernal(1),iterations = brush_thickness)
+brush_thickness = 3 
+binImg = cv2.dilate(binImg, circleKernal(1),iterations = brush_thickness)
 display(binImg)
 
-contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
+contourImg, contours, hierarchy = cv2.findContours(255-binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 hierarchy = hierarchy[0]
+
+display(contourImg)
 
 orders = open("orders.txt", 'w')
 
