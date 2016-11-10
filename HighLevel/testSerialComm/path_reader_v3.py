@@ -7,12 +7,22 @@ import math
 import serial_communication as ser_comm
 from time import sleep
 
-def send_commands(packet):
-	arduino_ser.send_long_packet(packet)
+def send_standard_packet(packet):
+	# Send a packet
+	arduino_ser.send_standard_packet(packet)
+
+	# Wait a second for Arduino to process point
+	sleep(1)
+
+def send_special_packet():
+	# Tell Arduino to process all recieved packets
+	arduino_ser.send_special_packet()
+	arduino_ser.flush()
 
 	# Wait for gantry routine to complete
 	read_val = arduino_ser.recieve_packet()
-	print "READ VALUE WAS : " + str(read_val)
+	print "***** SENDING SPECIAL PACKET *****"
+	print "init read value : " + str(read_val)
 	while(arduino_ser.parse_packet(read_val) != -1):
 		read_val = arduino_ser.recieve_packet()
 		sleep(1)
@@ -29,9 +39,6 @@ arduino_ser.connect()
 # Sleep to verify a solid connection
 sleep(1)
 
-# Commands
-commands = []
-
 # Is first element? 
 first_elem = True
 
@@ -43,38 +50,39 @@ with open(fname) as f:
 		# Get the coordinates
 		if(line == '\n'):
 			fergelli_up = [0, 0, 0, 400, 1, 800]
-			commands.append(fergelli_up)
+
+			# Send Fergelli Up packet
+			send_standard_packet(fergelli_up)
 			
 			# Send commands and wait 
-			print "Newline Commands"
-			send_commands(commands)
+			send_special_packet()
 
 			# Sleep for a second for the fergelli
 			sleep(1)
 
+			# Reset the first element flag
 			first_elem = True
 			
 		# Do stuff	
 		else:
 			print "In here"
 			coords = line.split(" ")
+
 			element = [int(float(coords[0]) * 10.9), int(float(coords[1]) * 10.9), 1, 0, 0, 800]
-			commands.append(element)
+			send_standard_packet(element)
 
 			if(first_elem):
 				print "First Element"
 				first_elem = False
+				
 				fergelli_down = [int(float(coords[0]) * 10.9), int(float(coords[1]) * 10.9), 1, 175, 1, 800]
-				commands.append(fergelli_down)
+				send_standard_packet(fergelli_down)
 				
 				# Send commands and wait 
-				send_commands(commands)
+				send_special_packet()
 
 				# Sleep for a second for the fergelli
 				sleep(1)
-
-				# Clear Commands
-				commands = []
 
 
 

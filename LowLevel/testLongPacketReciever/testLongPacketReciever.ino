@@ -3,7 +3,7 @@
 #include <PID_v1.h>
 
 #define BAUD           115200
-#define MAX_BUF        3000  
+#define MAX_BUF        15  
 #define MAX_COMMANDS   100
 
 #define SERIAL_ELEMENT_LEN 10
@@ -45,6 +45,9 @@ int buffer[MAX_BUF];
 int buffer_pos;
 bool startbit = false;
 
+// Simulated Index
+int sim_command_index = 0;
+
 // Motor Step Definitions and Start Times
 long m1_steps = 0;
 int m1_step_time = 0;
@@ -61,6 +64,10 @@ double Setpoint, Input, Output;
 long current_m1 = 0;
 long current_m2 = 0;
 long current_f = 0;
+
+long sim_m1 = current_m1;
+long sim_m2 = current_m2;
+long sim_f = current_f;
 
 //Define the aggressive and conservative Tuning Parameters
 double aggKp=1, aggKi=0, aggKd=0;
@@ -111,16 +118,16 @@ void setup(){
 
 void loop(){
         if(current_command_index >= length_command && !Serial.available()){
-//            Serial.write(0xFE);
-//            Serial.write(0x00);
-//            Serial.write(0xEF);
+            Serial.write(0xFE);
+            Serial.write(0x00);
+            Serial.write(0xEF);
         }
   
 	else if(current_command_index >= length_command && Serial.available()){
 		int c = Serial.read();
 
 		if(c == int(0xFE)){
-			startbit = true;
+		  startbit = true;
 		}
 
 		if(startbit){
@@ -295,11 +302,25 @@ void runFergelli(){
 }
 
 void processBuffer(){
-     
-  long sim_m1 = current_m1;
-  long sim_m2 = current_m2;
-  long sim_f = current_f;
-  int sim_command_index = 0;
+  
+  if(buffer_pos == 3){
+//   Serial.print("Current buffer value is :");
+//   Serial.println(buffer[buffer_pos-1]);
+   if(buffer[buffer_pos-1] == 239){
+        length_command = sim_command_index;
+        current_command_index = -1;
+        sim_command_index = 0;
+   } 
+    
+  } else {
+    
+   Serial.println("Processing the buffer!");
+    
+    if(current_command_index == 0){
+      sim_m1 = current_m1;
+      sim_m2 = current_m2;
+      sim_f = current_f; 
+    }
   
   for(int i=1; i<buffer_pos; i+=SERIAL_ELEMENT_LEN){
     if(i+SERIAL_ELEMENT_LEN < buffer_pos){
@@ -314,19 +335,16 @@ void processBuffer(){
       
       int delta_m1 = 0;
       int delta_m2 = 0;
-
-      
       
       boolean m1_dir = 0; 
       boolean m2_dir = 0;
       long m1_steps_local = 0;
       long m2_steps_local = 0;
       
-      Serial.print(x);
-      Serial.print(",");
-      Serial.println(y);
+//      Serial.print(x);
+//      Serial.print(",");
+//      Serial.println(y);
       forwardKinematics(x, y, &m1_dir, &m2_dir, &m1_steps_local, &m2_steps_local);
-      
       
       if(xy_abs_flag){
         delta_m1 = m1_steps_local-sim_m1;
@@ -346,11 +364,11 @@ void processBuffer(){
        sim_f = z; 
       }
       
-      Serial.print(delta_m1);
-      Serial.print(",");
-      Serial.println(delta_m2);
-      Serial.println("-----------------");
-      
+//      Serial.print(delta_m1);
+//      Serial.print(",");
+//      Serial.println(delta_m2);
+//      Serial.println("-----------------");
+//      
       if(delta_m1<0){
         delta_m1 = abs(delta_m1);
         m1_dir = !m1_dir;
@@ -379,9 +397,7 @@ void processBuffer(){
       }
     }
   }
-  
-  length_command = sim_command_index;
-  current_command_index=-1;
-        
+
+  }
 }
 
