@@ -18,9 +18,6 @@ def output(img,name="output"):
 	save(img,name)
 	display(img,name)
 
-def circleKernal(radius):
-	brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,-1).astype('uint8')
-
 def map(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False):
 	src_rows, src_cols = src_shape
 	dst_rows, dst_cols = dst_shape
@@ -42,7 +39,7 @@ def map(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False)
 	
 	return pt_new
 
-def draw(pts,img,thicnkess=3):
+def drawLines(pts,img,thicnkess=3):
 	for i in range(len(pts)):
 		if len(pts[i])==1:
 			cv2.circle(img,(int(pts[i][0][0]),int(pts[i][0][1])),0,thicnkess*3)
@@ -56,53 +53,25 @@ def draw(pts,img,thicnkess=3):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('cat.png', cv2.IMREAD_UNCHANGED)
-canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
-
 paper_size = (11*25.4,8.5*25.4)
+scale = 3
 
-desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
+fname = "erosion\orders.txt"
 
-desired_rows, desired_cols = desiredImg_grey.shape
-canvas_rows, canvas_cols, canvas_channels = canvasImg.shape
-
-(thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU) 
-#binImg = autoCanny(desiredImg)
-binImg = 255-binImg
-
-display(binImg)
-brush_thickness = 2
-binImg = cv2.erode(binImg, circleKernal(1),iterations = brush_thickness)
-display(binImg)
-
-contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
-hierarchy = hierarchy[0]
-
-orders = open("orders.txt", 'w')
-
-n_points = 0
-out_pts = []
-for cnt_i in range(len(contours)):
-	cnt = contours[cnt_i]
-	list_pts=[]
-	for pt_i in range(0,len(cnt),10):
-		pt=cnt[pt_i][0]
-
-		#pt=(8.5*25.4/1000)*pt
-		pt=map(pt,desiredImg.shape[:2],paper_size)
-
-		orders.write(str(pt[0]) + ' '+ str(pt[1]) + '\n')
-
-		list_pts.append(pt)
-
-		n_points = n_points + 1
-	out_pts.append(list_pts)
-	orders.write('\n')
-orders.close()
+in_pts = []
+with open(fname) as f:
+	# For each line in the file
+	contour = []
+	for line in f:
+		if(line == '\n'):
+			in_pts.append(contour)
+			contour = []
+		else:
+			coords = line.split(" ")
+			contour.append((scale*float(coords[0]),scale*float(coords[1])))
 # print n_points
 
-drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
-
-output(drawnImg, 'outImg')
+drawnImg = drawLines(in_pts,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),2)
+display(drawnImg, 'outImg')
 
 print "Done"
