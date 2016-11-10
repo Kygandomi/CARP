@@ -36,7 +36,7 @@ struct command_t{
 } ;
 
 // For Command Buffer
-int current_command_index = 0;
+int current_command_index = -1;
 int length_command = 0;
 command_t command_list[MAX_COMMANDS];
 
@@ -44,9 +44,6 @@ command_t command_list[MAX_COMMANDS];
 int buffer[MAX_BUF];
 int buffer_pos;
 bool startbit = false;
-
-// Simulated Index
-int sim_command_index = 0;
 
 // Motor Step Definitions and Start Times
 long m1_steps = 0;
@@ -65,6 +62,8 @@ long current_m1 = 0;
 long current_m2 = 0;
 long current_f = 0;
 
+// Simulated Index
+int sim_command_index = 0;
 long sim_m1 = current_m1;
 long sim_m2 = current_m2;
 long sim_f = current_f;
@@ -77,24 +76,24 @@ double consKp=1, consKi=0.05, consKd=0.25;
 PID myPID(&Input, &Output, &Setpoint, consKp, consKi, consKd, DIRECT);
 
 void setup_motors() {
-    // Set up Pin Modes
-    pinMode(F1,OUTPUT);
-    pinMode(F2,OUTPUT);
-    
-    pinMode(M1_ENB,OUTPUT);
-    pinMode(M1_DIR,OUTPUT);
-    pinMode(M1_PUL,OUTPUT);
-
-    pinMode(M2_ENB,OUTPUT);
-    pinMode(M2_DIR,OUTPUT);
-    pinMode(M2_PUL,OUTPUT);
-
-    // Set up Enables
-    digitalWrite(M1_ENB,LOW);
-    digitalWrite(M2_ENB,LOW);
-    
-    digitalWrite(M1_DIR,HIGH);
-    digitalWrite(M2_DIR,HIGH);
+  // Set up Pin Modes
+  pinMode(F1,OUTPUT);
+  pinMode(F2,OUTPUT);
+  
+  pinMode(M1_ENB,OUTPUT);
+  pinMode(M1_DIR,OUTPUT);
+  pinMode(M1_PUL,OUTPUT);
+  
+  pinMode(M2_ENB,OUTPUT);
+  pinMode(M2_DIR,OUTPUT);
+  pinMode(M2_PUL,OUTPUT);
+  
+  // Set up Enables
+  digitalWrite(M1_ENB,LOW);
+  digitalWrite(M2_ENB,LOW);
+  
+  digitalWrite(M1_DIR,HIGH);
+  digitalWrite(M2_DIR,HIGH);
 }
 
 void setup(){
@@ -117,52 +116,45 @@ void setup(){
 
 
 void loop(){
-        if(current_command_index >= length_command && !Serial.available()){
-            Serial.write(0xFE);
-            Serial.write(0x00);
-            Serial.write(0xEF);
-        }
-  
-	else if(current_command_index >= length_command && Serial.available()){
+  if(current_command_index < 0 && !Serial.available()){
+    Serial.write(0xFE);
+    Serial.write(0x00);
+    Serial.write(0xEF);
+  }
+	else if(current_command_index < 0 && Serial.available()){
 		int c = Serial.read();
 
 		if(c == int(0xFE)){
 		  startbit = true;
 		}
-
 		if(startbit){
 			if(buffer_pos < MAX_BUF) buffer[buffer_pos++]=c;
-
- 
-      		        if(buffer_pos == MAX_BUF && c != int(0xFE)){
-      			    buffer_pos = 0;
-      			    startbit = false;
-      		        } 
+      
+      //KATIE: changed to != 0xEF ?? (end bit?) WAS 0xFE
+      else if(buffer_pos == MAX_BUF && c != int(0xEF)){
+  	    buffer_pos = 0;
+  	    startbit = false;
+      } 
 		}
-
 		if(startbit && c == int(0xEF)){
-			startbit = false;
-			processBuffer();
-                        buffer_pos = 0;
+  		startbit = false;
+  		processBuffer();
+      buffer_pos = 0;
 		}
 	} 
-
-        //move to position
-        else if(current_command_index==-1){
-            startCommand();
-        }
-        else{
-          if(run()){
-             startCommand();
-          }
-        }
-        
-       runFergelli();
+  //move to position
+  else if(current_command_index>0){
+    if(run()){
+      startCommand();
+    }
+  }
+  
+  runFergelli();
 }
 
 void forwardKinematics(long delta_x, long delta_y, boolean* m1_dir, boolean* m2_dir, long* m1_steps_local, long* m2_steps_local){
 	
-        float mag = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
+  float mag = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
 	float angle =atan2(delta_y, delta_x); 
 
 	float s1 = mag*sin(angle - 0.785398);
@@ -171,7 +163,7 @@ void forwardKinematics(long delta_x, long delta_y, boolean* m1_dir, boolean* m2_
 	if(s1 < 0)
 	  *m1_dir = true;
 	else
-  	  *m1_dir = false;
+  	*m1_dir = false;
 	if(s2 < 0)
 	  *m2_dir = true;
 	else
@@ -182,7 +174,10 @@ void forwardKinematics(long delta_x, long delta_y, boolean* m1_dir, boolean* m2_
 }
 
 void startCommand(){
-  current_command_index++;
+  if(current_command_index>=length_command || current_command_index<0){
+    current_command_index = -1;
+    return;
+  }
   command_t current_command = command_list[current_command_index];
   
   m1_steps = current_command.m1_steps;
@@ -213,7 +208,7 @@ void startCommand(){
    } else {
     PORTG &= ~_BV(PG2);
    }
-   
+   current_command_index++;
 }
 
 boolean run(){
@@ -231,98 +226,98 @@ boolean run(){
 //  Serial.print(m2_step_time);
 //  Serial.println(" ");
   
-   if(m1_steps == 0 && m2_steps == 0){
-     return true;
-   } 
+  if(m1_steps == 0 && m2_steps == 0){
+    return true;
+  } 
    
-   else {     
-     if(m1_steps != 0){
-	if(micros() - m1_start_time > (m1_step_time - 20) ){
-		PORTC |= _BV(PC3);
-		m1_steps--;
-		m1_start_time = micros();
-	}
-
-        if(micros() - m1_start_time > 1 ){
-		PORTC &= ~_BV(PC3);
-        }
+  else {     
+    if(m1_steps != 0){
+      if(micros() - m1_start_time > (m1_step_time - 20) ){
+        PORTC |= _BV(PC3);
+        m1_steps--;
+        m1_start_time = micros();
       }
-  
-      if(m2_steps != 0){
-  	if(micros() - m2_start_time > m2_step_time){
-  		PORTC |= _BV(PC2);
-  		m2_steps--;
-  		m2_start_time = micros();
-  	}
-  
-          if(micros() - m2_start_time > 1 ){
-  		PORTC &= ~_BV(PC2);
-  	}
+    
+      if(micros() - m1_start_time > 1 ){
+        PORTC &= ~_BV(PC3);
       }
-     
+    }
+    
+    if(m2_steps != 0){
+      if(micros() - m2_start_time > m2_step_time){
+        PORTC |= _BV(PC2);
+        m2_steps--;
+        m2_start_time = micros();
+      }
+      
+      if(micros() - m2_start_time > 1 ){
+        PORTC &= ~_BV(PC2);
+      }
+    }
+    
     return false;   
    }
 }
 
 void runFergelli(){
+  // Figure out where to go and how to move
+  Input = analogRead(POT);
+  current_f = Input;
+      
+  double gap = abs(Setpoint-Input); //distance away from setpoint
+  if(gap<10)
+  {  //we're close to setpoint, use conservative tuning parameters
+      myPID.SetTunings(consKp, consKi, consKd);
+  }
+  else
+  {
+    //we're far from setpoint, use aggressive tuning parameters
+    myPID.SetTunings(aggKp, aggKi, aggKd);
+  }
+      
+  // Compute PID
+  myPID.Compute();
   
- // Figure out where to go and how to move
-    Input = analogRead(POT);
-    current_f = Input;
-        
-    double gap = abs(Setpoint-Input); //distance away from setpoint
-    if(gap<10)
-    {  //we're close to setpoint, use conservative tuning parameters
-        myPID.SetTunings(consKp, consKi, consKd);
-    }
-    else
-    {
-      //we're far from setpoint, use aggressive tuning parameters
-      myPID.SetTunings(aggKp, aggKi, aggKd);
-     }
-        
-      // Compute PID
-      myPID.Compute();
-        
-      // Set Direction of Fergelli
-      if(Output == 0){
-         digitalWrite(F1, LOW);
-         digitalWrite(F2, LOW);
-         analogWrite(pwm, Output); 
-       } else if(Output < 0){
-         digitalWrite(F1, HIGH);
-         digitalWrite(F2, LOW); 
-         analogWrite(pwm, -1*Output);
-        } else {
-         digitalWrite(F1, LOW);
-         digitalWrite(F2, HIGH);
-         analogWrite(pwm, Output);
-        } 
-  
+  // Set Direction of Fergelli
+  if(Output == 0){
+    digitalWrite(F1, LOW);
+    digitalWrite(F2, LOW);
+    analogWrite(pwm, Output); 
+  } else if(Output < 0){
+    digitalWrite(F1, HIGH);
+    digitalWrite(F2, LOW); 
+    analogWrite(pwm, -1*Output);
+  } else {
+    digitalWrite(F1, LOW);
+    digitalWrite(F2, HIGH);
+    analogWrite(pwm, Output);
+  } 
 }
 
 void processBuffer(){
-  
   if(buffer_pos == 3){
-//   Serial.print("Current buffer value is :");
-//   Serial.println(buffer[buffer_pos-1]);
-   if(buffer[buffer_pos-1] == 239){
-        length_command = sim_command_index;
-        current_command_index = -1;
-        sim_command_index = 0;
-   } 
-    
+    //   Serial.print("Current buffer value is :");
+    //   Serial.println(buffer[buffer_pos-1]);
+    if(buffer[buffer_pos-1] == 239){
+      length_command = sim_command_index;
+      current_command_index = 0;
+      sim_command_index = 0;
+    } 
   } else {
     
-   Serial.println("Processing the buffer!");
+    Serial.println("Processing the buffer!");
+
+    if(sim_command_index >= MAX_COMMANDS){
+      return;
+    }
     
-    if(current_command_index == 0){
+    if(sim_command_index == 0){
       sim_m1 = current_m1;
       sim_m2 = current_m2;
       sim_f = current_f; 
     }
-  
-  for(int i=1; i<buffer_pos; i+=SERIAL_ELEMENT_LEN){
+
+    int i=1;
     if(i+SERIAL_ELEMENT_LEN < buffer_pos){
       int x = (buffer[i] << 8) + buffer[i+1];
       int y = (buffer[i+2] << 8) + buffer[i+3];
@@ -391,13 +386,7 @@ void processBuffer(){
       
       command_list[sim_command_index] = c1;
       sim_command_index++;
-      
-      if(sim_command_index == MAX_COMMANDS){
-        i = buffer_pos;
-      }
     }
-  }
-
   }
 }
 
