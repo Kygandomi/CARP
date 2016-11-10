@@ -29,6 +29,7 @@ class serial_comms():
 
 	def flush(self):
 		self.ser.flushInput()
+		self.ser.flushOutput()
 
 	'Write data to the Arduino'
 	def send_packet(self, m1_dir, m1_step, m1_step_time, 
@@ -67,6 +68,13 @@ class serial_comms():
 
 		# print str(x) + " " + str(y)
 
+		# self.ser.write(self.tohex(x,16))
+		# self.ser.write(self.tohex(y,16))
+		# self.ser.write(chr(xy_abs_flag))
+		# self.ser.write(self.tohex(z,16))
+		# self.ser.write(chr(z_abs_flag))
+		# self.ser.write(self.tohex(min_step_time,16))
+
 		self.ser.write(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
 		self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
 		self.ser.write(chr(xy_abs_flag))
@@ -75,6 +83,9 @@ class serial_comms():
 		self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
 		
 		self.ser.write(b'\xef')
+
+	def tohex(self, val, nbits):
+  		return hex((val + (1 << nbits)) % (1 << nbits))
 
 	'Read data from the PCB'
 	def recieve_packet(self):
@@ -90,8 +101,8 @@ class serial_comms():
 	def parse_packet(self, response):
 		if(len(response) >= 3):
 			for i in range(len(response)):
-				if(response[i] == 254):
-					return response[i+1]
+				if(response[i] == 239):
+					return response[i-1]
 		else :
 			return -1
 

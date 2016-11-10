@@ -186,11 +186,11 @@ display(polyImg)
 #pathImg = cv2.adaptiveThreshold(polyImg,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,3,2)
 
 ## Sobel/Scharr
-# sobelx = cv2.Sobel(polyImg,cv2.CV_64F,1,0,ksize=-1)
-# sobely = cv2.Sobel(polyImg,cv2.CV_64F,0,1,ksize=-1)
+# sobelx = cv2.Sobel(polyImg,cv2.CV_64F,1,0,ksize=5)
+# sobely = cv2.Sobel(polyImg,cv2.CV_64F,0,1,ksize=5)
 
-# output(sobelx,'sobelx')
-# output(sobely,'sobely')
+# output(sobelx.astype('uint8'),'sobelx')
+# output(sobely.astype('uint8'),'sobely')
 
 ## gaussian
 #gauss = cv2.GaussianBlur(polyImg,(3,3),0)
@@ -223,7 +223,7 @@ sigma = 1-4.0*mid/maxi
 
 print str(mini) +" "+ str(mid)+" "+str(maxi)
 print sigma
-output(laplace,"Laplacian")
+display(laplace,"Laplacian")
 output(pathImg,"Path")
 ############################################################################
 

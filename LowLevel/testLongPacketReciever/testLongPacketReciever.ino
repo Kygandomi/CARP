@@ -4,7 +4,7 @@
 
 #define BAUD           115200
 #define MAX_BUF        15  
-#define MAX_COMMANDS   100
+#define MAX_COMMANDS   400
 
 #define SERIAL_ELEMENT_LEN 10
 
@@ -111,12 +111,14 @@ void setup(){
   
   // Turn on PID
   myPID.SetMode(AUTOMATIC);
-  delay(1000);
+  delay(1);
 }
 
 
 void loop(){
-  if(current_command_index < 0 && !Serial.available()){
+//  Serial.print("index : ");
+//  Serial.println(current_command_index);
+  if(current_command_index < 0 && sim_command_index == 0 && !Serial.available()){
     Serial.write(0xFE);
     Serial.write(0x00);
     Serial.write(0xEF);
@@ -130,7 +132,6 @@ void loop(){
 		if(startbit){
 			if(buffer_pos < MAX_BUF) buffer[buffer_pos++]=c;
       
-      //KATIE: changed to != 0xEF ?? (end bit?) WAS 0xFE
       else if(buffer_pos == MAX_BUF && c != int(0xEF)){
   	    buffer_pos = 0;
   	    startbit = false;
@@ -140,10 +141,11 @@ void loop(){
   		startbit = false;
   		processBuffer();
       buffer_pos = 0;
+      Serial.flush();
 		}
 	} 
   //move to position
-  else if(current_command_index>0){
+  else if(current_command_index>=0){
     if(run()){
       startCommand();
     }
@@ -169,12 +171,13 @@ void forwardKinematics(long delta_x, long delta_y, boolean* m1_dir, boolean* m2_
 	else
 	  *m2_dir = false;
 
-	*m1_steps_local = long(abs(s1));
-	*m2_steps_local = long(abs(s2));
+	*m1_steps_local = (long)abs(s1);
+	*m2_steps_local = (long)abs(s2);
 }
 
 void startCommand(){
-  if(current_command_index>=length_command || current_command_index<0){
+  current_command_index++;
+  if(current_command_index>=length_command){
     current_command_index = -1;
     return;
   }
@@ -208,7 +211,6 @@ void startCommand(){
    } else {
     PORTG &= ~_BV(PG2);
    }
-   current_command_index++;
 }
 
 boolean run(){
@@ -266,8 +268,9 @@ void runFergelli(){
       
   double gap = abs(Setpoint-Input); //distance away from setpoint
   if(gap<10)
-  {  //we're close to setpoint, use conservative tuning parameters
-      myPID.SetTunings(consKp, consKi, consKd);
+  {  
+    //we're close to setpoint, use conservative tuning parameters
+    myPID.SetTunings(consKp, consKi, consKd);
   }
   else
   {
@@ -298,14 +301,15 @@ void processBuffer(){
   if(buffer_pos == 3){
     //   Serial.print("Current buffer value is :");
     //   Serial.println(buffer[buffer_pos-1]);
-    if(buffer[buffer_pos-1] == 239){
+    if(buffer[buffer_pos-2] == int(0xEE)){
       length_command = sim_command_index;
-      current_command_index = 0;
+      current_command_index = -1;
       sim_command_index = 0;
+      startCommand();
     } 
   } else {
     
-    Serial.println("Processing the buffer!");
+    //Serial.println("Processing the buffer!");
 
     if(sim_command_index >= MAX_COMMANDS){
       return;
@@ -321,10 +325,10 @@ void processBuffer(){
     if(i+SERIAL_ELEMENT_LEN < buffer_pos){
       int x = (buffer[i] << 8) + buffer[i+1];
       int y = (buffer[i+2] << 8) + buffer[i+3];
-      boolean xy_abs_flag = buffer[i+4];
+      boolean xy_abs_flag = (boolean)buffer[i+4];
       
       int z = (buffer[i+5] << 8) + buffer[i+6];
-      boolean z_abs_flag = buffer[i+7];
+      boolean z_abs_flag = (boolean)buffer[i+7];
       
       int min_step_time = (buffer[i+8] << 8) + buffer[i+9];
       
@@ -372,6 +376,16 @@ void processBuffer(){
       if(delta_m2<0){
         delta_m2 = abs(delta_m2);
         m2_dir = !m2_dir;
+      }
+
+      int m1_step_time_local=min_step_time;
+      int m2_step_time_local=min_step_time;
+      
+      if(delta_m1>delta_m2){
+        m2_step_time = (int)(((float)delta_m1/(float)delta_m2)*min_step_time);
+      }
+      else if(delta_m2>delta_m1){
+        m1_step_time = (int)(((float)delta_m2/(float)delta_m1)*min_step_time);
       }
       
       command_t c1 = {

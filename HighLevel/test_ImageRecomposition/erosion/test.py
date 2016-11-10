@@ -57,7 +57,7 @@ def draw(pts,img,thicnkess=3):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('cat.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('circle.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
 
 paper_size = (11*25.4,8.5*25.4)
@@ -87,7 +87,7 @@ out_pts = []
 for cnt_i in range(len(contours)):
 	cnt = contours[cnt_i]
 	list_pts=[]
-	for pt_i in range(0,len(cnt),10):
+	for pt_i in range(0,len(cnt),50):
 		pt=cnt[pt_i][0]
 
 		#pt=(8.5*25.4/1000)*pt
@@ -101,7 +101,7 @@ for cnt_i in range(len(contours)):
 	out_pts.append(list_pts)
 	orders.write('\n')
 orders.close()
-# print n_points
+print n_points
 
 drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
 

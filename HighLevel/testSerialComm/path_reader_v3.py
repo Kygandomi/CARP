@@ -9,9 +9,10 @@ from time import sleep
 
 def send_standard_packet(packet):
 	# Send a packet
+	# print "sending : "+str(packet)
+	arduino_ser.flush()
 	arduino_ser.send_standard_packet(packet)
-
-	# Wait a second for Arduino to process point
+	# Wait a bit for Arduino to process point
 	sleep(1)
 
 def send_special_packet():
@@ -21,18 +22,23 @@ def send_special_packet():
 
 	# Wait for gantry routine to complete
 	read_val = arduino_ser.recieve_packet()
+	parse_val = arduino_ser.parse_packet(read_val)
 	print "***** SENDING SPECIAL PACKET *****"
-	print "init read value : " + str(read_val)
-	while(arduino_ser.parse_packet(read_val) != -1):
+	print "init read : " + str(read_val) + " => " + str(parse_val)
+	while( parse_val != 0):
 		read_val = arduino_ser.recieve_packet()
+		parse_val = arduino_ser.parse_packet(read_val)
+		# print "read : " + str(read_val) + " => " + str(parse_val)
 		sleep(1)
+	print "Motion Complete!"
 
 # file to read from 
-fname = "../test_ImageRecomposition/erosion/orders_cat.txt"
+fname = "../test_ImageRecomposition/erosion/orders.txt"
 
 # Connect to Arduino over serial
 baud = 115200
-port = '/dev/tty.usbmodem1411'
+# port = '/dev/tty.usbmodem1411'
+port = 'COM3'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 
@@ -46,14 +52,15 @@ first_elem = True
 with open(fname) as f:
 	# For each line in the file
 	for line in f:
-
+		# print "Next Line"
 		# Get the coordinates
 		if(line == '\n'):
+			print "Line Break"
 			fergelli_up = [0, 0, 0, 400, 1, 800]
 
 			# Send Fergelli Up packet
 			send_standard_packet(fergelli_up)
-			
+
 			# Send commands and wait 
 			send_special_packet()
 
@@ -65,7 +72,7 @@ with open(fname) as f:
 			
 		# Do stuff	
 		else:
-			print "In here"
+			print "Sending Line"
 			coords = line.split(" ")
 
 			element = [int(float(coords[0]) * 10.9), int(float(coords[1]) * 10.9), 1, 0, 0, 800]
