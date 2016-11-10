@@ -7,7 +7,7 @@ sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work o
 import cv2
 import numpy as np
 
-brushSize = 100 #number of pixels in the radius of the brush
+brushSize = 5 #number of pixels in the radius of the brush
 
 def display(img, name):
 	cv2.imshow(name, img)
@@ -42,7 +42,6 @@ for y in range(0, height):
 				endPoints.append([x-1,y])
 				line = False
 	elif newy <= y:
-		print newy
 		stroke = False
 
 
@@ -50,8 +49,8 @@ canvasImg = np.zeros((height, width, channels), np.uint8) #make new canvas the s
 canvasImg.fill(255) #fill with white
 
 for element in range(0, len(startPoints)-1):
-	canvasImg[startPoints[element][0], startPoints[element][1]] = (0,0,0, 255)
-	canvasImg[endPoints[element][0], endPoints[element][1]] = (0,0,0, 255)
+	canvasImg[startPoints[element][0], startPoints[element][1]] = (0,0,0,255)
+	canvasImg[endPoints[element][0], endPoints[element][1]] = (0,0,0,255)
 
 display(canvasImg, "Finished Image") #displays start and end points only
 
@@ -59,6 +58,6 @@ display(canvasImg, "Finished Image") #displays start and end points only
 pixelToMM = 10.9
 orders = open("VertFillOrders.txt", 'w') #store points
 for element in range(0, len(startPoints)-1):
-	orders.write(str(startPoints[element][0])+' '+str(startPoints[element][1])+'\n')
+	orders.write(str(startPoints[element][0]*pixelToMM)+' '+str(startPoints[element][1]*pixelToMM)+'\n')
 	orders.write('\n')
 orders.close()

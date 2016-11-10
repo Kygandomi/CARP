@@ -59,6 +59,6 @@ display(canvasImg, "Finished Image") #displays the start and end positions only
 pixelToMM = 10.9
 orders = open("HorFillOrders.txt", 'w') #store points
 for element in range(0, len(startPoints)-1):
-	orders.write(str(startPoints[element][0])+' '+str(startPoints[element][1])+'\n')
+	orders.write(str(startPoints[element][0]*pixelToMM)+' '+str(startPoints[element][1]*pixelToMM)+'\n')
 	orders.write('\n')
 orders.close()
