@@ -158,25 +158,25 @@ void loop(){
   runFirgelli();
 }
 
-void forwardKinematics(long delta_x, long delta_y, boolean* m1_dir, boolean* m2_dir, long* m1_steps_local, long* m2_steps_local){
+void forwardKinematics(long delta_x, long delta_y, long* m1_steps_local, long* m2_steps_local){
 	
   float mag = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
-	float angle =atan2(delta_y, delta_x); 
+	float angle = atan2(delta_y, delta_x); 
 
 	float s1 = mag*sin(angle - 0.785398);
 	float s2 = mag*cos(angle - 0.785398);
 
-	if(s1 < 0)
-	  *m1_dir = true;
-	else
-  	*m1_dir = false;
-	if(s2 < 0)
-	  *m2_dir = true;
-	else
-	  *m2_dir = false;
+//	if(s1 < 0)
+//	  *m1_dir = true;
+//	else
+//  	*m1_dir = false;
+//	if(s2 < 0)
+//	  *m2_dir = true;
+//	else
+//	  *m2_dir = false;
 
-	*m1_steps_local = (long)abs(s1);
-	*m2_steps_local = (long)abs(s2);
+	*m1_steps_local = (long)s1;
+	*m2_steps_local = (long)s2;
 }
 
 void startCommand(){
@@ -351,7 +351,7 @@ void processBuffer(){
 //      Serial.print(y);
 //      Serial.print(" | ");
 //      Serial.println(xy_abs_flag);
-      forwardKinematics(x, y, &m1_dir, &m2_dir, &m1_steps_local, &m2_steps_local);
+      forwardKinematics(x, y, &m1_steps_local, &m2_steps_local);
       
       if(xy_abs_flag){
         delta_m1 = m1_steps_local-sim_m1;
@@ -380,19 +380,16 @@ void processBuffer(){
 //      Serial.println(sim_m2);
 //      Serial.println("-----------------");
       
-      if(delta_m1<0){
-        delta_m1 = abs(delta_m1);
-        m1_dir = !m1_dir;
-      }
-      
-      if(delta_m2<0){
-        delta_m2 = abs(delta_m2);
-        m2_dir = !m2_dir;
-      }
+      m1_dir = (delta_m1<0) ? false : true ;
+      m2_dir = (delta_m2<0) ? false : true ;
+
+      delta_m1 = abs(delta_m1);
+      delta_m2 = abs(delta_m2);
 
       int m1_step_time_local=min_step_time;
       int m2_step_time_local=min_step_time;
-      
+
+      //Make the motion linear by reducing speed of the shorter path
       if((delta_m1>delta_m2) && (delta_m2>0)){
         m2_step_time_local = (int)(((float)delta_m1/(float)delta_m2)*min_step_time);
       }
