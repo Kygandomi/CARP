@@ -55,9 +55,8 @@ for element in range(0, len(startPoints)-1):
 display(canvasImg, "Finished Image") #displays start and end points only
 
 #create txt document of the start/end of each stroke
-pixelToMM = 10.9
+pixelToMM = (8.5*25.4)/width
 orders = open("VertFillOrders.txt", 'w') #store points
 for element in range(0, len(startPoints)-1):
-	orders.write(str(startPoints[element][0]*pixelToMM)+' '+str(startPoints[element][1]*pixelToMM)+'\n')
-	orders.write('\n')
+	orders.write(str(startPoints[element][0]*pixelToMM)+' '+str(startPoints[element][1]*pixelToMM)+' '+str(endPoints[element][0]*pixelToMM)+' '+str(endPoints[element][1]*pixelToMM) +'\n')
 orders.close()
