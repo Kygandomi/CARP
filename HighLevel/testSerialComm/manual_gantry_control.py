@@ -22,7 +22,7 @@ def send_special_packet():
 	# Wait for gantry routine to complete
 	read_val = arduino_ser.recieve_packet()
 	parse_val = arduino_ser.parse_packet(read_val)
-	while( parse_val != 0):
+	while( parse_val != -1):
 		read_val = arduino_ser.recieve_packet()
 		parse_val = arduino_ser.parse_packet(read_val)
 		# print "read : " + str(read_val) + " => " + str(parse_val)
@@ -33,8 +33,8 @@ sleep(1)
 # Connect to Arduino over serial
 baud = 115200
 #port = '/dev/tty.usbserial-A902U9B9'
-#port = '/dev/tty.usbmodem1411'
-port = 'COM3'
+port = '/dev/tty.usbmodem1411'
+# port = 'COM3'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 
@@ -46,7 +46,17 @@ fergelli_down = [0, 0, 0, 175, 1, 800]
 
 x=400
 y=400
-abs_flag = False
+abs_flag = True
+
+move_to = [x,y,abs_flag,0,0,800]
+
+send_standard_packet(move_to)
+
+send_special_packet()
+
+x=0
+y=0
+abs_flag = True
 
 move_to = [x,y,abs_flag,0,0,800]
 

@@ -48,10 +48,12 @@ bool startbit = false;
 // Motor Step Definitions and Start Times
 long m1_steps = 0;
 int m1_step_time = 0;
+boolean m1_pulse = false;
 unsigned long m1_start_time = 0;
 
 long m2_steps = 0;
 int m2_step_time = 0;
+boolean m2_pulse = false;
 unsigned long m2_start_time = 0;
 
 // Fergelli Controller Variables
@@ -116,8 +118,11 @@ void setup(){
 
 
 void loop(){
-//  Serial.print("index : ");
-//  Serial.println(current_command_index);
+//  Serial.print("current_m1 : ");
+//  Serial.print(current_m1);
+//  Serial.print(" current_m2 : ");
+//  Serial.println(current_m2);
+  
   if(current_command_index < 0 && sim_command_index == 0 && !Serial.available()){
     Serial.write(0xFE);
     Serial.write(0x00);
@@ -132,16 +137,15 @@ void loop(){
 		if(startbit){
 			if(buffer_pos < MAX_BUF) buffer[buffer_pos++]=c;
       
-      else if(buffer_pos == MAX_BUF && c != int(0xEF)){
-  	    buffer_pos = 0;
-  	    startbit = false;
-      } 
+        else if(buffer_pos == MAX_BUF && c != int(0xEF)){
+	    buffer_pos = 0;
+	    startbit = false;
+        } 
 		}
 		if(startbit && c == int(0xEF)){
   		startbit = false;
   		processBuffer();
       buffer_pos = 0;
-      Serial.flush();
 		}
 	} 
   //move to position
@@ -234,26 +238,28 @@ boolean run(){
    
   else {     
     if(m1_steps != 0){
-      if(micros() - m1_start_time > (m1_step_time - 20) ){
+      if(m1_pulse){
+        PORTC &= ~_BV(PC3);
+        m1_pulse=false;
+      }
+      else if(micros() - m1_start_time > (m1_step_time - 20) ){
         PORTC |= _BV(PC3);
         m1_steps--;
         m1_start_time = micros();
-      }
-    
-      if(micros() - m1_start_time > 1 ){
-        PORTC &= ~_BV(PC3);
+        m1_pulse=true;
       }
     }
     
     if(m2_steps != 0){
-      if(micros() - m2_start_time > m2_step_time){
+      if(m2_pulse){
+        PORTC &= ~_BV(PC2);
+        m2_pulse=false;
+      }
+      else if(micros() - m2_start_time > (m2_step_time - 20)){
         PORTC |= _BV(PC2);
         m2_steps--;
         m2_start_time = micros();
-      }
-      
-      if(micros() - m2_start_time > 1 ){
-        PORTC &= ~_BV(PC2);
+        m2_pulse=true;
       }
     }
     
@@ -342,7 +348,9 @@ void processBuffer(){
       
 //      Serial.print(x);
 //      Serial.print(",");
-//      Serial.println(y);
+//      Serial.print(y);
+//      Serial.print(" | ");
+//      Serial.println(xy_abs_flag);
       forwardKinematics(x, y, &m1_dir, &m2_dir, &m1_steps_local, &m2_steps_local);
       
       if(xy_abs_flag){
@@ -362,10 +370,14 @@ void processBuffer(){
       }else{
        sim_f = z; 
       }
-      
+//      
 //      Serial.print(delta_m1);
 //      Serial.print(",");
-//      Serial.println(delta_m2);
+//      Serial.print(delta_m2);
+//      Serial.print(" | ");
+//      Serial.print(sim_m1);
+//      Serial.print(",");
+//      Serial.println(sim_m2);
 //      Serial.println("-----------------");
 //      
       if(delta_m1<0){
@@ -381,10 +393,10 @@ void processBuffer(){
       int m1_step_time_local=min_step_time;
       int m2_step_time_local=min_step_time;
       
-      if(delta_m1>delta_m2){
+      if((delta_m1>delta_m2) && (delta_m2>0)){
         m2_step_time = (int)(((float)delta_m1/(float)delta_m2)*min_step_time);
       }
-      else if(delta_m2>delta_m1){
+      else if((delta_m2>delta_m1) && (delta_m1>0)){
         m1_step_time = (int)(((float)delta_m2/(float)delta_m1)*min_step_time);
       }
       

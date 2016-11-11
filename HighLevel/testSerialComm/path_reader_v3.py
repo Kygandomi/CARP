@@ -37,8 +37,8 @@ fname = "../test_ImageRecomposition/erosion/orders.txt"
 
 # Connect to Arduino over serial
 baud = 115200
-# port = '/dev/tty.usbmodem1411'
-port = 'COM3'
+port = '/dev/tty.usbmodem1411'
+# port = 'COM3'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 
