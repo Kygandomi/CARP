@@ -33,55 +33,79 @@ sleep(1)
 # Connect to Arduino over serial
 baud = 115200
 #port = '/dev/tty.usbserial-A902U9B9'
-port = '/dev/tty.usbmodem1411'
-# port = 'COM3'
+# port = '/dev/tty.usbmodem1411'
+port = 'COM3'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 
 sleep(1)
 
-fergelli_up = [0, 0, 0, 400, 1, 800]
-fergelli_down = [0, 0, 0, 175, 1, 800]
+##############################################################################
+##############################################################################
+##############################################################################
 
-x=int(106.0069*10.9)
-y=int(50.9651*10.9)
-abs_flag = True
 
-move_to = [x,y,abs_flag,0,0,800]
+firgelli_up = [0, 0, 0, 400, 1, 800]
+firgelli_down = [0, 0, 0, 175, 1, 800]
 
+move_to = [0,400,True,0,False,800]
+
+send_standard_packet(move_to)
+send_standard_packet(firgelli_down)
+send_special_packet()
+
+sleep(1)
+
+move_to = [400,400,True,0,False,800]
 send_standard_packet(move_to)
 send_special_packet()
 
-send_standard_packet(fergelli_down)
+move_to = [400,0,True,0,False,800]
+send_standard_packet(move_to)
 send_special_packet()
 
-
-x=int(95.2119 *10.9)
-y=int(51.8287 *10.9)
-abs_flag = True
-
-move_to = [x,y,abs_flag,0,0,800]
-
+move_to = [0,0,True,0,False,800]
 send_standard_packet(move_to)
-
-x=int(84.4169 * 10.9)
-y=int(54.2036 * 10.9)
-abs_flag = True
-
-move_to = [x,y,abs_flag,0,0,800]
-
-send_standard_packet(move_to)
-
-x=int(73.6219 * 10.9)
-y=int(57.8739 * 10.9)
-abs_flag = True
-
-move_to = [x,y,abs_flag,0,0,800]
-
-send_standard_packet(move_to)
-
-send_standard_packet(fergelli_up)
 send_special_packet()
+
+send_standard_packet(firgelli_up)
+send_special_packet()
+sleep(1)
+
+##############################################################################
+
+# send_standard_packet(firgelli_down)
+# send_special_packet()
+
+
+# x=int(95.2119 *10.9)
+# y=int(51.8287 *10.9)
+# abs_flag = True
+
+# move_to = [x,y,abs_flag,0,0,800]
+
+# send_standard_packet(move_to)
+
+# x=int(84.4169 * 10.9)
+# y=int(54.2036 * 10.9)
+# abs_flag = True
+
+# move_to = [x,y,abs_flag,0,0,800]
+
+# send_standard_packet(move_to)
+
+# x=int(73.6219 * 10.9)
+# y=int(57.8739 * 10.9)
+# abs_flag = True
+
+# move_to = [x,y,abs_flag,0,0,800]
+
+# send_standard_packet(move_to)
+
+# send_standard_packet(firgelli_up)
+# send_special_packet()
+
+##############################################################################
 
 # # # Send A Single Packet to the Arduino
 # m1_dir = 1 # +X 
@@ -92,9 +116,9 @@ send_special_packet()
 # m2_steps =  0 # 4 Revolution
 # m2_step_time = 800 # In microseconds
 
-# fergelli_pos = 400
+# firgelli_pos = 400
 
-# arduino_ser.send_packet(m1_dir, m1_steps, m1_step_time, m2_dir, m2_steps, m2_step_time, fergelli_pos)
+# arduino_ser.send_packet(m1_dir, m1_steps, m1_step_time, m2_dir, m2_steps, m2_step_time, firgelli_pos)
 
 ##############################################################################
 
@@ -102,7 +126,7 @@ send_special_packet()
 # index = 0
 # directions_m1 = [0, 1, 1, 0, 0, 1]
 # directions_m2 = [0, 0, 1, 1, 0, 1]
-# fergelli_pos = [175, 175, 175, 175, 175, 700]
+# firgelli_pos = [175, 175, 175, 175, 175, 700]
 
 # steps = [600, 600, 600, 600, 600, 600]
 # step_time = [800, 800, 800, 800, 800, 800]
@@ -111,7 +135,7 @@ send_special_packet()
 # 	if(arduino_ser.parse_packet(read_val) == -1):
 # 		print "Sending Data"
 # 		print index
-# 		arduino_ser.send_packet(directions_m1[index], steps[index], step_time[index], directions_m2[index], steps[index], step_time[index], fergelli_pos[index])
+# 		arduino_ser.send_packet(directions_m1[index], steps[index], step_time[index], directions_m2[index], steps[index], step_time[index], firgelli_pos[index])
 # 		index+=1
 # 		sleep(1);
 

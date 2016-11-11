@@ -56,15 +56,15 @@ with open(fname) as f:
 		# Get the coordinates
 		if(line == '\n'):
 			print "Line Break"
-			fergelli_up = [0, 0, 0, 400, 1, 800]
+			firgelli_up = [0, 0, 0, 400, 1, 800]
 
-			# Send Fergelli Up packet
-			send_standard_packet(fergelli_up)
+			# Send Firgelli Up packet
+			send_standard_packet(firgelli_up)
 
 			# Send commands and wait 
 			send_special_packet()
 
-			# Sleep for a second for the fergelli
+			# Sleep for a second for the firgelli
 			sleep(1)
 
 			# Reset the first element flag
@@ -82,13 +82,13 @@ with open(fname) as f:
 				print "First Element"
 				first_elem = False
 				
-				fergelli_down = [int(float(coords[0]) * 10.9), int(float(coords[1]) * 10.9), 1, 175, 1, 800]
-				send_standard_packet(fergelli_down)
+				firgelli_down = [int(float(coords[0]) * 10.9), int(float(coords[1]) * 10.9), 1, 175, 1, 800]
+				send_standard_packet(firgelli_down)
 				
 				# Send commands and wait 
 				send_special_packet()
 
-				# Sleep for a second for the fergelli
+				# Sleep for a second for the firgelli
 				sleep(1)
 
 

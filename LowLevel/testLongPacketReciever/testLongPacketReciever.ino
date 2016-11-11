@@ -32,7 +32,7 @@ struct command_t{
   unsigned int m1_step_time;
   unsigned int m2_step_time;
     
-  int fergelli_pos;
+  int firgelli_pos;
 } ;
 
 // For Command Buffer
@@ -56,7 +56,7 @@ int m2_step_time = 0;
 boolean m2_pulse = false;
 unsigned long m2_start_time = 0;
 
-// Fergelli Controller Variables
+// Firgelli Controller Variables
 double Setpoint, Input, Output;
 
 // Current position of gantry in M1/M2 space
@@ -66,9 +66,9 @@ long current_f = 0;
 
 // Simulated Index
 int sim_command_index = 0;
-long sim_m1 = current_m1;
-long sim_m2 = current_m2;
-long sim_f = current_f;
+long sim_m1 = 0;
+long sim_m2 = 0;
+long sim_f = 0;
 
 //Define the aggressive and conservative Tuning Parameters
 double aggKp=1, aggKi=0, aggKd=0;
@@ -108,7 +108,7 @@ void setup(){
   // Set output limits 
   myPID.SetOutputLimits(-255,255);
   
-  // Initial Fergelli Setpoint
+  // Initial Firgelli Setpoint
   Setpoint = 700;
   
   // Turn on PID
@@ -155,7 +155,7 @@ void loop(){
     }
   }
   
-  runFergelli();
+  runFirgelli();
 }
 
 void forwardKinematics(long delta_x, long delta_y, boolean* m1_dir, boolean* m2_dir, long* m1_steps_local, long* m2_steps_local){
@@ -196,11 +196,11 @@ void startCommand(){
   boolean m1_dir = current_command.m1_dir;
   boolean m2_dir = current_command.m2_dir;
   
-  Setpoint = current_command.fergelli_pos;
+  Setpoint = current_command.firgelli_pos;
   
-  current_m1 += command_list[current_command_index].m1_steps*(m1_dir ? -1 : 1);
-  current_m2 += command_list[current_command_index].m2_steps*(m2_dir ? -1 : 1);
-  current_f = command_list[current_command_index].fergelli_pos;
+  current_m1 += current_command.m1_steps*(m1_dir ? -1 : 1);
+  current_m2 += current_command.m2_steps*(m2_dir ? -1 : 1);
+  current_f = current_command.firgelli_pos;
   
   // Set M1 Direction
   if(m1_dir){
@@ -267,7 +267,7 @@ boolean run(){
    }
 }
 
-void runFergelli(){
+void runFirgelli(){
   // Figure out where to go and how to move
   Input = analogRead(POT);
   current_f = Input;
@@ -287,7 +287,7 @@ void runFergelli(){
   // Compute PID
   myPID.Compute();
   
-  // Set Direction of Fergelli
+  // Set Direction of Firgelli
   if(Output == 0){
     digitalWrite(F1, LOW);
     digitalWrite(F2, LOW);
@@ -341,8 +341,8 @@ void processBuffer(){
       int delta_m1 = 0;
       int delta_m2 = 0;
       
-      boolean m1_dir = 0; 
-      boolean m2_dir = 0;
+      boolean m1_dir = false; 
+      boolean m2_dir = false;
       long m1_steps_local = 0;
       long m2_steps_local = 0;
       
@@ -361,8 +361,8 @@ void processBuffer(){
       } else {
         delta_m1 = m1_steps_local;
         delta_m2 = m2_steps_local;
-        sim_m1 += m1_dir ? -m1_steps_local:m1_steps_local;
-        sim_m2 += m2_dir ? -m2_steps_local:m2_steps_local;
+        sim_m1 += delta_m1;
+        sim_m2 += delta_m2;
       }
       
       if(!z_abs_flag){
@@ -370,7 +370,7 @@ void processBuffer(){
       }else{
        sim_f = z; 
       }
-//      
+      
 //      Serial.print(delta_m1);
 //      Serial.print(",");
 //      Serial.print(delta_m2);
@@ -379,7 +379,7 @@ void processBuffer(){
 //      Serial.print(",");
 //      Serial.println(sim_m2);
 //      Serial.println("-----------------");
-//      
+      
       if(delta_m1<0){
         delta_m1 = abs(delta_m1);
         m1_dir = !m1_dir;
@@ -394,10 +394,10 @@ void processBuffer(){
       int m2_step_time_local=min_step_time;
       
       if((delta_m1>delta_m2) && (delta_m2>0)){
-        m2_step_time = (int)(((float)delta_m1/(float)delta_m2)*min_step_time);
+        m2_step_time_local = (int)(((float)delta_m1/(float)delta_m2)*min_step_time);
       }
       else if((delta_m2>delta_m1) && (delta_m1>0)){
-        m1_step_time = (int)(((float)delta_m2/(float)delta_m1)*min_step_time);
+        m1_step_time_local = (int)(((float)delta_m2/(float)delta_m1)*min_step_time);
       }
       
       command_t c1 = {
@@ -405,8 +405,8 @@ void processBuffer(){
         delta_m2,
         m1_dir,
         m2_dir,
-        min_step_time,
-        min_step_time,
+        m1_step_time_local,
+        m2_step_time_local,
         sim_f
       };
       
