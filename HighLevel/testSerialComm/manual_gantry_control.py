@@ -43,25 +43,44 @@ sleep(1)
 fergelli_up = [0, 0, 0, 400, 1, 800]
 fergelli_down = [0, 0, 0, 175, 1, 800]
 
-
-x=400
-y=400
+x=int(106.0069*10.9)
+y=int(50.9651*10.9)
 abs_flag = True
 
 move_to = [x,y,abs_flag,0,0,800]
 
 send_standard_packet(move_to)
-
 send_special_packet()
 
-x=0
-y=0
+send_standard_packet(fergelli_down)
+send_special_packet()
+
+
+x=int(95.2119 *10.9)
+y=int(51.8287 *10.9)
 abs_flag = True
 
 move_to = [x,y,abs_flag,0,0,800]
 
 send_standard_packet(move_to)
 
+x=int(84.4169 * 10.9)
+y=int(54.2036 * 10.9)
+abs_flag = True
+
+move_to = [x,y,abs_flag,0,0,800]
+
+send_standard_packet(move_to)
+
+x=int(73.6219 * 10.9)
+y=int(57.8739 * 10.9)
+abs_flag = True
+
+move_to = [x,y,abs_flag,0,0,800]
+
+send_standard_packet(move_to)
+
+send_standard_packet(fergelli_up)
 send_special_packet()
 
 # # # Send A Single Packet to the Arduino

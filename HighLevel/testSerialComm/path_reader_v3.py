@@ -13,7 +13,7 @@ def send_standard_packet(packet):
 	arduino_ser.flush()
 	arduino_ser.send_standard_packet(packet)
 	# Wait a bit for Arduino to process point
-	sleep(1)
+	sleep(0.5)
 
 def send_special_packet():
 	# Tell Arduino to process all recieved packets
