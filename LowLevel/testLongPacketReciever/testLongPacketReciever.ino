@@ -198,9 +198,16 @@ void startCommand(){
   
   Setpoint = current_command.firgelli_pos;
   
-  current_m1 += current_command.m1_steps*(m1_dir ? -1 : 1);
-  current_m2 += current_command.m2_steps*(m2_dir ? -1 : 1);
-  current_f = current_command.firgelli_pos;
+  if(m1_dir){
+    current_m1 -= current_command.m1_steps;
+  }else{
+    current_m1 += current_command.m1_steps;
+  }
+  if(m2_dir){
+    current_m2 -= current_command.m2_steps;
+  }else{
+    current_m2 += current_command.m2_steps;
+  }
   
   // Set M1 Direction
   if(m1_dir){
@@ -233,6 +240,14 @@ boolean run(){
 //  Serial.println(" ");
   
   if(m1_steps == 0 && m2_steps == 0){
+    if(m1_pulse){
+      PORTC &= ~_BV(PC3);
+      m1_pulse=false;
+    }
+    if(m2_pulse){
+      PORTC &= ~_BV(PC2);
+      m2_pulse=false;
+    }
     return true;
   } 
    
@@ -380,11 +395,17 @@ void processBuffer(){
 //      Serial.println(sim_m2);
 //      Serial.println("-----------------");
       
-      m1_dir = (delta_m1<0) ? false : true ;
-      m2_dir = (delta_m2<0) ? false : true ;
+      m1_dir = false ;
+      m2_dir = false ;
 
-      delta_m1 = abs(delta_m1);
-      delta_m2 = abs(delta_m2);
+      if(delta_m1 < 0){
+        delta_m1 = abs(delta_m1);
+        m1_dir = true;
+      }
+      if(delta_m2 < 0){
+        delta_m2 = abs(delta_m2);
+        m2_dir = true;
+      }
 
       int m1_step_time_local=min_step_time;
       int m2_step_time_local=min_step_time;
