@@ -37,7 +37,7 @@ unsigned long m2_start_time = 0;
 double Setpoint, Input, Output;
 
 //Define the aggressive and conservative Tuning Parameters
-double aggKp=4, aggKi=0.2, aggKd=1;
+double aggKp=1, aggKi=0, aggKd=0;
 double consKp=1, consKi=0.05, consKd=0.25;
 
 //Specify the links and initial tuning parameters
@@ -85,7 +85,7 @@ void setup(){
 }
 
 void loop(){
-        if(m1_steps == 0 && m2_steps == 0 && abs(Output) <20 && !Serial.available()){
+        if(m1_steps == 0 && m2_steps == 0 && !Serial.available()){
             Serial.write(0xFE);
             Serial.write(0x00);
             Serial.write(0xEF);

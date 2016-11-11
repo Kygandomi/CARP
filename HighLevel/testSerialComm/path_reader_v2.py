@@ -125,17 +125,19 @@ def paint_lines(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_b
 		m1_steps_1, m2_steps_1, m1_dir_1, m2_dir_1 = forward_kinematics(delta_x1, delta_y1)
 		m1_steps_2, m2_steps_2, m1_dir_2, m2_dir_2 = forward_kinematics(delta_x2, delta_y2)
 
+		print str(m1_steps_1) + " " + str(m2_steps_1) + " " + str(m1_steps_2) + " "+ str(m2_steps_2)
+
 		# Move the gantry
 		gantry_movement_routine(m1_steps_1, m2_steps_1, m1_dir_1, m2_dir_1, step_time, fergelli_up_dist)
 
 		# Move the Fergelli Down
-		fergelli_down(fergelli_delay, fergelli_down_dist)
+		fergelli_down(m1_dir_1, m2_dir_1, step_time, fergelli_delay, fergelli_down_dist)
 
 		# Move the gantry
 		gantry_movement_routine(m1_steps_2, m2_steps_2, m1_dir_2, m2_dir_2, step_time, fergelli_down_dist)
 
 		# Move the Fergelli Up
-		fergelli_up(fergelli_delay, fergelli_up_dist)
+		fergelli_up(m1_dir_2, m2_dir_2, step_time,fergelli_delay, fergelli_up_dist)
 
 		# Return the new current position
 		return x2, y2
@@ -199,11 +201,11 @@ def paint_contours(coords, mm_to_step, current_x, current_y, upper_bound_x, uppe
 ####################### MAIN #########################
 
 # file to read from 
-fname = "../test_ImageRecomposition/erosion/orders_cat.txt"
+fname = "../test_ImageRecomposition/fill/HorFillOrders.txt"
 
 # Connect to Arduino over serial
 baud = 115200
-port = '/dev/tty.usbmodem1411'
+port = 'COM8'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 
@@ -237,8 +239,7 @@ current_y = 0
 line_counter = 0
 
 # Painting mode
-mode = 'contours'
-
+mode = 'lines'
 
 # Open the given file
 with open(fname) as f:
@@ -258,15 +259,13 @@ with open(fname) as f:
 		if(mode == 'points'):
 			x, y = paint_points(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_bound_y, step_time, fergelli_delay, fergelli_up, fergelli_down_dist)
 		elif(mode == 'lines'):
+			print "Lets make lines!"
+			print str(coords)
 			x, y = paint_lines(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_bound_y, step_time, fergelli_delay, fergelli_up, fergelli_down_dist)
 		elif(mode == 'contours'):
 			x, y, f1, f2 = paint_contours(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_bound_y, step_time, fergelli_delay, fergelli_up, fergelli_down_dist, contour_flag, prev_contour_flag)
 			contour_flag = f1
 			prev_contour_flag = f2
-		elif(mode == 'contours_v2'):
-			x = 0
-			y = 0
-			paint_contours()
 		else:
 			print 'Error: Invalid Mode'
 			break

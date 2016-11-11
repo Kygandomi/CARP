@@ -7,7 +7,7 @@ sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work o
 import cv2
 import numpy as np
 
-brushSize = 10  #number of pixels in the radius of the brush
+brushSize = 50  #number of pixels in the radius of the brush
 
 def display(img, name):
 	cv2.imshow(name, img)
@@ -15,7 +15,7 @@ def display(img, name):
 	cv2.destroyAllWindows()
 
 
-img = cv2.imread('circle.png', cv2.IMREAD_UNCHANGED) #image you want to create
+img = cv2.imread('box.png', cv2.IMREAD_UNCHANGED) #image you want to create
 display(img, "Initial Image")
 
 #dilate the image the radius of the brush
@@ -59,7 +59,5 @@ display(canvasImg, "Finished Image") #displays the start and end positions only
 pixelToMM = (8.5*25.4)/width
 orders = open("HorFillOrders.txt", 'w') #store points
 for element in range(0, len(startPoints)-1):
-	orders.write(str(startPoints[element][0]*pixelToMM)+' '+str(startPoints[element][1]*pixelToMM)+'\n')
-	orders.write(str(endPoints[element][0]*pixelToMM)+' '+str(endPoints[element][1]*pixelToMM) +'\n')
-	orders.write('\n')
+	orders.write(str(startPoints[element][0]*pixelToMM)+' '+str(startPoints[element][1]*pixelToMM)+' '+str(endPoints[element][0]*pixelToMM)+' '+str(endPoints[element][1]*pixelToMM) +'\n')
 orders.close()
