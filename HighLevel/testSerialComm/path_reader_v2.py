@@ -111,7 +111,7 @@ def paint_lines(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_b
 	delta_y1 = y1 - current_y
 
 	delta_x2 = x2 - x1
-	delta_y2 = y2 - x2
+	delta_y2 = y2 - y1
 
 	# Verify that the data is valid
 	if(x1 > upper_bound_x or y1 > upper_bound_y or x2 > upper_bound_x or y2 > upper_bound_y ):
@@ -202,10 +202,12 @@ def paint_contours(coords, mm_to_step, current_x, current_y, upper_bound_x, uppe
 
 # file to read from 
 fname = "../test_ImageRecomposition/fill/HorFillOrders.txt"
+# fname = "box_orders.txt"
 
 # Connect to Arduino over serial
 baud = 115200
-port = 'COM8'
+# port = 'COM8'
+port = '/dev/tty.usbmodem1411'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 
@@ -227,7 +229,7 @@ contour_flag = False
 prev_contour_flag = False
 
 # Fergelli setpoints
-fergelli_delay = 3
+fergelli_delay = 2
 fergelli_up_dist = 350
 fergelli_down_dist = 170
 
@@ -235,7 +237,7 @@ fergelli_down_dist = 170
 current_x = 0
 current_y = 0
 
-# keep track of the line we're one
+# keep track of the line we're on
 line_counter = 0
 
 # Painting mode
@@ -259,8 +261,6 @@ with open(fname) as f:
 		if(mode == 'points'):
 			x, y = paint_points(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_bound_y, step_time, fergelli_delay, fergelli_up, fergelli_down_dist)
 		elif(mode == 'lines'):
-			print "Lets make lines!"
-			print str(coords)
 			x, y = paint_lines(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_bound_y, step_time, fergelli_delay, fergelli_up, fergelli_down_dist)
 		elif(mode == 'contours'):
 			x, y, f1, f2 = paint_contours(coords, mm_to_step, current_x, current_y, upper_bound_x, upper_bound_y, step_time, fergelli_delay, fergelli_up, fergelli_down_dist, contour_flag, prev_contour_flag)
@@ -274,9 +274,8 @@ with open(fname) as f:
 		current_x = x
 		current_y = y
 
-		print x
-		print y
-		print line_counter
+		print "Current Line of Text File: " + str(line_counter)
+		print "Current Position: " + str(x) + " , " + str(y)
 		line_counter += 1
 
 print "Routine Finished ~"
