@@ -2,7 +2,6 @@
 # MQP -- CARP Project
 # Path Reader V2 Code
 
-
 import math
 import serial_communication as ser_comm
 from time import sleep
@@ -13,7 +12,7 @@ def send_standard_packet(packet):
 	arduino_ser.flush()
 	arduino_ser.send_standard_packet(packet)
 	# Wait a bit for Arduino to process point
-	sleep(0.5)
+	sleep(0.1)
 
 def send_special_packet():
 	# Tell Arduino to process all recieved packets
@@ -37,8 +36,8 @@ fname = "../test_ImageRecomposition/erosion/orders.txt"
 
 # Connect to Arduino over serial
 baud = 115200
-port = '/dev/tty.usbmodem1411'
-# port = 'COM3'
+# port = '/dev/tty.usbmodem1411'
+port = 'COM3'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 

@@ -48,7 +48,7 @@ sleep(1)
 firgelli_up = [0, 0, 0, 400, 1, 800]
 firgelli_down = [0, 0, 0, 175, 1, 800]
 
-move_to = [0,400,True,0,False,800]
+move_to = [0,400,False,0,False,800]
 
 send_standard_packet(move_to)
 send_standard_packet(firgelli_down)
@@ -58,15 +58,12 @@ sleep(1)
 
 move_to = [400,400,True,0,False,800]
 send_standard_packet(move_to)
-send_special_packet()
 
 move_to = [400,0,True,0,False,800]
 send_standard_packet(move_to)
-send_special_packet()
 
 move_to = [0,0,True,0,False,800]
 send_standard_packet(move_to)
-send_special_packet()
 
 send_standard_packet(firgelli_up)
 send_special_packet()
