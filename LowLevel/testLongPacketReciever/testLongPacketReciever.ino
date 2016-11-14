@@ -160,11 +160,14 @@ void loop(){
 
 void forwardKinematics(long delta_x, long delta_y, long* m1_steps_local, long* m2_steps_local){
 	
-  float mag = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
-	float angle = atan2(delta_y, delta_x); 
+//  float mag = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
+//	float angle = atan2(delta_y, delta_x); 
+//
+//	float s1 = mag*sin(angle - 0.785398);
+//	float s2 = mag*cos(angle - 0.785398);
 
-	float s1 = mag*sin(angle - 0.785398);
-	float s2 = mag*cos(angle - 0.785398);
+    float s1 = 0.70710678118*(delta_x+delta_y)
+    float s2 = -0.70710678118*(delta_x-delta_y)
 
 //	if(s1 < 0)
 //	  *m1_dir = true;
