@@ -166,8 +166,8 @@ void forwardKinematics(long delta_x, long delta_y, long* m1_steps_local, long* m
 //	float s1 = mag*sin(angle - 0.785398);
 //	float s2 = mag*cos(angle - 0.785398);
 
-    float s2 = (delta_x+delta_y);//*0.70710678118;
-    float s1 = (delta_y-delta_x);//*0.70710678118;
+    float s2 = (delta_x+delta_y)*1.09;//*0.70710678118*1.09;//=//*.7707463915;
+    float s1 = (delta_y-delta_x)*1.09;//*0.70710678118*1.09;//=//*.7707463915;
 
 //	if(s1 < 0)
 //	  *m1_dir = true;
@@ -398,8 +398,8 @@ void processBuffer(){
 //      Serial.println(sim_m2);
 //      Serial.println("-----------------");
       
-      m1_dir = false ;
-      m2_dir = false ;
+      m1_dir = false;
+      m2_dir = false;
 
       if(delta_m1 < 0){
         delta_m1 = abs(delta_m1);

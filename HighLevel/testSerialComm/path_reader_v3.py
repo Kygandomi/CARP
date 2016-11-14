@@ -74,14 +74,14 @@ with open(fname) as f:
 			print "Sending Line"
 			coords = line.split(" ")
 
-			element = [int(float(coords[0]) * 10.9), int(float(coords[1]) * 10.9), 1, 0, 0, 800]
+			element = [int(float(coords[0]) * 10), int(float(coords[1]) * 10), 1, 0, 0, 800]
 			send_standard_packet(element)
 
 			if(first_elem):
 				print "First Element"
 				first_elem = False
 				
-				firgelli_down = [int(float(coords[0]) * 10.9), int(float(coords[1]) * 10.9), 1, 175, 1, 800]
+				firgelli_down = [int(float(coords[0]) * 10), int(float(coords[1]) * 10), 1, 175, 1, 800]
 				send_standard_packet(firgelli_down)
 				
 				# Send commands and wait 
