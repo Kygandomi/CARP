@@ -28,16 +28,16 @@ def send_special_packet():
 		read_val = arduino_ser.recieve_packet()
 		parse_val = arduino_ser.parse_packet(read_val)
 		# print "read : " + str(read_val) + " => " + str(parse_val)
-		sleep(1)
+		sleep(0.1)
 	print "Motion Complete!"
 
 # file to read from 
-fname = "../test_ImageRecomposition/erosion/orders.txt"
+fname = "../test_ImageRecomposition/erosion/orders_cat.txt"
 
 # Connect to Arduino over serial
 baud = 115200
-# port = '/dev/tty.usbmodem1411'
-port = 'COM3'
+port = '/dev/tty.usbmodem1411'
+# port = 'COM3'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 
@@ -79,6 +79,7 @@ with open(fname) as f:
 
 			if(first_elem):
 				print "First Element"
+				print str(coords[0]) + " " + str(coords[1])
 				first_elem = False
 				
 				firgelli_down = [int(float(coords[0]) * 10), int(float(coords[1]) * 10), 1, 175, 1, 800]

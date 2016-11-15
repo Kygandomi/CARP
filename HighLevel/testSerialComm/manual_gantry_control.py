@@ -33,8 +33,8 @@ sleep(1)
 # Connect to Arduino over serial
 baud = 115200
 #port = '/dev/tty.usbserial-A902U9B9'
-# port = '/dev/tty.usbmodem1411'
-port = 'COM3'
+port = '/dev/tty.usbmodem1411'
+# port = 'COM3'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 
@@ -50,24 +50,24 @@ firgelli_down = [0, 0, 0, 175, 1, 800]
 
 move_to = [0,400,False,0,False,800]
 
-send_standard_packet(move_to)
+# send_standard_packet(move_to)
 send_standard_packet(firgelli_down)
 send_special_packet()
 
-sleep(1)
+# sleep(1)
 
-move_to = [400,400,True,0,False,800]
-send_standard_packet(move_to)
+# move_to = [400,400,True,0,False,800]
+# send_standard_packet(move_to)
 
-move_to = [400,0,True,0,False,800]
-send_standard_packet(move_to)
+# move_to = [400,0,True,0,False,800]
+# send_standard_packet(move_to)
 
-move_to = [0,0,True,0,False,800]
-send_standard_packet(move_to)
+# move_to = [0,0,True,0,False,800]
+# send_standard_packet(move_to)
 
-send_standard_packet(firgelli_up)
-send_special_packet()
-sleep(1)
+# send_standard_packet(firgelli_up)
+# send_special_packet()
+# sleep(1)
 
 ##############################################################################
 

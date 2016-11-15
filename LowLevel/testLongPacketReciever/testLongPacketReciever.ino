@@ -4,7 +4,7 @@
 
 #define BAUD           115200
 #define MAX_BUF        15  
-#define MAX_COMMANDS   400
+#define MAX_COMMANDS   200
 
 #define SERIAL_ELEMENT_LEN 10
 
@@ -127,6 +127,7 @@ void loop(){
     Serial.write(0xFE);
     Serial.write(0x00);
     Serial.write(0xEF);
+    delay(5);
   }
 	else if(current_command_index < 0 && Serial.available()){
 		int c = Serial.read();
