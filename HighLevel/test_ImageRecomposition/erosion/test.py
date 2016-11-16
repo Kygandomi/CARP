@@ -57,7 +57,7 @@ def draw(pts,img,thicnkess=3):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('cat.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/rocket.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 2
 
@@ -80,14 +80,14 @@ hierarchy = hierarchy[0]
 
 display(contourImg)
 
-orders = open("orders.txt", 'w')
+orders = open("../orders/orders.txt", 'w')
 
 n_points = 0
 out_pts = []
 for cnt_i in range(len(contours)):
 	cnt = contours[cnt_i]
 	list_pts=[]
-	for pt_i in range(0,len(cnt),10):
+	for pt_i in range(0,len(cnt),30):
 		pt=cnt[pt_i][0]
 
 		#pt=(8.5*25.4/1000)*pt

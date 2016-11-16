@@ -32,7 +32,7 @@ def send_special_packet():
 	print "Motion Complete!"
 
 # file to read from 
-fname = "../test_ImageRecomposition/erosion/orders_cat.txt"
+fname = "../test_ImageRecomposition/orders/orders_rocket.txt"
 
 baud = 115200
 ports_list = ['COM3', '/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']

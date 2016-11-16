@@ -162,7 +162,7 @@ def visualPolyDist(rawPolyImg):
 ###################     Required Helper Functions      ################################
 #######################################################################################
 	
-desiredImg = cv2.imread('cat.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/flower.png', cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
@@ -227,14 +227,13 @@ display(laplace,"Laplacian")
 output(pathImg,"Path")
 ############################################################################
 
-orders = open("orders.txt", 'w')
+orders = open("../orders/orders.txt", 'w')
 orders.write('\n')
 orders.close()
 
 ############################################################################
 ############################################################################
 ############################################################################
-
 
 
 print "Done"

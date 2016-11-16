@@ -54,7 +54,7 @@ def draw(pts,img,thicnkess=3):
 	return img
 
 def skeletonize(binImg):
-	element = cv2.getStructuringElement(cv2.MORPH_CROSS,(5,5))
+	element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
 	done = False
 
 	img = 255-binImg.copy()
@@ -77,7 +77,7 @@ def skeletonize(binImg):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('flower.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/flower.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 2
 
 paper_size = (11*25.4,8.5*25.4)
@@ -98,7 +98,7 @@ hierarchy = hierarchy[0]
 
 display(contourImg)
 
-orders = open("orders.txt", 'w')
+orders = open("../orders/orders.txt", 'w')
 
 n_points = 0
 out_pts = []
