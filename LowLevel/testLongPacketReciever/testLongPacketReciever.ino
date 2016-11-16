@@ -4,7 +4,7 @@
 
 #define BAUD           115200
 #define MAX_BUF        15  
-#define MAX_COMMANDS   400
+#define MAX_COMMANDS   200
 
 #define SERIAL_ELEMENT_LEN 10
 
@@ -47,12 +47,12 @@ bool startbit = false;
 
 // Motor Step Definitions and Start Times
 long m1_steps = 0;
-int m1_step_time = 0;
+unsigned int m1_step_time = 0;
 boolean m1_pulse = false;
 unsigned long m1_start_time = 0;
 
 long m2_steps = 0;
-int m2_step_time = 0;
+unsigned int m2_step_time = 0;
 boolean m2_pulse = false;
 unsigned long m2_start_time = 0;
 
@@ -187,15 +187,30 @@ void startCommand(){
   current_command_index++;
   if(current_command_index>=length_command){
     current_command_index = -1;
+    Serial.println("No more commands!");
     return;
   }
   command_t current_command = command_list[current_command_index];
   
   m1_steps = current_command.m1_steps;
   m2_steps = current_command.m2_steps;
-          
+  
   m1_step_time = current_command.m1_step_time;
   m2_step_time = current_command.m2_step_time;
+  
+//  Serial.println("*************");
+//  Serial.print("Current Index: ");
+//  Serial.print(current_command_index);
+//  Serial.print(" Length: ");
+//  Serial.println(length_command);
+//  Serial.print("M1 steps: ");
+//  Serial.print(m1_steps);
+//  Serial.print(" M2 steps: ");
+//  Serial.print(m2_steps);
+//  Serial.print(" | ");
+//  Serial.print(m1_step_time);
+//  Serial.print("  ");
+//  Serial.println(m2_step_time);
   
   boolean m1_dir = current_command.m1_dir;
   boolean m2_dir = current_command.m2_dir;
@@ -332,7 +347,7 @@ void processBuffer(){
       sim_command_index = 0;
       startCommand();
     } 
-  } else {
+  } else if(current_command_index == -1) {
     
     //Serial.println("Processing the buffer!");
 
@@ -411,15 +426,15 @@ void processBuffer(){
         m2_dir = true;
       }
 
-      int m1_step_time_local=min_step_time;
-      int m2_step_time_local=min_step_time;
+      unsigned int m1_step_time_local=min_step_time;
+      unsigned int m2_step_time_local=min_step_time;
 
       //Make the motion linear by reducing speed of the shorter path
       if((delta_m1>delta_m2) && (delta_m2>0)){
-        m2_step_time_local = (int)(((float)delta_m1/(float)delta_m2)*min_step_time);
+        m2_step_time_local = (unsigned int)min((((float)delta_m1/(float)delta_m2)*min_step_time), 65000);
       }
       else if((delta_m2>delta_m1) && (delta_m1>0)){
-        m1_step_time_local = (int)(((float)delta_m2/(float)delta_m1)*min_step_time);
+        m1_step_time_local = (unsigned int)min((((float)delta_m2/(float)delta_m1)*min_step_time), 65000);
       }
       
       command_t c1 = {
@@ -431,6 +446,19 @@ void processBuffer(){
         m2_step_time_local,
         sim_f
       };
+      
+//      Serial.println("**********");
+//      Serial.print(delta_m1);
+//      Serial.print(" ");
+//      Serial.print(delta_m2);
+//      Serial.print(" | ");
+//      Serial.print(m1_dir);
+//      Serial.print(" ");
+//      Serial.print(m2_dir);
+//      Serial.print(" | ");
+//      Serial.print(m1_step_time_local);
+//      Serial.print(" ");
+//      Serial.println(m2_step_time_local);
       
       command_list[sim_command_index] = c1;
       sim_command_index++;
