@@ -53,6 +53,26 @@ def draw(pts,img,thicnkess=3):
 
 	return img
 
+def skeletonize(binImg):
+	element = cv2.getStructuringElement(cv2.MORPH_CROSS,(5,5))
+	done = False
+
+	img = 255-binImg.copy()
+	skel = np.zeros(img.shape,np.uint8)
+
+	while( not done):
+		eroded = cv2.erode(img,element)
+		temp = cv2.dilate(eroded,element)
+		temp = cv2.subtract(img,temp)
+		skel = cv2.bitwise_or(skel,temp)
+		img = eroded.copy()
+
+		nonzero = cv2.countNonZero(img)
+		if nonzero==0:
+			done = True
+
+	return skel
+
 ############################################################################
 ############################################################################
 ############################################################################
@@ -70,10 +90,10 @@ desired_rows, desired_cols = desiredImg_grey.shape
 #binImg = autoCanny(desiredImg)
 
 display(binImg)
-binImg = cv2.dilate(binImg, circleKernal(1),iterations = brush_thickness)
+binImg = skeletonize(binImg)
 display(binImg)
 
-contourImg, contours, hierarchy = cv2.findContours(255-binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
+contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 hierarchy = hierarchy[0]
 
 display(contourImg)
