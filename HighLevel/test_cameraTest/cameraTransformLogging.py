@@ -3,15 +3,27 @@ import cv2
 import numpy as np
 import time
 
+from CameraException import *
+
 sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work on Odell's computer
 
-def order_points(pts):
-  # initialzie a list of coordinates that will be ordered
-  # such that the first entry in the list is the top-left,
-  # the second entry is the top-right, the third is the
-  # bottom-right, and the fourth is the bottom-left
-  rect = np.zeros((4, 2), dtype = "float32")
 
+
+def get_image(camera_value):
+  cam = cv2.VideoCapture(camera_value)   # value -> index of camera. My webcam was 0, USB camera was 1.
+  s, img = cam.read()
+  if s:    # frame captured without any errors
+      cv2.imwrite("camera_image.jpg",img) #save image
+      return img
+  else:
+      raise CameraReadError("Unable to read from camera " + str(camera_value))
+
+def order_points(pts):
+  """Given an array of points defining a square, this will return them ordered 
+  such that will be ordered such that the first entry in the list is the top-left, 
+  the second entry is the top-right, the third is the bottom-right, and the fourth is the bottom-left. """
+
+  rect = np.zeros((4, 2), dtype = "float32")
   # the top-left point will have the smallest sum, whereas
   # the bottom-right point will have the largest sum
   s = pts.sum(axis = 1)
@@ -29,6 +41,10 @@ def order_points(pts):
   return rect
 
 def four_point_transform(image, pts):
+  """ Given an image and pts where pts is an ordered set of rectangle-defining points,
+  this will return the subset of the image defined by those points, warped dimensionally
+  to fit into a square. This handles linear translation, angular orientation, and warping.
+  """
   # obtain a consistent order of the points and unpack them
   # individually
   rect = order_points(pts)
@@ -66,52 +82,44 @@ def four_point_transform(image, pts):
   # return the warped image
   return warped
 
-debug = False # Set this to true if you want to see more images as the process happens.
+def get_transform(image):
+    gray_image = cv2.cvtColor(camera_image,cv2.COLOR_BGR2GRAY)
 
+    adaptive_thresholded = cv2.adaptiveThreshold(gray_image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
 
-cam = cv2.VideoCapture(1)   # value -> index of camera. My webcam was 0, USB camera was 1.
-s, img = cam.read()
+    image, contours, other = cv2.findContours(adaptive_thresholded,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE) # Gather the contours
 
-gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    long_contours = [] # Create an array for the long edges to be held
 
-adaptiveThresholdedGray = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+    for cnt in contours:
+        if 15000<cv2.contourArea(cnt) < 850000: # Tuned to prevent small contours, but also not consider image edges a contour
+            long_contours.append(cnt) # Record any long contours
+            cv2.drawContours(image,[cnt],0,(0,255,0),2) # Draw those contours onto the image
 
-mask = np.zeros(adaptiveThresholdedGray.shape,np.uint8) # mask image the final image without small pieces
+    try:
+        rect = cv2.minAreaRect(long_contours[0]) # Generate a rectangle based on the long contour surrounding the page
+    except IndexError:
+        raise CameraReadError("Unable to get contours from camera image, check that camera image isn't washed out.")
+        return
+    box = cv2.boxPoints(rect) # Generate a box-point object from the rectangle
 
-image, contours, other = cv2.findContours(adaptiveThresholdedGray,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE) # Gather the contours
+    box = order_points(box) # Order the points so they were in proper order for transforms 
 
-long_contours = [] # Create an array for the long edges to be held
+    box = np.int0(box) # maths
 
-for cnt in contours:
-    if 500<cv2.contourArea(cnt) < 850000: # Tuned to prevent small contours, but also not consider image edges a contour
-        long_contours.append(cnt) # Record any long contours
-        cv2.drawContours(img,[cnt],0,(0,255,0),2) # Draw those contours onto the image
+    return box
 
-rect = cv2.minAreaRect(long_contours[0]) # Generate a rectangle based on the long contour surrounding the page
-box = cv2.boxPoints(rect) # Generate a box-point object from the rectangle
+# This is for testing.
+camera_image = get_image(1)
 
-box = order_points(box) # Order the points so they were in proper order for transforms 
+transform = get_transform(camera_image)
 
-box = np.int0(box) # maths
-cv2.drawContours(img,[box],0,(0,0,255),2) # Draw the actual contours so we can see them
-
-if debug:
-  cv2.imshow("test", img) 
-  cv2.waitKey(0)
-  cv2.destroyAllWindows()
-
-
-if debug:
-  canvas_image = four_point_transform(img, box) # Create the canvas image 
-  cv2.imshow("test", canvas_image) 
-  cv2.waitKey(0)
-  cv2.destroyAllWindows()
-
+# This will write a transformed image out every 5 seconds.
 while(True):
-    s, img = cam.read() # Read the image again
-    if s:    # frame captured without any errors
-        canvas_image = four_point_transform(img, box) # Generate the canvas image based on the box's transform
-        cv2.imshow("cam-test",canvas_image)
-        cv2.waitKey(0)
-        cv2.destroyWindow("cam-test")
-        cv2.imwrite("imlog/capture" + str(int(time.time())) + ".jpg",canvas_image) #save image
+    try:
+        img = get_image(1)
+        canvas_image = four_point_transform(img, transform) # Generate the canvas image based on the box's transform
+        cv2.imwrite("imlog/capture_" + str(int(time.time())) + ".jpg",canvas_image) #save image
+        time.sleep(5)
+    except CameraReadError as e:
+        print e.args[0]
