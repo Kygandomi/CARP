@@ -32,14 +32,16 @@ def send_special_packet():
 	print "Motion Complete!"
 
 # file to read from 
-fname = "../test_ImageRecomposition/erosion/orders_coffee.txt"
+fname = "../test_ImageRecomposition/erosion/orders_cat.txt"
 
-# Connect to Arduino over serial
 baud = 115200
-port = '/dev/tty.usbmodem1411'
-# port = 'COM3'
-arduino_ser = ser_comm.serial_comms(port, baud)
-arduino_ser.connect()
+ports_list = ['COM3', '/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
+
+for i in range(len(ports_list)):
+	port = ports_list[i]
+	arduino_ser = ser_comm.serial_comms(port, baud)
+	if(arduino_ser.connect()):
+		break
 
 # Sleep to verify a solid connection
 sleep(1)

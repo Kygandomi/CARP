@@ -32,11 +32,14 @@ sleep(1)
 
 # Connect to Arduino over serial
 baud = 115200
-#port = '/dev/tty.usbserial-A902U9B9'
-# port = '/dev/tty.usbmodem1411'
-port = 'COM3'
-arduino_ser = ser_comm.serial_comms(port, baud)
-arduino_ser.connect()
+
+ports_list = ['COM3', '/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
+
+for i in range(len(ports_list)):
+	port = ports_list[i]
+	arduino_ser = ser_comm.serial_comms(port, baud)
+	if(arduino_ser.connect()):
+		break
 
 sleep(1)
 

@@ -15,13 +15,16 @@ class serial_comms():
 		self.ser = ''
 
 	'Connects to Arduino over serial'
-	def connect(self):
-		 # Connect to serial port
-		self.ser = serial.Serial(self.port, self.baud)
-
+	def connect(self ):
 		# Open Serial Port if possible
-		if self.ser.isOpen() : 
-			print(self.ser.name + ' is open...')
+		try :
+			# Connect to serial port
+			self.ser = serial.Serial(self.port, self.baud)
+			if self.ser.isOpen(): 
+				print(self.ser.name + ' is open...')
+				return True
+		except:
+			return False
 
 	'Closes serial port to Arduino'
 	def disconnect(self):
