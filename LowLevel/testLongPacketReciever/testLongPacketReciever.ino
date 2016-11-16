@@ -127,6 +127,7 @@ void loop(){
     Serial.write(0xFE);
     Serial.write(0x00);
     Serial.write(0xEF);
+    delay(5);
   }
 	else if(current_command_index < 0 && Serial.available()){
 		int c = Serial.read();

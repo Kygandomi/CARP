@@ -12,7 +12,7 @@ def send_standard_packet(packet):
 	arduino_ser.flush()
 	arduino_ser.send_standard_packet(packet)
 	# Wait a bit for Arduino to process point
-	sleep(0.1)
+	sleep(0.2)
 
 def send_special_packet():
 	# Tell Arduino to process all recieved packets
@@ -28,11 +28,11 @@ def send_special_packet():
 		read_val = arduino_ser.recieve_packet()
 		parse_val = arduino_ser.parse_packet(read_val)
 		# print "read : " + str(read_val) + " => " + str(parse_val)
-		sleep(1)
+		sleep(0.1)
 	print "Motion Complete!"
 
 # file to read from 
-fname = "../test_ImageRecomposition/erosion/orders.txt"
+fname = "../test_ImageRecomposition/erosion/orders_break.txt"
 
 # Connect to Arduino over serial
 baud = 115200

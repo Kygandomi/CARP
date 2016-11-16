@@ -57,9 +57,9 @@ def draw(pts,img,thicnkess=3):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('flower.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('coffee.png', cv2.IMREAD_UNCHANGED)
 canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
-brush_thickness = 2
+brush_thickness = 5
 
 paper_size = (11*25.4,8.5*25.4)
 
@@ -87,7 +87,7 @@ out_pts = []
 for cnt_i in range(len(contours)):
 	cnt = contours[cnt_i]
 	list_pts=[]
-	for pt_i in range(0,len(cnt),15):
+	for pt_i in range(0,len(cnt),50):
 		pt=cnt[pt_i][0]
 
 		#pt=(8.5*25.4/1000)*pt
