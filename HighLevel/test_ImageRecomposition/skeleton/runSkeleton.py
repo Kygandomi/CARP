@@ -18,8 +18,28 @@ def output(img,name="output"):
 	save(img,name)
 	display(img,name)
 
-def circleKernal(radius):
-	brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,-1).astype('uint8')
+def circleKernal(radius,thickness = -1):
+	brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,thickness).astype('uint8')
+	return brush
+
+def getPoints(img,color=255):
+	pts = np.where(img == 255)
+	real_pts = []
+	for j in range(len(pts[0])):
+		real_pts.append((pts[0][j],pts[1][j]))
+	return real_pts
+
+def getNeighborPoints(pt,kernal = np.ones((3,3)),excludeSelf = True):
+	print kernal
+	shape = kernal.shape
+	anchor = (int(shape[0]/2),int(shape[1]/2))
+	points = []
+	for c in range(shape[0]):
+		for r in range(shape[1]):
+			if(kernal[c][r] !=0):
+				if (not excludeSelf) or (not (anchor[0]==c and anchor[1]==r)) :
+					points.append([pt[0]+c-anchor[0],pt[1]+r-anchor[1]])
+	return np.array(points)
 
 def map(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False):
 	src_rows, src_cols = src_shape
@@ -42,7 +62,7 @@ def map(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False)
 	
 	return pt_new
 
-def draw(pts,img,thicnkess=3):
+def draw(pts,img,thicnkess=3): 
 	'''this is what this does'''
 	for i in range(len(pts)):
 		if len(pts[i])==1:
@@ -55,6 +75,7 @@ def draw(pts,img,thicnkess=3):
 
 def skeletonize(binImg):
 	element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+	#element = circleKernal(1)
 	done = False
 
 	img = 255-binImg.copy()
@@ -77,7 +98,7 @@ def skeletonize(binImg):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('../images/flower.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/cat.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 2
 
 paper_size = (11*25.4,8.5*25.4)
@@ -90,39 +111,64 @@ desired_rows, desired_cols = desiredImg_grey.shape
 #binImg = autoCanny(desiredImg)
 
 display(binImg)
-binImg = skeletonize(binImg)
-display(binImg)
+pathImg = skeletonize(binImg)
 
-contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
-hierarchy = hierarchy[0]
+display(pathImg)
 
-display(contourImg)
+## Remove points that do not have enough neighbors
+radius = 3
+border = -1
+n_limit = 1
+neighbors = getNeighborPoints([0,0],circleKernal(radius,border))
+pts = getPoints(pathImg,255)
+for point in pts:
+	if pathImg[point] != 0:
+		if np.count_nonzero(pathImg[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
+			pathImg[point]=0
 
-orders = open("../orders/orders.txt", 'w')
+display(pathImg)
 
-n_points = 0
-out_pts = []
-for cnt_i in range(len(contours)):
-	cnt = contours[cnt_i]
-	list_pts=[]
-	for pt_i in range(0,len(cnt),15):
-		pt=cnt[pt_i][0]
 
-		#pt=(8.5*25.4/1000)*pt
-		pt=map(pt,desiredImg.shape[:2],paper_size)
+## Hough Lines Transform. Find lines on path
+# minLineLength = 3
+# maxLineGap = 1
+# lines = cv2.HoughLinesP(pathImg,1,np.pi/180,1,minLineLength,maxLineGap)
 
-		orders.write(str(pt[0]) + ' '+ str(pt[1]) + '\n')
+# linesImg = cv2.cvtColor(pathImg,cv2.COLOR_GRAY2BGR)
 
-		list_pts.append(pt)
+# for x in range(0, len(lines)):
+#     for x1,y1,x2,y2 in lines[x]:
+#         cv2.line(linesImg,(x1,y1),(x2,y2),(0,255,0),2)
 
-		n_points = n_points + 1
-	out_pts.append(list_pts)
-	orders.write('\n')
-orders.close()
-print n_points
+# display(linesImg)
 
-drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
 
-output(drawnImg, 'outImg')
+
+# orders = open("../orders/orders.txt", 'w')
+
+# n_points = 0
+# out_pts = []
+# for cnt_i in range(len(contours)):
+# 	cnt = contours[cnt_i]
+# 	list_pts=[]
+# 	for pt_i in range(0,len(cnt),15):
+# 		pt=cnt[pt_i][0]
+
+# 		#pt=(8.5*25.4/1000)*pt
+# 		pt=map(pt,desiredImg.shape[:2],paper_size)
+
+# 		orders.write(str(pt[0]) + ' '+ str(pt[1]) + '\n')
+
+# 		list_pts.append(pt)
+
+# 		n_points = n_points + 1
+# 	out_pts.append(list_pts)
+# 	orders.write('\n')
+# orders.close()
+# print n_points
+
+# drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
+
+# output(drawnImg, 'outImg')
 
 print "Done"

@@ -56,7 +56,7 @@ def drawLines(pts,img,thicnkess=3):
 paper_size = (11*25.4,8.5*25.4)
 scale = 3
 
-fname = "orders/orders_rocket.txt"
+fname = "orders_rocket.txt"
 
 in_pts = []
 with open(fname) as f:

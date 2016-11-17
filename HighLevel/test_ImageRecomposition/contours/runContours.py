@@ -25,8 +25,6 @@ def autoCanny(image, sigma=0.33):
 	# apply automatic Canny edge detection using the computed median
 	lower = int(max(0, (1.0 - sigma) * v))
 	upper = int(min(255, (1.0 + sigma) * v))
-	print lower
-	print upper
 	edged = cv2.Canny(image, lower, upper)
  
 	# return the edged image
@@ -72,8 +70,17 @@ def getPoints(img,color=255):
 	pts = np.where(img == 255)
 	real_pts = []
 	for j in range(len(pts[0])):
-		real_pts.append((pts[1][j],pts[0][j]))
+		real_pts.append((pts[0][j],pts[1][j]))
 	return real_pts
+
+def intersect(img1,img2,color=255):
+	path =  cv2.bitwise_and((color-img1),cv2.erode(img2,circleKernal(1),iterations=1))
+	mini,maxi = cv2.minMaxLoc(path)[:2]
+	nonzero = path[path > 0]
+	mid = np.median(nonzero)
+	sigma = .5
+	(thresh, pathImg) = cv2.threshold(path,sigma*maxi+(1-sigma)*mid, 255, cv2.THRESH_BINARY)
+	return pathImg
 
 def ptsInContours(contours,hierarchy,shape,):
 	cntr_pts = []
@@ -106,14 +113,14 @@ def rawPolyDist(bin_img):
 		print "Analyzing Contour "+str(count)+" of "+str(max_count)
 		list_pts = cntr_pts[cnt_i]
 		for pt in list_pts:
-			value = cv2.pointPolygonTest(contours[cnt_i],pt,True)
+			value = cv2.pointPolygonTest(contours[cnt_i],(pt[1],pt[0]),True)
 			if(hierarchy[cnt_i][2]!=-1):
 				min_val2 = 1
 				for child_i in childrenOf(hierarchy,cnt_i):
-					value2 = cv2.pointPolygonTest(contours[child_i],pt,True)
+					value2 = cv2.pointPolygonTest(contours[child_i],(pt[1],pt[0]),True)
 					min_val2 = min(min_val2,value2)
 				value = min(value,-(min_val2))
-			rawPolyImg.itemset((pt[1],pt[0]),value)
+			rawPolyImg.itemset(pt,value)
 		count = count + 1
 	print "Contour Analysis Complete"
 	return rawPolyImg, contours, hierarchy, cntr_pts
@@ -162,15 +169,15 @@ def visualPolyDist(rawPolyImg):
 ###################     Required Helper Functions      ################################
 #######################################################################################
 	
-desiredImg = cv2.imread('../images/flower.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/rocket.png', cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 #binImg = autoCanny(desiredImg)
-
+# display(binImg)
 binImg = 255-binImg
 
-rawPolyImg = rawPolyDist(binImg)[0]
+rawPolyImg,contours,hierarchy,cntr_pts = rawPolyDist(binImg)
 
 ############################################################################
 ############################################################################
@@ -186,11 +193,17 @@ display(polyImg)
 #pathImg = cv2.adaptiveThreshold(polyImg,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,3,2)
 
 ## Sobel/Scharr
-# sobelx = cv2.Sobel(polyImg,cv2.CV_64F,1,0,ksize=5)
-# sobely = cv2.Sobel(polyImg,cv2.CV_64F,0,1,ksize=5)
+sobelx = cv2.Sobel(polyImg,cv2.CV_64F,1,0,ksize=-1)
+sobely = cv2.Sobel(polyImg,cv2.CV_64F,0,1,ksize=-1)
+ 
+sobel = sobelx*sobelx+sobely*sobely
+mini,maxi = cv2.minMaxLoc(sobel)[:2]
+sobel = (sobel * (255/maxi)).astype('uint8')
 
-# output(sobelx.astype('uint8'),'sobelx')
-# output(sobely.astype('uint8'),'sobely')
+display(sobel)
+
+pathImg = intersect(sobel,binImg).astype('uint8')
+display(pathImg)
 
 ## gaussian
 #gauss = cv2.GaussianBlur(polyImg,(3,3),0)
@@ -213,18 +226,19 @@ display(polyImg)
 # output(output_3)
 
 ## laplacian
-#laplace = cv2.Laplacian(polyImg,cv2.CV_32F,ksize=1, delta = 0)
-laplace = cv2.Laplacian(polyImg,cv2.CV_32F,ksize=1, delta = 0)
-mini,maxi = cv2.minMaxLoc(laplace)[:2]
-nonzero = laplace[laplace > 0]
-mid = np.median(nonzero)
-sigma = 1-4.0*mid/maxi
-(thresh, pathImg) = cv2.threshold(laplace,sigma*maxi+(1-sigma)*mid, 255, cv2.THRESH_BINARY)
+# laplace = cv2.Laplacian(polyImg,cv2.CV_32F,ksize=1, delta = 0)
+# laplace = cv2.Laplacian(polyImg,cv2.CV_32F,ksize=1, delta = 0)
+# mini,maxi = cv2.minMaxLoc(laplace)[:2]
+# nonzero = laplace[laplace > 0]
+# mid = np.median(nonzero)
+# # sigma = 1-4.0*mid/maxi
+# sigma = mid/maxi
+# (thresh, pathImg) = cv2.threshold(laplace,sigma*maxi+(1-sigma)*mid, 255, cv2.THRESH_BINARY)
 
-print str(mini) +" "+ str(mid)+" "+str(maxi)
-print sigma
-display(laplace,"Laplacian")
-output(pathImg,"Path")
+# print str(mini) +" "+ str(mid)+" "+str(maxi)
+# print sigma
+# display(laplace,"Laplacian")
+# display(pathImg,"Path")
 ############################################################################
 
 orders = open("../orders/orders.txt", 'w')
