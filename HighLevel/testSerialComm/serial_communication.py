@@ -4,7 +4,7 @@
 
 import serial
 
-'This class handles serial communication with pcb'
+'''This class handles serial communication with pcb'''
 class serial_comms():
 
 	'Constructor for serial class, sets up serial comms'

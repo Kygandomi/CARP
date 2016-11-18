@@ -4,7 +4,7 @@
 
 #define BAUD           115200
 #define MAX_BUF        15  
-#define MAX_COMMANDS   200
+#define MAX_COMMANDS   400
 
 #define SERIAL_ELEMENT_LEN 10
 
@@ -184,6 +184,11 @@ void loop(){
 // This method is called before a motor movement command is called
 void startCommand(){
   
+  Serial.print("Command ");
+  Serial.print(current_command_index);
+  Serial.print(" of ");
+  Serial.println(length_command);
+  
   // Increment the Current Command Index
   current_command_index++;
   
@@ -349,22 +354,22 @@ void processBuffer(){
       
       int end_bit = buffer[i+9];
    
-//      Serial.print(x);
-//      Serial.print(" ");
-//      Serial.print(y);
-//      Serial.print(" ");
-//      Serial.print(z);
-//      Serial.print(" | ");
-//      Serial.print(min_step_time);
-//      Serial.print(" | ");
-//      Serial.print(xy_abs_flag);
-//      Serial.print(" ");
-//      Serial.print(z_abs_flag);
-//      Serial.print(" ");
-//      Serial.println(go_flag);   
+      Serial.print(x);
+      Serial.print(" ");
+      Serial.print(y);
+      Serial.print(" ");
+      Serial.print(z);
+      Serial.print(" | ");
+      Serial.print(min_step_time);
+      Serial.print(" | ");
+      Serial.print(xy_abs_flag);
+      Serial.print(" ");
+      Serial.print(z_abs_flag);
+      Serial.print(" ");
+      Serial.println(go_flag);   
       
       if(end_bit != 239){
-//       Serial.println("Something went wrong o_o");
+       Serial.println("Something went wrong o_o");
        return; 
       }
       
@@ -403,10 +408,10 @@ void processBuffer(){
         }
       
         if(!z_abs_flag){
-//         Serial.println("Not Z abs");
+         Serial.println("Not Z abs");
          sim_f += z;
         }else{
-//         Serial.println("Z abs");
+         Serial.println("Z abs");
          sim_f = z; 
         }
       
@@ -450,7 +455,7 @@ void processBuffer(){
         
        // If Go flag execute the list of commands and reset global variables
        if(go_flag > 0){
-//          Serial.println("Go Go Go!");
+          Serial.println("Go Go Go!");
           length_command = sim_command_index;
           current_command_index = -1;
           sim_command_index = 0;
