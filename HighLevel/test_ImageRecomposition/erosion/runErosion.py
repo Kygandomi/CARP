@@ -57,16 +57,14 @@ def draw(pts,img,thicnkess=3):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('../images/rocket.png', cv2.IMREAD_UNCHANGED)
-canvasImg = cv2.imread('canvas.png', cv2.IMREAD_UNCHANGED)
-brush_thickness = 2
+desiredImg = cv2.imread('../images/cat.png', cv2.IMREAD_UNCHANGED)
+brush_thickness = 7
 
 paper_size = (11*25.4,8.5*25.4)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 
 desired_rows, desired_cols = desiredImg_grey.shape
-canvas_rows, canvas_cols, canvas_channels = canvasImg.shape
 
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU) 
 #binImg = autoCanny(desiredImg)

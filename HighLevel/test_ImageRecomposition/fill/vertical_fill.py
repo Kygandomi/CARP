@@ -15,7 +15,7 @@ def display(img, name):
 	cv2.destroyAllWindows()
 
 
-img = cv2.imread('box.png', cv2.IMREAD_UNCHANGED) #image you want to create
+img = cv2.imread('../images/box.png', cv2.IMREAD_UNCHANGED) #image you want to create
 display(img, "Initial Image")
 #dilate the image the radius of the brush
 kernal = np.ones((brushSize,brushSize), np.uint8)

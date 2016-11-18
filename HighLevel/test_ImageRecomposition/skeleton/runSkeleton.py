@@ -5,6 +5,7 @@ sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work o
 import numpy as np
 import cv2
 import random
+import graph
 
 def display(img, name=""):
 	cv2.imshow(name, img)
@@ -23,14 +24,15 @@ def circleKernal(radius,thickness = -1):
 	return brush
 
 def getPoints(img,color=255):
-	pts = np.where(img == 255)
+	pts = np.array(np.where(img == 255))
+	# print pts
 	real_pts = []
 	for j in range(len(pts[0])):
 		real_pts.append((pts[0][j],pts[1][j]))
+	# print real_pts
 	return real_pts
 
 def getNeighborPoints(pt,kernal = np.ones((3,3)),excludeSelf = True):
-	print kernal
 	shape = kernal.shape
 	anchor = (int(shape[0]/2),int(shape[1]/2))
 	points = []
@@ -98,7 +100,7 @@ def skeletonize(binImg):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('../images/cat.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/pig.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 2
 
 paper_size = (11*25.4,8.5*25.4)
@@ -110,10 +112,10 @@ desired_rows, desired_cols = desiredImg_grey.shape
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU) 
 #binImg = autoCanny(desiredImg)
 
-display(binImg)
+# display(binImg)
 pathImg = skeletonize(binImg)
 
-display(pathImg)
+# display(pathImg)
 
 ## Remove points that do not have enough neighbors
 radius = 3
@@ -126,8 +128,11 @@ for point in pts:
 		if np.count_nonzero(pathImg[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
 			pathImg[point]=0
 
-display(pathImg)
+# display(pathImg)
 
+g = graph.graph(getPoints(pathImg,255))
+print g.point_list[0]
+print g.node_list[0].neighbors
 
 ## Hough Lines Transform. Find lines on path
 # minLineLength = 3
