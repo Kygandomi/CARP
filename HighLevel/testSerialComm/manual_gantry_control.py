@@ -6,29 +6,33 @@ import serial_communication as ser_comm
 import math
 from time import sleep
 
+# Routine for sending a standard packet via Serial 
 def send_standard_packet(packet):
 	# Send a packet
-	# print "sending : "+str(packet)
-	arduino_ser.flush()
+	# arduino_ser.flush()
 	arduino_ser.send_standard_packet(packet)
-	# Wait a bit for Arduino to process point
-	sleep(1)
 
-def send_special_packet():
-	# Tell Arduino to process all recieved packets
-	arduino_ser.send_special_packet()
-	arduino_ser.flush()
 
-	# Wait for gantry routine to complete
-	read_val = arduino_ser.recieve_packet()
-	parse_val = arduino_ser.parse_packet(read_val)
-	while( parse_val != -1):
+	# Check the go flag
+	if(packet[6] == 0):
+		# Wait a bit for Arduino to process point
+		sleep(0.2)
+
+
+	# Check the go flag
+	elif(packet[6] == 1):
+		# Wait for gantry routine to complete
 		read_val = arduino_ser.recieve_packet()
 		parse_val = arduino_ser.parse_packet(read_val)
-		# print "read : " + str(read_val) + " => " + str(parse_val)
-		sleep(1)
+		print "***** SENDING SPECIAL PACKET *****"
+		print "init read : " + str(read_val) + " => " + str(parse_val)
+		while( parse_val != -1):
+			read_val = arduino_ser.recieve_packet()
+			parse_val = arduino_ser.parse_packet(read_val)
+			sleep(0.1)
+		print "Motion Complete!"
 
-sleep(1)
+
 
 # Connect to Arduino over serial
 baud = 115200
@@ -48,14 +52,13 @@ sleep(1)
 ##############################################################################
 
 
-firgelli_up = [0, 0, 0, 400, 1, 800]
-firgelli_down = [0, 0, 0, 175, 1, 800]
+# firgelli_up = [0, 0, 0, 400, 1, 800]
+# firgelli_down = [0, 0, 0, 175, 1, 800]
 
-move_to = [0,400,False,0,False,800]
+firgelli_down = [0, 0, 175, 800, 0, 1, 1]
 
 # send_standard_packet(move_to)
 send_standard_packet(firgelli_down)
-send_special_packet()
 
 sleep(1)
 

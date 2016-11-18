@@ -4,7 +4,7 @@
 
 import serial
 
-'This class handles serial communication with pcb'
+'''This class handles serial communication with pcb'''
 class serial_comms():
 
 	'Constructor for serial class, sets up serial comms'
@@ -50,45 +50,33 @@ class serial_comms():
 		self.ser.write(('%%0%dx' % (length << 1) % m2_step).decode('hex')[-length:])
 		self.ser.write(('%%0%dx' % (length << 1) % m2_step_time).decode('hex')[-length:])
 		self.ser.write(('%%0%dx' % (length << 1) % fergelli_pos).decode('hex')[-length:])
-		self.ser.write(b'\xef')
-
-	def send_special_packet(self):
-		self.ser.write(b'\xfe')
-		self.ser.write(b'\xee')
-		self.ser.write(b'\xef')		
+		self.ser.write(b'\xef')	
 
 	def send_standard_packet(self, element):
+
 		length = 2
-		self.ser.write(b'\xfe')
 
 		x = element[0]
 		y = element[1]
+		z = element[2]
 
-		xy_abs_flag = element[2]
-		z = element[3]
-		z_abs_flag = element[4]
-		min_step_time = element[5]
+		min_step_time = element[3]
 
-		# print str(x) + " " + str(y)
+		xy_abs_flag = element[4]
+		z_abs_flag = element[5]
+		go_flag = element[6]
 
-		# self.ser.write(self.tohex(x,16))
-		# self.ser.write(self.tohex(y,16))
-		# self.ser.write(chr(xy_abs_flag))
-		# self.ser.write(self.tohex(z,16))
-		# self.ser.write(chr(z_abs_flag))
-		# self.ser.write(self.tohex(min_step_time,16))
+		mask = chr((z_abs_flag<<2)|(xy_abs_flag<<1)|go_flag)
+
+		self.ser.write(b'\xfe')
 
 		self.ser.write(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
 		self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
-		self.ser.write(chr(xy_abs_flag))
 		self.ser.write(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
-		self.ser.write(chr(z_abs_flag))
 		self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
+		self.ser.write(mask)
 		
 		self.ser.write(b'\xef')
-
-	def tohex(self, val, nbits):
-  		return hex((val + (1 << nbits)) % (1 << nbits))
 
 	'Read data from the PCB'
 	def recieve_packet(self):
