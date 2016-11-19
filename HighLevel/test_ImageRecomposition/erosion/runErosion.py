@@ -58,7 +58,7 @@ def draw(pts,img,thicnkess=3):
 ############################################################################
 	
 desiredImg = cv2.imread('../images/cat.png', cv2.IMREAD_UNCHANGED)
-brush_thickness = 7
+brush_thickness = 2
 
 paper_size = (11*25.4,8.5*25.4)
 

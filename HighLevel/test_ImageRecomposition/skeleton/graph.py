@@ -34,12 +34,14 @@ class graph():
 		self.size = len(point_list)
 		self.node_list = []
 		for i in range(self.size):
-			n = node(self.getIndex(self.point_list[i]))
+			point = self.point_list[i]
+			n = node(self.getIndex(point),point)
 			self.node_list.append(n)
 		if autoBuild:
 			self.build()
 		
-	def build(self,kernal = circleKernal(3,1)):
+	def build(self,kernal = circleKernal(3,-1)):
+		print kernal
 		hood = getNeighborPoints((0,0),kernal)
 		for i in range(self.size):
 			n = self.node_list[i]
@@ -65,11 +67,52 @@ class graph():
 	def getNode(self,index):
 		return self.node_list[index]
 
+	def clear(self):
+		for n in self.node_list:
+			n.clear()
+
 
 class node():
+	Clear, Frontier, Visited, Path, Dead = range(5)
 
-	def __init__(self,index):
+	def __init__(self,index,point):
 		self.index = index
+		self.point = point
 		self.neighbors = []
 		self.parent = -1
 		self.children = []
+		self.status = self.Clear
+
+	def clear(self):
+		self.parent = -1
+		self.children = []
+		self.status = self.Clear
+
+def explore(graph_instance):
+	'''TODO: returns endpoints of the graph'''
+	frontier_list = []
+	endpoints = []
+	i_segment = -1
+
+	for n_start in graph_instance.node_list:
+		if n_start.status == node.Clear:
+			endpoints.append([])
+			i_segment += 1
+			n_start.status = node.Frontier
+			frontier_list.append(n_start)
+			endpoints[i_segment].append(n_start)
+		while len(frontier_list) !=0:
+			parent = frontier_list.pop(0)
+			allVisited = True
+			for i in parent.neighbors:
+				child = graph_instance.getNode(i)
+				if child.status != node.Visited:
+					allVisited = False
+				if child.status == node.Clear:
+					child.status = child.Frontier
+					frontier_list.append(child)
+			parent.status = node.Visited
+			if allVisited:
+				endpoints[i_segment].append(parent)
+
+	return endpoints

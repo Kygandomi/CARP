@@ -100,7 +100,7 @@ def skeletonize(binImg):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('../images/pig.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/flower.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 2
 
 paper_size = (11*25.4,8.5*25.4)
@@ -112,7 +112,7 @@ desired_rows, desired_cols = desiredImg_grey.shape
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU) 
 #binImg = autoCanny(desiredImg)
 
-# display(binImg)
+display(binImg)
 pathImg = skeletonize(binImg)
 
 # display(pathImg)
@@ -128,11 +128,21 @@ for point in pts:
 		if np.count_nonzero(pathImg[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
 			pathImg[point]=0
 
-# display(pathImg)
+display(pathImg)
+
+nodeImg = cv2.cvtColor(pathImg.copy(),cv2.COLOR_GRAY2BGR)
 
 g = graph.graph(getPoints(pathImg,255))
 print g.point_list[0]
 print g.node_list[0].neighbors
+
+endpoints = graph.explore(g)
+
+for region in endpoints:
+	for node in region:
+		nodeImg[node.point[0],node.point[1]]=(0,255,0)
+
+display(nodeImg)
 
 ## Hough Lines Transform. Find lines on path
 # minLineLength = 3
