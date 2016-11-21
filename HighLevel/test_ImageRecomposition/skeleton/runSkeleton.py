@@ -100,7 +100,7 @@ def skeletonize(binImg):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('../images/flower.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/pikachu.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 2
 
 paper_size = (11*25.4,8.5*25.4)
@@ -112,7 +112,7 @@ desired_rows, desired_cols = desiredImg_grey.shape
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU) 
 #binImg = autoCanny(desiredImg)
 
-display(binImg)
+# display(binImg)
 pathImg = skeletonize(binImg)
 
 # display(pathImg)
@@ -128,19 +128,19 @@ for point in pts:
 		if np.count_nonzero(pathImg[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
 			pathImg[point]=0
 
-display(pathImg)
-
-nodeImg = cv2.cvtColor(pathImg.copy(),cv2.COLOR_GRAY2BGR)
+# display(pathImg)
 
 g = graph.graph(getPoints(pathImg,255))
-print g.point_list[0]
-print g.node_list[0].neighbors
+paths = graph.findPaths(g)
 
-endpoints = graph.explore(g)
-
-for region in endpoints:
-	for node in region:
-		nodeImg[node.point[0],node.point[1]]=(0,255,0)
+nodeImg = cv2.cvtColor(pathImg.copy(),cv2.COLOR_GRAY2BGR)
+for node in g.node_list:
+	if node.status == graph.node.End:
+		nodeImg[node.point[0],node.point[1]] = (0,0,255)
+	elif node.status == graph.node.Path:
+		nodeImg[node.point[0],node.point[1]] = (0,255,255)
+	elif node.status == graph.node.Dead:
+		nodeImg[node.point[0],node.point[1]] = (128,128,128)
 
 display(nodeImg)
 
@@ -157,33 +157,34 @@ display(nodeImg)
 
 # display(linesImg)
 
+orders = open("../orders/orders.txt", 'w')
 
+desired_n_points = 10000
+step = 1#+int(sum(len(path) for path in paths)/desired_n_points)
 
-# orders = open("../orders/orders.txt", 'w')
+n_points = 0
+out_pts = []
+for path_i in range(len(paths)):
+	path = paths[path_i]
+	list_pts=[]
+	for pt_i in range(0,len(path),step):
+		pt=path[pt_i]
 
-# n_points = 0
-# out_pts = []
-# for cnt_i in range(len(contours)):
-# 	cnt = contours[cnt_i]
-# 	list_pts=[]
-# 	for pt_i in range(0,len(cnt),15):
-# 		pt=cnt[pt_i][0]
+		#pt=(8.5*25.4/1000)*pt
+		pt=map((pt[1],pt[0]),desiredImg.shape[:2],paper_size)
 
-# 		#pt=(8.5*25.4/1000)*pt
-# 		pt=map(pt,desiredImg.shape[:2],paper_size)
+		orders.write(str(pt[0]) + ' '+ str(pt[1]) + '\n')
 
-# 		orders.write(str(pt[0]) + ' '+ str(pt[1]) + '\n')
+		list_pts.append(pt)
 
-# 		list_pts.append(pt)
+		n_points = n_points + 1
+	out_pts.append(list_pts)
+	orders.write('\n')
+orders.close()
+print n_points
 
-# 		n_points = n_points + 1
-# 	out_pts.append(list_pts)
-# 	orders.write('\n')
-# orders.close()
-# print n_points
+drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
 
-# drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
-
-# output(drawnImg, 'outImg')
+output(drawnImg, 'outImg')
 
 print "Done"
