@@ -192,12 +192,12 @@ def findPaths(graph_instance):
 		while end_node.parent != -1:
 			if end_node.status == node.End:
 				if end_node.index!=i_original:
-					print "Unexpected End"
+					# print "Unexpected End"
 					return
 			#if you encounter another path, create a new endpoint and finish
 			elif end_node.status == node.Path:
 				end_node.status = node.End
-				print "Encountered Path"
+				# print "Encountered Path"
 				return
 			#ensure current node is marked as path
 			else: #elif end_node.status!=node.Dead:
@@ -224,7 +224,7 @@ def findPaths(graph_instance):
 			parent.children.append(end_node.index)
 			end_node = parent
 		end_node.status = node.End
-		print "Expected End"
+		# print "Expected End"
 
 	# def reverse(end_node,start_node = None):
 	# 	n_kids = len(end_node.children) == 0:
@@ -274,8 +274,8 @@ def findPaths(graph_instance):
 			for i in n_start.neighbors:
 				child = graph_instance.getNode(i)
 				if child.status == node.End and n_start.parent!= child.index:
-					child.parent = n_start.index
-					createPath(child)
+					child.children.append(n_start.index)
+					createPath(n_start)
 		#Explore the frontier
 		while len(frontier_list) !=0:
 			parent = frontier_list.pop(0)
@@ -300,15 +300,19 @@ def findPaths(graph_instance):
 
 	paths = []
 	#	Extract ordered lists of points from graph
-	for n_start in graph_instance.node_list:
+	for i_start in range(graph_instance.size):
+		n_start = graph_instance.getNode(i_start)
 		if n_start.status == node.End:
-			path = []
-			n_end = n_start
-			while len(n_end.children)!=0:
-				path.append(n_end.point)
-				#TODO: make smarter decision about which child to use
-				# ex: 3 children. pick one or the other or none
-				n_end = graph_instance.getNode(n_end.children.pop(0))
-			paths.append(path)
+			while len(n_start.children)!=0:
+				path = []
+				n_end = n_start
+				while len(n_end.children)!=0:
+					path.append(n_end.point)
+					#TODO: make smarter decision about which child to use
+					# ex: 3 children. pick one or the other or none
+					n_end = graph_instance.getNode(n_end.children.pop(0))
+				paths.append(path)
+		if len(n_start.children)!=0:
+			i_start -= 1
 
 	return paths
