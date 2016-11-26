@@ -2,6 +2,8 @@
 import cv2
 import numpy as np
 import bisect
+import itertools
+import math
 
 def circleKernal(radius,thickness = -1):
 	brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,thickness).astype('uint8')
@@ -14,7 +16,7 @@ def getPoints(img,color=255):
 		real_pts.append((pts[0][j],pts[1][j]))
 	return real_pts
 
-def getNeighborPoints(pt,kernal = np.ones((3,3)),excludeSelf = True):
+def getNeighborPoints(pt,kernal = np.ones((3,3)),excludeSelf = True,sort=True):
 	# print kernal
 	shape = kernal.shape
 	anchor = (int(shape[0]/2),int(shape[1]/2))
@@ -24,6 +26,14 @@ def getNeighborPoints(pt,kernal = np.ones((3,3)),excludeSelf = True):
 			if(kernal[c][r] != 0):
 				if (not excludeSelf) or (not (anchor[0]==c and anchor[1]==r)) :
 					points.append([pt[0]+c-anchor[0],pt[1]+r-anchor[1]])
+	if sort:
+		sorted_points = []
+		for pt in points:
+			sorted_points.append((pt[0]**2+pt[1]**2,(pt[0],pt[1])))
+		sorted_points.sort()
+		points = []
+		for pair in sorted_points:
+			points.append(pair[1])
 	return np.array(points)
 
 class graph():
@@ -40,9 +50,9 @@ class graph():
 		if autoBuild:
 			self.build()
 		
-	def build(self,kernal = circleKernal(3,-1)):
+	def build(self,kernal = circleKernal(3,-1),sort=True):
 		print kernal
-		hood = getNeighborPoints((0,0),kernal)
+		hood = getNeighborPoints((0,0),kernal,sort)
 		for i in range(self.size):
 			n = self.node_list[i]
 			n.neighbors = self.getIndeces(hood+self.getPoint(i))
@@ -104,84 +114,6 @@ class node():
 		self.status = self.Clear
 
 
-# def explore(graph_instance):
-# 	'''TODO: returns endpoints of the graph'''
-# 	frontier_list = []
-# 	endpoints = []
-# 	i_segment = -1
-
-# 	graph_instance.clearAll()
-
-# 	for n_start in graph_instance.node_list:
-# 		if n_start.status == node.Clear:
-# 			endpoints.append([])
-# 			i_segment += 1
-# 			n_start.status = node.Frontier
-# 			frontier_list.append(n_start)
-# 			endpoints[i_segment].append(n_start)
-# 		while len(frontier_list) !=0:
-# 			parent = frontier_list.pop(0)
-# 			allVisited = True
-# 			for i in parent.neighbors:
-# 				child = graph_instance.getNode(i)
-# 				if child.status == node.Clear or child.status == node.Frontier:
-# 					allVisited = False
-# 				if child.status == node.Clear:
-# 					child.status = child.Frontier
-# 					frontier_list.append(child)
-# 			parent.status = node.Visited
-# 			if allVisited:
-# 				endpoints[i_segment].append(parent)
-
-# 	return endpoints
-
-# def a_star(graph_instance,start_node,end_node):
-# 	def heuristic(from_node,to_node):
-# 		return ((from_node.point[0]-to_node.point[0])**2+(from_node.point[1]-to_node.point[1])**2)
-
-# 	def cost(from_node,to_node):
-# 		return heuristic(from_node,to_node)
-
-# 	for node_instance in graph_instance.node_list:
-# 		node_instance.clearCost()
-# 		if node_instance.status != node.Path and node_instance.status != node.Dead and node_instance.status != node.Endpoint:
-# 			node_instance.clearAll()
-
-# 	#list = [(cost+heuristic,node),(..,..)......]
-
-# 	start_node.lowest_cost = 0
-# 	frontier_list = [(heuristic(start_node,end_node),start_node)]
-# 	while len(frontier_list) != 0:
-# 		parent = frontier_list.pop(0)[1]
-# 		for child_i in parent.neighbors:
-# 			child = graph_instance.getNode(child_i)
-# 			if child.status == node.Dead:
-# 				continue
-
-# 			#Check if already on a path
-# 			#Check for endpoints
-			
-# 			c = cost(parent,child)
-# 			c_total = parent.lowest_cost+c
-# 			if child.lowest_cost <0 or c_total<child.lowest_cost:
-# 				child.lowest_cost = c_total
-# 				child.parent = parent.index
-
-# 				#Check for goal reached
-# 				if child.index == end_node.index:
-# 					return child
-
-# 				h = heuristic(child,end_node)
-# 				frontier_list.append(((c_total+h),child))
-# 				frontier_list.sort()
-
-# 	# No Path found to end. Find node with max lowest_cost and return it
-# 	max_node = start_node
-# 	for n in graph_instance.node_list:
-# 		if n.lowest_cost>max_node.lowest_cost:
-# 			max_node = n
-# 	return max_node
-
 def findPaths(graph_instance):
 	def cost(from_node,to_node):
 		return ((from_node.point[0]-to_node.point[0])**2+(from_node.point[1]-to_node.point[1])**2)
@@ -193,11 +125,13 @@ def findPaths(graph_instance):
 			if end_node.status == node.End:
 				if end_node.index!=i_original:
 					# print "Unexpected End"
+					#parent.children.append(end_node.index)
 					return
 			#if you encounter another path, create a new endpoint and finish
 			elif end_node.status == node.Path:
 				end_node.status = node.End
 				# print "Encountered Path"
+				#parent.children.append(end_node.index)
 				return
 			#ensure current node is marked as path
 			else: #elif end_node.status!=node.Dead:
@@ -226,36 +160,44 @@ def findPaths(graph_instance):
 		end_node.status = node.End
 		# print "Expected End"
 
-	# def reverse(end_node,start_node = None):
-	# 	n_kids = len(end_node.children) == 0:
-	# 	if end_node.parent == -1:
-	# 		if n_kids == 0:
-	# 			print "Can't reverse: No connections"
-	# 			return False
-	# 		elif n_kids == 1:
-	# 			end_node.parent = end_node.children.pop(0)
-	# 			return True
-	# 		elif start_node is not None and (start_node.index in end_node.children):
-	# 			end_node.children.remove(start_node.index)
-	# 			end_node.parent = start_node.index
-	# 			return True
-	# 		else
-	# 			print "Can't reverse: too many kids and no parent"
-	# 			return False
-	# 	else:
-	# 		if n_kids == 0:
-	# 			end_node.children.append(end_node.parent)
-	# 			end_node.clearParent()
-	# 			return True
-	# 		elif n_kids == 1:
-	# 			if reverse(graph_instance.getNode(end_node.parent),end_node)
-	# 				end_node.children.append(end_node.parent)
-	# 				end_node.parent = end_node.children.pop(0)
-	# 				return True
-	# 		elif start_node is not None and (start_node.index in end_node.children):
-	# 			end_node.children.remove(start_node.index)
-	# 			end_node.parent = start_node.index
-	# 			return True
+	def pickChild(middle_node):
+		n_children = len(middle_node.children)
+		if n_children == 1:
+			return middle_node.children[0]
+		if n_children == 0:
+			return -1
+		if (middle_node.parent == -1) and (n_children > 0):
+			return middle_node.children[0]
+
+		angles_list = []
+
+		parent = graph_instance.getNode(middle_node.parent)
+		delta = (parent.point[0] - middle_node.point[0],parent.point[1] - middle_node.point[1])
+		angle = math.atan2(delta[1],delta[0])
+		angles_list.append((parent.index,angle))
+
+		for child_i in middle_node.children:
+			child = graph_instance.getNode(child_i)
+			delta = (child.point[0] - middle_node.point[0],child.point[1] - middle_node.point[1])
+			angle = math.atan2(delta[1],delta[0])
+			angles_list.append((child_i,angle))
+
+		while len(angles_list) > 1:
+			combos = itertools.combinations(angles_list,2)
+			best_diff = -1
+			best_pair = (-1,-1)
+			for pair in combos:
+				diff = math.pi-abs(pair[0][1] - pair[1][1])
+				if best_diff == -1 or best_diff>diff:
+					best_diff = diff
+					best_pair = pair
+			if best_pair[0][0] == parent.index:
+				return best_pair[1][0]
+			if best_pair[1][0] == parent.index:
+				return best_pair[0][0]
+			angles_list.remove(best_pair[0])
+			angles_list.remove(best_pair[1])
+		return -1
 
 	#Ensure graph is in a fresh state
 	graph_instance.clearAll()
@@ -274,8 +216,8 @@ def findPaths(graph_instance):
 			for i in n_start.neighbors:
 				child = graph_instance.getNode(i)
 				if child.status == node.End and n_start.parent!= child.index:
-					child.children.append(n_start.index)
-					createPath(n_start)
+					child.parent = n_start.index
+					createPath(child)
 		#Explore the frontier
 		while len(frontier_list) !=0:
 			parent = frontier_list.pop(0)
@@ -292,11 +234,15 @@ def findPaths(graph_instance):
 				parent.status = node.Visited
 				if allVisited:
 					createPath(parent)
-
+			# elif parent.status == node.Dead:
+			# 	for i in parent.neighbors:
+			# 		child = graph_instance.getNode(i)
+			# 		if child.status == node.Clear:
+			# 			child.status = child.Frontier
+			# 			frontier_list.append(child)
+			# 			child.parent = parent.index
 	#At this point, graph contains endpoints, paths, and dead pixels
-	#TODO: 
-	#	Simplify graph by removing redundant endpoints
-	#		Will sometimes require reversing direction of travel
+	
 
 	paths = []
 	#	Extract ordered lists of points from graph
@@ -304,15 +250,64 @@ def findPaths(graph_instance):
 		n_start = graph_instance.getNode(i_start)
 		if n_start.status == node.End:
 			while len(n_start.children)!=0:
-				path = []
+				path = [n_start.point]
 				n_end = n_start
 				while len(n_end.children)!=0:
+					#Choose which child to use. Prioritize straight lines over sharp turns
+					child_i = pickChild(n_end)
+					if child_i == -1:
+						paths.append(path)
+						path = [n_end.point]
+						child_i = n_end.children[0]
+					n_end.children.remove(child_i)
+					n_end = graph_instance.getNode(child_i)
 					path.append(n_end.point)
-					#TODO: make smarter decision about which child to use
-					# ex: 3 children. pick one or the other or none
-					n_end = graph_instance.getNode(n_end.children.pop(0))
 				paths.append(path)
-		if len(n_start.children)!=0:
-			i_start -= 1
 
-	return paths
+	#TODO: 
+	#	Simplify graph by removing redundant endpoints and empty paths
+	#		Will sometimes require reversing direction of travel
+
+	cleanPaths = []
+
+	for path_i in range(len(paths)):
+		if path_i>=len(paths):
+				break
+		path = paths[path_i]
+		if len(path) == 0:
+			continue
+		for path_j in range(path_i+1,len(paths),1):
+			if path_j>=len(paths):
+				break
+
+			i_start = path[0]
+			i_end = path[-1]
+
+			path2 = paths[path_j]
+			j_start = path2[0]
+			j_end = path2[-1]
+
+			if i_end == j_start:
+				del path2[0]
+				path.extend(path2)
+				del paths[path_j]
+			elif j_end == i_start:
+				del path[0]
+				path2.extend(path)
+				path = path2
+				del paths[path_j]
+			elif i_end == j_end:
+				del path2[-1]
+				path2.reverse()
+				path.extend(path2)
+				del paths[path_j]
+			elif i_start == j_start:
+				del path2[0]
+				path2.reverse()
+				path2.extend(path)
+				path = path2
+				del paths[path_j]
+
+		cleanPaths.append(path)
+
+	return cleanPaths

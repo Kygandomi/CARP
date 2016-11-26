@@ -100,7 +100,7 @@ def skeletonize(binImg):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('../images/pikachu.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/destiny.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 2
 
 paper_size = (11*25.4,8.5*25.4)
@@ -141,6 +141,8 @@ for node in g.node_list:
 		nodeImg[node.point[0],node.point[1]] = (0,255,255)
 	elif node.status == graph.node.Dead:
 		nodeImg[node.point[0],node.point[1]] = (128,128,128)
+	elif node.status == graph.node.Visited:
+		nodeImg[node.point[0],node.point[1]] = (255,0,0)
 
 display(nodeImg)
 
@@ -159,8 +161,8 @@ display(nodeImg)
 
 orders = open("../orders/orders.txt", 'w')
 
-desired_n_points = 10000
-step = 1#+int(sum(len(path) for path in paths)/desired_n_points)
+desired_n_points = 1000
+step = 1+int(sum(len(path) for path in paths)/desired_n_points)
 
 n_points = 0
 out_pts = []
@@ -185,6 +187,6 @@ print n_points
 
 drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
 
-output(drawnImg, 'outImg')
+display(drawnImg, 'outImg')
 
 print "Done"
