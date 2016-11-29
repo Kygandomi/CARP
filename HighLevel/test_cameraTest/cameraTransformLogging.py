@@ -9,7 +9,7 @@ sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work o
 
 
 
-def get_image(camera_value):
+def get_image_from_camera(camera_value):
   cam = cv2.VideoCapture(camera_value)   # value -> index of camera. My webcam was 0, USB camera was 1.
   s, img = cam.read()
   if s:    # frame captured without any errors
@@ -85,7 +85,12 @@ def four_point_transform(image, pts):
 def get_transform(image):
     gray_image = cv2.cvtColor(camera_image,cv2.COLOR_BGR2GRAY)
 
+    # cv2.imwrite("gray_" + str(int(time.time())) + ".jpg",gray_image) #save image
+
+
     adaptive_thresholded = cv2.adaptiveThreshold(gray_image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+
+    # cv2.imwrite("ad_thresh_" + str(int(time.time())) + ".jpg",adaptive_thresholded) #save image
 
     image, contours, other = cv2.findContours(adaptive_thresholded,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE) # Gather the contours
 
@@ -107,17 +112,25 @@ def get_transform(image):
 
     box = np.int0(box) # maths
 
+    cv2.drawContours(camera_image,[box],0,(0,0,255),2) # Draw the actual contours so we can see them
+
+
+    cv2.drawContours(adaptive_thresholded,[box],0,(0,0,255),2) # Draw the actual contours so we can see them
+
+    # cv2.imwrite("at_boxed_" + str(int(time.time())) + ".jpg",adaptive_thresholded) #save image
+    # cv2.imwrite("boxed_" + str(int(time.time())) + ".jpg",camera_image) #save image
+
     return box
 
 # This is for testing.
-camera_image = get_image(1)
+camera_image = get_image_from_camera(1)
 
 transform = get_transform(camera_image)
 
 # This will write a transformed image out every 5 seconds.
 while(True):
     try:
-        img = get_image(1)
+        img = get_image_from_camera(1)
         canvas_image = four_point_transform(img, transform) # Generate the canvas image based on the box's transform
         cv2.imwrite("imlog/capture_" + str(int(time.time())) + ".jpg",canvas_image) #save image
         time.sleep(5)
