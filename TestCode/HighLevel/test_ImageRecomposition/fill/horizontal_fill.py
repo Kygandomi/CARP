@@ -7,7 +7,7 @@ sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work o
 import cv2
 import numpy as np
 
-brushSize = 50  #number of pixels in the radius of the brush
+brushSize = 3  #number of pixels in the radius of the brush
 
 def display(img, name):
 	cv2.imshow(name, img)
@@ -15,7 +15,7 @@ def display(img, name):
 	cv2.destroyAllWindows()
 
 
-img = cv2.imread('box.png', cv2.IMREAD_UNCHANGED) #image you want to create
+img = cv2.imread('../images/flower.png', cv2.IMREAD_UNCHANGED) #image you want to create
 display(img, "Initial Image")
 
 #dilate the image the radius of the brush
@@ -50,8 +50,8 @@ canvasImg = np.zeros((height, width, channels), np.uint8) #create canvas image s
 canvasImg.fill(255) #fill with white
 
 for element in range(0, len(startPoints)-1):
-	canvasImg[startPoints[element][0], startPoints[element][1]] = (0,0,0, 255)
-	canvasImg[endPoints[element][0], endPoints[element][1]] = (0,0,0, 255)
+	canvasImg[startPoints[element][0], startPoints[element][1]] = (0,0, 255)
+	canvasImg[endPoints[element][0], endPoints[element][1]] = (0,0, 255)
 
 display(canvasImg, "Finished Image") #displays the start and end positions only
 
@@ -59,5 +59,5 @@ display(canvasImg, "Finished Image") #displays the start and end positions only
 pixelToMM = (8.5*25.4)/width
 orders = open("HorFillOrders.txt", 'w') #store points
 for element in range(0, len(startPoints)-1):
-	orders.write(str(startPoints[element][0]*pixelToMM)+' '+str(startPoints[element][1]*pixelToMM)+' '+str(endPoints[element][0]*pixelToMM)+' '+str(endPoints[element][1]*pixelToMM) +'\n')
+	orders.write(str(startPoints[element][1]*pixelToMM)+' '+str(startPoints[element][0]*pixelToMM)+'\n'+str(endPoints[element][1]*pixelToMM)+' '+str(endPoints[element][0]*pixelToMM) +'\n'+'\n')
 orders.close()

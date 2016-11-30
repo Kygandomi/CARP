@@ -57,11 +57,11 @@ def getPaint():
 ##################################################################
 
 # file to read from 
-fname = "../test_ImageRecomposition/orders/orders_rocket.txt"
+fname = "../test_ImageRecomposition/fill/HorFillOrders.txt"
 
 # Establish Serial Connection
 baud = 115200
-ports_list = ['COM3', '/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
+ports_list = ['COM8', '/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
 for i in range(len(ports_list)):
 	port = ports_list[i]
 	arduino_ser = ser_comm.serial_comms(port, baud)
@@ -137,7 +137,7 @@ while stroke_i<len(strokes):
 	first_elem = True
 	point_i=0
 	stroke_i += 1
-	if(MAX_DIST-paint_distance < 300)
+	if(MAX_DIST-paint_distance < 300):
 		paint_distance = MAX_DIST
 
 firgelli_up = [0, 0, 600, 800, 0, 1, 1]

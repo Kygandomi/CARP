@@ -206,8 +206,8 @@ fname = "../test_ImageRecomposition/fill/HorFillOrders.txt"
 
 # Connect to Arduino over serial
 baud = 115200
-# port = 'COM8'
-port = '/dev/tty.usbmodem1411'
+port = 'COM8'
+#port = '/dev/tty.usbmodem1411'
 arduino_ser = ser_comm.serial_comms(port, baud)
 arduino_ser.connect()
 

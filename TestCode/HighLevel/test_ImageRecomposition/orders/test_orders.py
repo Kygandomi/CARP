@@ -43,11 +43,11 @@ def drawLines(pts,img,thicnkess=3):
 	for i in range(len(pts)):
 		if len(pts[i])==1:
 			cv2.circle(img,(int(pts[i][0][0]),int(pts[i][0][1])),0,thicnkess*3)
-			display(img)
+			#display(img)
 		else:
 			for c in range(len(pts[i])-1):
 				cv2.line(img,(int(pts[i][c][0]),int(pts[i][c][1])),(int(pts[i][c+1][0]),int(pts[i][c+1][1])),0,thicnkess)
-			display(img)
+			#display(img)
 	return img
 
 ############################################################################
@@ -57,9 +57,9 @@ def drawLines(pts,img,thicnkess=3):
 paper_size = (11*25.4,8.5*25.4)
 scale = 3
 
-fname = "orders.txt"
+fname = "../fill/HorFillOrders.txt"
 
-in_pts = []
+in_pts = [] 
 with open(fname) as f:
 	# For each line in the file
 	contour = []

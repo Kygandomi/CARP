@@ -169,7 +169,7 @@ def visualPolyDist(rawPolyImg):
 ###################     Required Helper Functions      ################################
 #######################################################################################
 	
-desiredImg = cv2.imread('../images/fish.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/twocarp.png', cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
