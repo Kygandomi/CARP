@@ -7,7 +7,7 @@ from CameraException import *
 sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work on Odell's computer
 
 
-class Camera:
+class Camera(object):
 
     def __init__(self, port):
         self.port = port
@@ -77,7 +77,7 @@ class Camera:
         long_contours = [] # Create an array for the long edges to be held
 
         for cnt in contours:
-            if 15000<cv2.contourArea(cnt) < 850000: # Tuned to prevent small contours, but also not consider image edges a contour
+            if 15000<cv2.contourArea(cnt) < 850000: # Tuned to prevent small contours, but also not consider image edges a contour @TODO: objects for canvases?
                 long_contours.append(cnt) # Record any long contours
                 cv2.drawContours(image,[cnt],0,(0,255,0),2) # Draw those contours onto the image
 
@@ -90,7 +90,7 @@ class Camera:
 
         box = self.order_points(box) # Order the points so they were in proper order for transforms
 
-        box = np.int0(box) # maths
+        box = np.int0(box) # integer
 
         ordered_rect = self.order_points(box)
 
