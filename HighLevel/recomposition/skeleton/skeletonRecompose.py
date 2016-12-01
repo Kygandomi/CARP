@@ -1,12 +1,11 @@
-from recomposition.abstractRecompose import absRecompose
+from recomposition.abstractRecompose.absRecompose import recomposer
 from common.util import *
-import graph.py
+import graph
 import cv2
 
-class skeletonRecomposer(absRecompose):
+class skeletonRecomposer(recomposer):
     def __init__(self, image, args):
-        self.decompImage = image
-        self.args = args
+        recomposer.__init__(self, image,args)
         pass
 
     def recompose(self):
@@ -24,66 +23,65 @@ class skeletonRecomposer(absRecompose):
         neighbors = getNeighborPoints([0,0],circleKernal(radius,border))
         pts = getPoints(pathImg,255)
         for point in pts:
-        	if pathImg[point] != 0:
-				if np.count_nonzero(pathImg[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
-					pathImg[point]=0
-		g = graph.graph(getPoints(pathImg,255))
-		paths = graph.findPaths(g)
+            if pathImg[point] != 0:
+                if np.count_nonzero(pathImg[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
+                    pathImg[point]=0
+        g = graph.graph(getPoints(pathImg,255))
+        paths = graph.findPaths(g)
 
-		paths = self.desired_n_points(1000)
+        paths = self.reducePaths(paths,1000)
 
-		return paths
+        return paths
 
-	################################################################
-	############# Helpers ##########################################
-	################################################################
+    ################################################################
+    ############# Helpers ##########################################
+    ################################################################
 
     def skeletonize(self, binImg):
-		element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
-		#element = circleKernal(1)
-		done = False
+        element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+        #element = circleKernal(1)
+        done = False
 
-		img = 255-binImg.copy()
-		skel = np.zeros(img.shape,np.uint8)
+        img = 255-binImg.copy()
+        skel = np.zeros(img.shape,np.uint8)
 
-		while( not done):
-			eroded = cv2.erode(img,element)
-			temp = cv2.dilate(eroded,element)
-			temp = cv2.subtract(img,temp)
-			skel = cv2.bitwise_or(skel,temp)
-			img = eroded.copy()
+        while( not done):
+            eroded = cv2.erode(img,element)
+            temp = cv2.dilate(eroded,element)
+            temp = cv2.subtract(img,temp)
+            skel = cv2.bitwise_or(skel,temp)
+            img = eroded.copy()
 
-			nonzero = cv2.countNonZero(img)
-			if nonzero==0:
-				done = True
+            nonzero = cv2.countNonZero(img)
+            if nonzero==0:
+                done = True
 
-		return skel
+        return skel
 
-	def createNodeImg(self,pathImg):
-		nodeImg = cv2.cvtColor(pathImg.copy(),cv2.COLOR_GRAY2BGR)
-		for node in g.node_list:
-			if node.status == graph.node.End:
-				nodeImg[node.point[0],node.point[1]] = (0,0,255)
-			elif node.status == graph.node.Path:
-				nodeImg[node.point[0],node.point[1]] = (0,255,255)
-			elif node.status == graph.node.Dead:
-				nodeImg[node.point[0],node.point[1]] = (128,128,128)
-			elif node.status == graph.node.Visited:
-				nodeImg[node.point[0],node.point[1]] = (255,0,0)
-		return nodeImg
+    def createNodeImg(self,pathImg):
+        nodeImg = cv2.cvtColor(pathImg.copy(),cv2.COLOR_GRAY2BGR)
+        for node in g.node_list:
+            if node.status == graph.node.End:
+                nodeImg[node.point[0],node.point[1]] = (0,0,255)
+            elif node.status == graph.node.Path:
+                nodeImg[node.point[0],node.point[1]] = (0,255,255)
+            elif node.status == graph.node.Dead:
+                nodeImg[node.point[0],node.point[1]] = (128,128,128)
+            elif node.status == graph.node.Visited:
+                nodeImg[node.point[0],node.point[1]] = (255,0,0)
+        return nodeImg
 
-	def reducePaths(self,desired_n_points):
-		step = 1+int(sum(len(path) for path in paths)/desired_n_points)
+    def reducePaths(self,paths,desired_n_points):
+        step = 1+int(sum(len(path) for path in paths)/desired_n_points)
 
-		out_pts = []
-		for path_i in range(len(paths)):
-			path = paths[path_i]
-			list_pts=[]
-			for pt_i in range(0,len(path),step):
-				pt=path[pt_i]
-				#pt=(8.5*25.4/1000)*pt
-				pt=map((pt[1],pt[0]),desiredImg.shape[:2])
-				list_pts.append(pt)
-			out_pts.append(list_pts)
-		return out_pts
-
+        out_pts = []
+        for path_i in range(len(paths)):
+            path = paths[path_i]
+            list_pts=[]
+            for pt_i in range(0,len(path),step):
+                pt=path[pt_i]
+                #pt=(8.5*25.4/1000)*pt
+                pt=map((pt[1],pt[0]),self.image.shape[:2])
+                list_pts.append(pt)
+            out_pts.append(list_pts)
+        return out_pts

@@ -21,7 +21,6 @@ class graph():
 			self.build()
 		
 	def build(self,kernal = circleKernal(3,-1),sort=True):
-		print kernal
 		hood = getNeighborPoints((0,0),kernal,sort)
 		for i in range(self.size):
 			n = self.node_list[i]

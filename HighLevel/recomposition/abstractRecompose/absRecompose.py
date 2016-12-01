@@ -1,6 +1,6 @@
 class recomposer(object):
     def __init__(self, image, args):
-        self.decompImage = image
+        self.image = image
         self.args = args
         pass
     def recompose(self):

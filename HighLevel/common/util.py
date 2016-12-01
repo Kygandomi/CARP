@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 
-def display(img, name=""):
+def display(img, name="img"):
 	cv2.imshow(name, img)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
@@ -28,7 +28,7 @@ def getPoints(img,color=255):
 	# print real_pts
 	return real_pts
 
-def getNeighborPoints(pt,kernal = np.ones((3,3)),excludeSelf = True):
+def getNeighborPoints(pt,kernal = np.ones((3,3)),excludeSelf = True, sort = True):
 	""" Returns a list of points which are neighbors of the given point. 
 		Neighbors are depicted as '1' in the given (Default 8-connected)"""
 	shape = kernal.shape
@@ -50,7 +50,7 @@ def getNeighborPoints(pt,kernal = np.ones((3,3)),excludeSelf = True):
 	return np.array(points)
 
 #TODO?: Modify to accept numpy array of points, thereby allowing the function to solve multiple points at once
-def map(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False):
+def map(pt,src_shape,dst_shape = (11*25.4,8.5*25.4),orient=True,stretch = False):
 	""" Maps the given point in one image shape to its corresponding point in another shape. 
 		Options to automatically stretch and/or rotate the image in order to fill the destination shape
 		Also returns scale and offset (in the case of no stretching) or scaleX and scaleY"""
@@ -90,7 +90,16 @@ def drawLines(pts,img,thicnkess=3,showSteps=False):
 				display(img)
 	return img
 
-def testOrders(path='orders.text',outName='outImg',scale = 3,paper_size = (11*25.4,8.5*25.4)):
+def testLLT(LLT,scale = 2,paper_size = (11*25.4,8.5*25.4)):
+	"""	Displays the expected output of the given orders text file"""
+	for stroke in LLT:
+		for command_i in range(len(stroke)):
+			command = stroke[command_i]
+			stroke[command_i] = (scale*command[0],scale*command[1])
+	drawnImg = drawLines(LLT,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),2)
+	display(drawnImg)
+
+def testOrders(path='orders.text',scale = 2,paper_size = (11*25.4,8.5*25.4)):
 	"""	Displays the expected output of the given orders text file"""
 	in_pts = [] 
 	with open(path) as f:
@@ -106,4 +115,4 @@ def testOrders(path='orders.text',outName='outImg',scale = 3,paper_size = (11*25
 	close(fname)
 
 	drawnImg = drawLines(in_pts,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),2)
-	display(drawnImg,outName)
+	display(drawnImg)

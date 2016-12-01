@@ -10,3 +10,4 @@ cam = CanvasCamera.Camera(1)
 
 # Write the canvas image to a file.
 cv2.imwrite("test.png", cam.get_canvas())
+
