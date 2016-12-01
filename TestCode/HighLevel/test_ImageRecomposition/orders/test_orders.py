@@ -39,15 +39,17 @@ def map(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False)
 	
 	return pt_new
 
-def drawLines(pts,img,thicnkess=3):
+def drawLines(pts,img,thicnkess=3,showSteps=False):
 	for i in range(len(pts)):
 		if len(pts[i])==1:
 			cv2.circle(img,(int(pts[i][0][0]),int(pts[i][0][1])),0,thicnkess*3)
-			#display(img)
+			if showSteps:
+				display(img)
 		else:
 			for c in range(len(pts[i])-1):
 				cv2.line(img,(int(pts[i][c][0]),int(pts[i][c][1])),(int(pts[i][c+1][0]),int(pts[i][c+1][1])),0,thicnkess)
-			#display(img)
+			if showSteps:
+				display(img)
 	return img
 
 ############################################################################

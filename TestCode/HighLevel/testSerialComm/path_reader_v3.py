@@ -61,7 +61,7 @@ fname = "../test_ImageRecomposition/fill/HorFillOrders.txt"
 
 # Establish Serial Connection
 baud = 115200
-ports_list = ['COM8', '/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
+ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
 for i in range(len(ports_list)):
 	port = ports_list[i]
 	arduino_ser = ser_comm.serial_comms(port, baud)

@@ -20,6 +20,7 @@ def output(img,name="output"):
 
 def circleKernal(radius):
 	brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,-1).astype('uint8')
+	return brush
 
 def map(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False):
 	src_rows, src_cols = src_shape
