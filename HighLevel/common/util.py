@@ -90,6 +90,18 @@ def drawLines(pts,img,thicnkess=3,showSteps=False):
 				display(img)
 	return img
 
+def mapLLT(LLT,src_shape,dst_shape = (11*25.4,8.5*25.4),orient=True,stretch = False):
+	out_pts = []
+	for stroke in LLT:
+		list_pts=[]
+		for command in stroke:
+			pt=map((command[1],command[0]),src_shape[:2],dst_shape,orient,stretch)
+			list_pts.append(pt)
+		out_pts.append(list_pts)
+	return out_pts
+
+
+
 def testLLT(LLT,scale = 2,paper_size = (11*25.4,8.5*25.4)):
 	"""	Displays the expected output of the given orders text file"""
 	for stroke in LLT:
