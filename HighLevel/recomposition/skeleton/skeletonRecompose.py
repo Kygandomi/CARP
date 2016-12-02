@@ -5,9 +5,9 @@ import cv2
 def recompose(image,args):
     (thresh, binImg) = cv2.threshold(image, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU) 
 
-    pathImg = skeletonize(binImg)
+    #display(binImg)
 
-    #display(self.createNodeImg(pathImg))
+    pathImg = skeletonize(binImg)
 
     ## Remove points that do not have enough neighbors
 
@@ -17,9 +17,14 @@ def recompose(image,args):
     neighbors = getNeighborPoints([0,0],circleKernal(radius,border))
     pts = getPoints(pathImg,255)
     for point in pts:
-        if pathImg[point] != 0:
+        if (point[0]>(radius+1)) and (point[1] > (radius+1)) and (pathImg.shape[0]-point[0]>(radius+1)) and (pathImg.shape[1]-point[1]>(radius+1)):
             if np.count_nonzero(pathImg[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
                 pathImg[point]=0
+
+    
+    #display(pathImg)
+    #display(self.createNodeImg(pathImg))
+
     g = graph.graph(getPoints(pathImg,255))
     paths = graph.findPaths(g)
 
