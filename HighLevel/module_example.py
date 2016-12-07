@@ -6,7 +6,7 @@ from camera import *
 import cv2
 
 # Instantiate a Camera object form the CanvasCamera module within the camera module
-cam = CanvasCamera.Camera(1)
+cam = CanvasCamera.Camera(0)
 
 # Write the canvas image to a file.
 cv2.imwrite("test.png", cam.get_canvas())

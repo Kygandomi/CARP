@@ -7,21 +7,26 @@ import random
 from HighLevel.common import util
 
 
-class pointalismRecomposer(object):
+class pointillismRecomposer(object):
 
 
     def __init__(self, image, args):
         """
-        :param image: The image that is being recoposed
+        :param image: The image that is being recomposed
         :param args: [width of brush], here we take in an array containing 1 element, the width of the brush dot in px.
         :return:
         """
         self.width = args[0]
+        self.strokesToMake = args[1]
+        self.childrenPerGeneration = args[2]
 
         self.desiredImage = image
 
         self.strokeImg = cv2.imread('smallstroke.png', cv2.IMREAD_UNCHANGED)
-        cv2.resize(self.strokeImg, (self.width, self.width))
+        self.strokeImg = cv2.resize(self.strokeImg, (self.width, self.width))
+
+        print self.width
+        print self.strokeImg.shape
 
         r, w, ch = self.desiredImage.shape
 
@@ -35,7 +40,7 @@ class pointalismRecomposer(object):
         stroke_rows, stroke_cols, stroke_channels = stroke.shape # Get the strome image info
         for x in range(0, stroke_cols): # For each column in the stroke
             for y in range (0, stroke_rows): # For each row in the stroke
-                if ((stroke[x, y])[3] > 120): # If it is a nontransperant pixel
+                if (stroke[x, y])[3] > 120: # If it is a nontransperant pixel
                     canvas[offsetx + x, offsety + y] = stroke[x, y] # Attempt to paint that pixel to the canvas
         return canvas
 
@@ -49,22 +54,19 @@ class pointalismRecomposer(object):
         stroke_rows, stroke_cols, stroke_channels = self.strokeImg.shape
 
         strokes = 0
-        strokesToMake = 50
-
-        childrenPerGeneration = 50
 
         currentBestCanvas = self.canvasImg.copy()
 
         orders = []
 
-        while strokes < strokesToMake:
+        while strokes < self.strokesToMake:
             possible_canvases = []
             strokeCoordinates = []
 
             bestError = 9999999999 # @TODO: Make this not stupid
             numBestError = 0
 
-            for i in range(0, childrenPerGeneration):
+            for i in range(0, self.childrenPerGeneration):
                 canvas = currentBestCanvas.copy()
                 possible_canvases.append(canvas)
 
@@ -78,7 +80,7 @@ class pointalismRecomposer(object):
                 strokeCoordinates.append((((y*1.0)*(8.5*25.4/1000)), ((x*1.0)*(11*25.4/1000)), self.width ))
                 i+=1
 
-            for i in range(0, childrenPerGeneration):
+            for i in range(0, self.childrenPerGeneration):
                 mse = self.fastNorm(possible_canvases[i], self.desiredImage)
                 if mse < bestError:
                     bestError = mse
@@ -87,9 +89,9 @@ class pointalismRecomposer(object):
             currentBestCanvas = possible_canvases[numBestError]
             print strokeCoordinates[numBestError]
             orders.append([strokeCoordinates[numBestError], strokeCoordinates[numBestError]])
-            print "Strokes left: ", strokesToMake - strokes -1
+            print "Strokes left: ", self.strokesToMake - strokes -1
             strokes += 1
 
-        util.display(currentBestCanvas, "Hey did it work?")
-        print orders
+        util.save(currentBestCanvas)
+        return orders
 
