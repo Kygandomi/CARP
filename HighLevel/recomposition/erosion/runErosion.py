@@ -4,19 +4,14 @@ sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work o
 
 import numpy as np
 import cv2
-import random
-
-def display(img, name=""):
-	cv2.imshow(name, img)
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
+from HighLevel.common import util
 
 def save(img, name="output"):
 	cv2.imwrite(name+".png", img)
 
 def output(img,name="output"):
 	save(img,name)
-	display(img,name)
+	util.display(img,name)
 
 def circleKernal(radius):
 	brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,-1).astype('uint8')
@@ -58,7 +53,7 @@ def draw(pts,img,thicnkess=3):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('../images/cube.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../resources/images/input/cube.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 1
 
 paper_size = (11*25.4,8.5*25.4)
@@ -70,14 +65,14 @@ desired_rows, desired_cols = desiredImg_grey.shape
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU) 
 #binImg = autoCanny(desiredImg)
 
-display(binImg)
+util.display(binImg)
 binImg = cv2.dilate(binImg, circleKernal(1),iterations = brush_thickness)
-display(binImg)
+util.display(binImg)
 
 contourImg, contours, hierarchy = cv2.findContours(255-binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 hierarchy = hierarchy[0]
 
-display(contourImg)
+util.display(contourImg)
 
 orders = open("../orders/orders.txt", 'w')
 
@@ -96,7 +91,7 @@ for cnt_i in range(len(contours)):
 
 		list_pts.append(pt)
 
-		n_points = n_points + 1
+		n_points += 1
 	out_pts.append(list_pts)
 	orders.write('\n')
 orders.close()

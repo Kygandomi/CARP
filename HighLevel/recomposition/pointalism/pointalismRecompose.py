@@ -12,16 +12,16 @@ class pointalismRecomposer(object):
 
     def __init__(self, image, args):
         """
-        :param image:
-        :param args:
+        :param image: The image that is being recoposed
+        :param args: [width of brush], here we take in an array containing 1 element, the width of the brush dot in px.
         :return:
         """
-        width = args[0]
+        self.width = args[0]
 
         self.desiredImage = image
 
         self.strokeImg = cv2.imread('smallstroke.png', cv2.IMREAD_UNCHANGED)
-        cv2.resize(self.strokeImg, (width, width))
+        cv2.resize(self.strokeImg, (self.width, self.width))
 
         r, w, ch = self.desiredImage.shape
 
@@ -40,7 +40,6 @@ class pointalismRecomposer(object):
         return canvas
 
     def fastNorm(self,img1, img2):
-        sum = 0.0
         resized_img1 = cv2.resize(img1, (100, 100))
         resized_img2 = cv2.resize(img2, (100, 100))
         return cv2.norm(resized_img1, resized_img2, cv2.NORM_L1)
@@ -56,7 +55,7 @@ class pointalismRecomposer(object):
 
         currentBestCanvas = self.canvasImg.copy()
 
-        orders = open("orders.txt", 'w')
+        orders = []
 
         while strokes < strokesToMake:
             possible_canvases = []
@@ -76,7 +75,7 @@ class pointalismRecomposer(object):
                 x = random.randint(0,limit_x)
                 y = random.randint(0,limit_y)
                 self.makeStroke(canvas_to_paint_randomly, self.strokeImg, (x, y))
-                strokeCoordinates.append(str((y*1.0)*(8.5*25.4/1000)) + " " + str((x*1.0)*(11*25.4/1000)))
+                strokeCoordinates.append((((y*1.0)*(8.5*25.4/1000)), ((x*1.0)*(11*25.4/1000)), self.width ))
                 i+=1
 
             for i in range(0, childrenPerGeneration):
@@ -87,9 +86,10 @@ class pointalismRecomposer(object):
             print "Best one was number ", numBestError
             currentBestCanvas = possible_canvases[numBestError]
             print strokeCoordinates[numBestError]
-            orders.write(strokeCoordinates[numBestError] + '\n')
+            orders.append([strokeCoordinates[numBestError], strokeCoordinates[numBestError]])
             print "Strokes left: ", strokesToMake - strokes -1
             strokes += 1
 
         util.display(currentBestCanvas, "Hey did it work?")
+        print orders
 
