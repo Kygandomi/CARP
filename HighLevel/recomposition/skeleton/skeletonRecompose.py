@@ -93,5 +93,5 @@ class skeletonRecomposer(object):
         paper_size = (11*25.4,8.5*25.4)
         drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
 
-        save(drawnImg, 'outImg')
+        save(drawnImg, 'test_image')
         return out_pts
