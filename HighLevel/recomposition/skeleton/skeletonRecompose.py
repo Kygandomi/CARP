@@ -1,91 +1,97 @@
-from common.util import *
+from HighLevel.common.util import *
+import sys
 import graph
 import cv2
 
-def recompose(image,args):
-    (thresh, binImg) = cv2.threshold(image, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU) 
+class skeletonRecomposer(object):
 
-    #display(binImg)
+    def __init__(self, image, args):
+        self.desiredImage = image
 
-    pathImg = skeletonize(binImg)
 
-    ## Remove points that do not have enough neighbors
 
-    radius = 3
-    border = -1
-    n_limit = 1
-    neighbors = getNeighborPoints([0,0],circleKernal(radius,border))
-    pts = getPoints(pathImg,255)
-    for point in pts:
-        if (point[0]>(radius+1)) and (point[1] > (radius+1)) and (pathImg.shape[0]-point[0]>(radius+1)) and (pathImg.shape[1]-point[1]>(radius+1)):
-            if np.count_nonzero(pathImg[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
-                pathImg[point]=0
+    def recompose(self):
 
-    
-    #display(pathImg)
-    #display(self.createNodeImg(pathImg))
+        (thresh, binImg) = cv2.threshold(self.desiredImage, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
-    g = graph.graph(getPoints(pathImg,255))
-    paths = graph.findPaths(g)
+        #display(binImg)
 
-    paths = reducePaths(paths,1000)
+        pathImg = self.skeletonize(binImg)
 
-    paths = mapLLT(paths,image.shape)
+        ## Remove points that do not have enough neighbors
+        #TODO: Nick, is radius here the effective brush width?
+        radius = 3
+        border = -1
+        n_limit = 1
+        neighbors = getNeighborPoints([0,0],circleKernel(radius,border))
+        pts = getPoints(pathImg,255)
+        for point in pts:
+            if (point[0]>(radius+1)) and (point[1] > (radius+1)) and (pathImg.shape[0]-point[0]>(radius+1)) and (pathImg.shape[1]-point[1]>(radius+1)):
+                if np.count_nonzero(pathImg[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
+                    pathImg[point]=0
 
-    return paths
+        g = graph.graph(getPoints(pathImg,255))
+        paths = graph.findPaths(g)
 
-################################################################
-############# Helpers ##########################################
-################################################################
+        paths = self.reducePaths(paths,1000)
 
-def skeletonize(binImg):
-    element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
-    #element = circleKernal(1)
-    done = False
+        paths = mapLLT(paths,self.desiredImage.shape)
 
-    img = 255-binImg.copy()
-    skel = np.zeros(img.shape,np.uint8)
+        return paths
 
-    while( not done):
-        eroded = cv2.erode(img,element)
-        temp = cv2.dilate(eroded,element)
-        temp = cv2.subtract(img,temp)
-        skel = cv2.bitwise_or(skel,temp)
-        img = eroded.copy()
+    ################################################################
+    ############# Helpers ##########################################
+    ################################################################
 
-        nonzero = cv2.countNonZero(img)
-        if nonzero==0:
-            done = True
+    def skeletonize(self, binImg):
+        element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+        #element = circleKernal(1)
+        done = False
 
-    return skel
+        img = 255-binImg.copy()
+        skel = np.zeros(img.shape,np.uint8)
 
-def createNodeImg(pathImg):
-    nodeImg = cv2.cvtColor(pathImg.copy(),cv2.COLOR_GRAY2BGR)
-    for node in g.node_list:
-        if node.status == graph.node.End:
-            nodeImg[node.point[0],node.point[1]] = (0,0,255)
-        elif node.status == graph.node.Path:
-            nodeImg[node.point[0],node.point[1]] = (0,255,255)
-        elif node.status == graph.node.Dead:
-            nodeImg[node.point[0],node.point[1]] = (128,128,128)
-        elif node.status == graph.node.Visited:
-            nodeImg[node.point[0],node.point[1]] = (255,0,0)
-    return nodeImg
+        while not done:
+            eroded = cv2.erode(img,element)
+            temp = cv2.dilate(eroded,element)
+            temp = cv2.subtract(img,temp)
+            skel = cv2.bitwise_or(skel,temp)
+            img = eroded.copy()
 
-def reducePaths(paths,desired_n_points):
-    step = 1+int(sum(len(path) for path in paths)/desired_n_points)
+            nonzero = cv2.countNonZero(img)
+            if nonzero==0:
+                done = True
 
-    out_pts = []
-    for path_i in range(len(paths)):
-        path = paths[path_i]
-        list_pts=[]
-        for pt_i in range(0,len(path),step):
-            pt=path[pt_i]
-            #pt=(8.5*25.4/1000)*pt
+        return skel
+
+    #TODO: I think this can probably be deleted? Was this just a debug function? - Odell
+    def createNodeImg(self, pathImg, g):
+        nodeImg = cv2.cvtColor(pathImg.copy(),cv2.COLOR_GRAY2BGR)
+        for node in g.node_list:
+            if node.status == graph.node.End:
+                nodeImg[node.point[0],node.point[1]] = (0,0,255)
+            elif node.status == graph.node.Path:
+                nodeImg[node.point[0],node.point[1]] = (0,255,255)
+            elif node.status == graph.node.Dead:
+                nodeImg[node.point[0],node.point[1]] = (128,128,128)
+            elif node.status == graph.node.Visited:
+                nodeImg[node.point[0],node.point[1]] = (255,0,0)
+        return nodeImg
+
+    def reducePaths(self, paths,desired_n_points):
+        step = 1+int(sum(len(path) for path in paths)/desired_n_points)
+
+        out_pts = []
+        for path_i in range(len(paths)):
+            path = paths[path_i]
+            list_pts=[]
+            for pt_i in range(0,len(path),step):
+                pt=path[pt_i]
+                list_pts.append(pt)
+            out_pts.append(list_pts)
             
-            list_pts.append(pt)
-        out_pts.append(list_pts)
-    return out_pts
+        paper_size = (11*25.4,8.5*25.4)
+        drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
 
-if __name__ == "__main__":
-   recompose(sys.argv[1],sys.argv[2])
+        save(drawnImg, 'outImg')
+        return out_pts
