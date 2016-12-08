@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 
+
 def display(img, name="img"):
     cv2.imshow(name, img)
     cv2.waitKey(0)
@@ -140,5 +141,5 @@ def draw(pts,img,thickness=3):
     return img
 
 #TODO: Make this smarter, just give higher directory and recursive search
-def getFileByName(fileName,path="../resources/images/input/"):
+def getFileByName(fileName,path="../../resources/images/input/"):
     return cv2.imread(path + fileName, cv2.IMREAD_UNCHANGED)

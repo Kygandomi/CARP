@@ -4,7 +4,7 @@ import bisect
 import itertools
 import math
 
-from common.util import *
+from HighLevel.common.util import *
 
 class graph():
 
@@ -20,8 +20,8 @@ class graph():
 		if autoBuild:
 			self.build()
 		
-	def build(self,kernal = circleKernal(3,-1),sort=True):
-		hood = getNeighborPoints((0,0),kernal,sort)
+	def build(self,kernel = circleKernel(3,-1),sort=True):
+		hood = getNeighborPoints((0,0),kernel,sort)
 		for i in range(self.size):
 			n = self.node_list[i]
 			n.neighbors = self.getIndeces(hood+self.getPoint(i))
