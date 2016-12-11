@@ -4,7 +4,7 @@ import bisect
 import itertools
 import math
 
-from HighLevel.common.util import *
+from common.util import *
 
 class graph():
 

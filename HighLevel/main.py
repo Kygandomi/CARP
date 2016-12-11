@@ -1,14 +1,15 @@
-from recomposition.skeleton import skeletonRecompose
+from recomposition.skeleton.skeletonRecompose import *
 from common.util import *
 import cv2
 
-fname = 'resources/images/input/hands.png'
+fname = 'resources/images/input/pig.png'
 
 desiredImg = cv2.imread(fname, cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 
-LLT = skeletonRecompose.recompose(desiredImg_grey,3)
+recomposer = skeletonRecomposer(desiredImg_grey, [])
+LLT = recomposer.recompose()
 
 testLLT(LLT,3)
 

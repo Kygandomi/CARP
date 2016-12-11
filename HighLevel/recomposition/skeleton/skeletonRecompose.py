@@ -1,4 +1,4 @@
-from HighLevel.common.util import *
+from common.util import *
 import sys
 import graph
 import cv2
@@ -7,8 +7,6 @@ class skeletonRecomposer(object):
 
     def __init__(self, image, args):
         self.desiredImage = image
-
-
 
     def recompose(self):
 
@@ -19,7 +17,6 @@ class skeletonRecomposer(object):
         pathImg = self.skeletonize(binImg)
 
         ## Remove points that do not have enough neighbors
-        #TODO: Nick, is radius here the effective brush width?
         radius = 3
         border = -1
         n_limit = 1
@@ -32,6 +29,8 @@ class skeletonRecomposer(object):
 
         g = graph.graph(getPoints(pathImg,255))
         paths = graph.findPaths(g)
+
+        #display(self.createNodeImg(pathImg,g))
 
         paths = self.reducePaths(paths,1000)
 
@@ -65,6 +64,7 @@ class skeletonRecomposer(object):
         return skel
 
     #TODO: I think this can probably be deleted? Was this just a debug function? - Odell
+    # Yes, its mostly for debugging, but it's good to see what is happening and for the report, so I'd leave it
     def createNodeImg(self, pathImg, g):
         nodeImg = cv2.cvtColor(pathImg.copy(),cv2.COLOR_GRAY2BGR)
         for node in g.node_list:

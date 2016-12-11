@@ -175,7 +175,7 @@ for path_i in range(len(paths)):
 		#pt=(8.5*25.4/1000)*pt
 		pt=map((pt[1],pt[0]),desiredImg.shape[:2],paper_size)
 
-		orders.write(str(pt[0]) + ' '+ str(pt[1]-35) + '\n')
+		orders.write(str(pt[0]) + ' '+ str(pt[1]) + '\n')
 
 		list_pts.append(pt)
 
