@@ -55,10 +55,11 @@ sleep(1)
 # firgelli_up = [0, 0, 0, 400, 1, 800]
 # firgelli_down = [0, 0, 0, 175, 1, 800]
 
+firgelli_up = [0, 0, 600, 800, 0, 1, 1]
 firgelli_down = [0, 0, 175, 800, 0, 1, 1]
 
 # send_standard_packet(move_to)
-send_standard_packet(firgelli_down)
+send_standard_packet(firgelli_up)
 
 sleep(1)
 

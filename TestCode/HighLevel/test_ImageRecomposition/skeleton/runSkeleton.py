@@ -100,7 +100,7 @@ def skeletonize(binImg):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('../images/flower.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/triforce.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 2
 
 paper_size = (11*25.4,8.5*25.4)

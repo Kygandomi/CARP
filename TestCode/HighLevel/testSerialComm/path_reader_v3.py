@@ -57,7 +57,8 @@ def getPaint():
 ##################################################################
 
 # file to read from 
-fname = "../test_ImageRecomposition/fill/HorFillOrders.txt"
+#fname = "../test_ImageRecomposition/fill/HorFillOrders.txt"
+fname = "../test_ImageRecomposition/orders/orders.txt"
 
 # Establish Serial Connection
 baud = 115200
