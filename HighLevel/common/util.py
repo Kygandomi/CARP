@@ -143,3 +143,6 @@ def draw(pts,img,thickness=3):
 #TODO: Make this smarter, just give higher directory and recursive search
 def getFileByName(fileName,path="../../resources/images/input/"):
     return cv2.imread(path + fileName, cv2.IMREAD_UNCHANGED)
+
+def getFileByName_8UC1(fileName,path="../../resources/images/input/"):
+    return cv2.imread(path + fileName, cv2.CV_8UC1)
