@@ -66,7 +66,7 @@ testLLT(LLT,3)
 ##################################################################
 ####################  PAINTING ROUTINE  ##########################
 ##################################################################
-print "Let's Paint a Picture !"
+print "Let's Paint a Picture ~"
 
 # Lets Paint
 paint_routine = PaintOrders.paint_orders(arduino_ser)
