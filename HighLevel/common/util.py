@@ -102,14 +102,17 @@ def mapLLT(LLT,src_shape,dst_shape = (11*25.4,8.5*25.4),orient=True,stretch = Fa
     return out_pts
 
 
-
 def testLLT(LLT,scale = 2,paper_size = (11*25.4,8.5*25.4)):
     """	Displays the expected output of the given orders text file"""
+    lines = []
     for stroke in LLT:
+        pt_list = []
         for command_i in range(len(stroke)):
             command = stroke[command_i]
-            stroke[command_i] = (scale*command[0],scale*command[1])
-    drawnImg = drawLines(LLT,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),2)
+            pt = (scale*command[0],scale*command[1])
+            pt_list.append(pt)
+        lines.append(pt_list)
+    drawnImg = drawLines(lines,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),2)
     display(drawnImg)
 
 def testOrders(path='orders.text',scale = 2,paper_size = (11*25.4,8.5*25.4)):
