@@ -41,28 +41,37 @@ class paint_orders():
 				read_val = self.arduino_ser.recieve_packet()
 				parse_val = self.arduino_ser.parse_packet(read_val)
 				sleep(0.1)
-			print "Brush Stroke Motion Complete."
+			# print "Brush Stroke Motion Complete."
 
 			# Sleep for a bit for the firgelli
 			sleep(2)
 
 	'Routine for reloading paint on the brush'
 	def getPaint(self):
+		# Fergelli Height Values
+		down_val = 340
+		up_val = 700
+
 		# Get Paint Routine
-		firgelli_up = [0, 0, 600, 800, 0, 1, 1]
+		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
 
 		element = [random.randint(0,25), random.randint(0,25), 0, 800, 1, 0, 0]
 		self.send_standard_packet(element)
 
-		firgelli_down = [0, 0, 175, 800, 0, 1, 1]
+		firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_down)
 
-		firgelli_up = [0, 0, 600, 800, 0, 1, 1]
+		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
 
 	'Paint Routine for Creating the desired image'
 	def Paint(self, LLT):
+
+		# Record Fergelli Height Values
+		down_val = 340
+		up_val = 700
+		final_up_val = 800
 
 		# Record how far we've gone
 		MAX_DIST = 2000
@@ -73,16 +82,18 @@ class paint_orders():
 
 		# For every brush stroke represented in the LLT 
 		for brush_stroke in LLT:
+			print "brush_stroke ", brush_stroke
 			
 			# For every coordinate in the brush stroke
 			for point_index in range(len(brush_stroke)) : 
+				print "point_index ", point_index
 				
 				# If the paint distance has exceed the maximum alloted
 				if(paint_distance >= MAX_DIST):
 
 					# Get more paint and re-do the last few points
 					self.getPaint()
-					point_index = max(0,point_i-3)
+					point_index = max(0,point_index-3)
 					put_brush_down = True
 					paint_distance = 0
 
@@ -90,38 +101,40 @@ class paint_orders():
 				dx = brush_stroke[point_index][0]
 				dy = brush_stroke[point_index][1]
 
+				print "dx ", dx
+				print "dy ", dy 
+
 				# Send element to arduino
 				element = [dx, dy, 0, 800, 1, 0, 0]
-				send_standard_packet(element)
+				self.send_standard_packet(element)
 
 				# The brush is currently down and paint is being applied, so increment paint distance
 				if not put_brush_down:
-					paint_distance += math.sqrt((dx-strokes[stroke_i][max(0,point_i-1)][0])**2 + (dy-strokes[stroke_i][max(0,point_i-1)][1])**2)
-					print paint_distance
+					paint_distance += math.sqrt((dx-brush_stroke[max(0,point_index-1)][0])**2 + (dy-brush_stroke[max(0,point_index-1)][1])**2)
+					# print "distance: ", paint_distance
 
 				# The brush needs to be put back down
 				else:
-					print "Putting Brush Down..."
+					# print "Putting Brush Down..."
 					put_brush_down = False
 					
-					firgelli_down = [0, 0, 170, 800, 0, 1, 1]
-					send_standard_packet(firgelli_down)
+					firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
+					self.send_standard_packet(firgelli_down)
+					sleep(1)
 
 
 			# Done with current brush stroke
-			firgelli_up = [0, 0, 600, 800, 0, 1, 1]
-			send_standard_packet(firgelli_up)
-			first_elem = True
-			point_i=0
-			stroke_i += 1
+			firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
+			self.send_standard_packet(firgelli_up)
+			put_brush_down  = True
 			if(MAX_DIST-paint_distance < 300):
 				paint_distance = MAX_DIST
 
 		# Paint Routine Complete pick up Fergelli and return to start
-		firgelli_up = [0, 0, 600, 800, 0, 1, 1]
-		send_standard_packet(firgelli_up)
-		element = [0, 0, 0, 800, 1, 0, 0]
-		send_standard_packet(element)
+		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
+		self.send_standard_packet(firgelli_up)
+		element = [0, 0, 0, final_up_val, 1, 0, 0]
+		self.send_standard_packet(element)
 
 
 

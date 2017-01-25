@@ -51,29 +51,29 @@ sleep(1)
 ##############################################################################
 ##############################################################################
 
+####### Square Calibration Routine ######
+print "Square Calibration Routine"
+# Standard PAcket: [x y z step_time xy_abs z_abs go_flag]
+firgelli_up = [0, 0, 700, 800, 0, 1, 1]
+firgelli_down = [0, 0, 340, 800, 0, 1, 1]
 
-# firgelli_up = [0, 0, 0, 400, 1, 800]
-# firgelli_down = [0, 0, 0, 175, 1, 800]
+# Let's draw a square
+send_standard_packet(firgelli_up)
+# sleep(1)
 
-firgelli_up = [0, 0, 850, 800, 0, 1, 1]
-firgelli_down = [0, 0, 200, 800, 0, 1, 1]
-
-# send_standard_packet(move_to)
-send_standard_packet(firgelli_down)
-
-sleep(1)
-
-# move_to = [400,400,True,0,False,800]
+# move_to = [0, 400, 0, 900, 1, 0, 1]
 # send_standard_packet(move_to)
 
-# move_to = [400,0,True,0,False,800]
+# move_to = [400, 400, 0, 900, 1, 0, 1]
 # send_standard_packet(move_to)
 
-# move_to = [0,0,True,0,False,800]
+# move_to = [400, 0, 0, 900, 1, 0, 1]
+# send_standard_packet(move_to)
+
+# move_to = [0, 0, 0, 900, 1, 0, 1]
 # send_standard_packet(move_to)
 
 # send_standard_packet(firgelli_up)
-# send_special_packet()
 # sleep(1)
 
 ##############################################################################

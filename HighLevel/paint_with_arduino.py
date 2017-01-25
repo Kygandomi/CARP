@@ -27,12 +27,12 @@ for i in range(len(ports_list)):
 	arduino_ser = ser_comm.serial_comms(port, baud)
 	if(arduino_ser.connect()):
 		print "Serial Comm Connected"
-		could_connect = true
+		could_connect = True
 		break
 
 # Comment back in when we have an actual serial port
-# if not could_connect : 
-# 	raise Exception('Could not connect...')
+if not could_connect : 
+	raise Exception('Could not connect...')
 
 # Sleep to verify a solid connection
 sleep(1)
@@ -49,6 +49,12 @@ desiredImg = cv2.imread(input_image, cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 
+
+##################################################################
+################### DECOMPOSITION  ###############################
+##################################################################
+# print "Decomposition"
+
 ##################################################################
 ################### RECOMPOSITION  ###############################
 ##################################################################
@@ -61,7 +67,7 @@ LLT = recomposer.recompose()
 
 print "LLT ", LLT
 
-testLLT(LLT,3)
+# testLLT(LLT,3)
 
 ##################################################################
 ####################  PAINTING ROUTINE  ##########################
