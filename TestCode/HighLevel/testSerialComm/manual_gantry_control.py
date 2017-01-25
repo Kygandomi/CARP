@@ -58,23 +58,50 @@ sleep(1)
 firgelli_up = [0, 0, 850, 800, 0, 1, 1]
 firgelli_down = [0, 0, 200, 800, 0, 1, 1]
 
+# move_to = [0, 190, 250, 800, 0, 1, 1]
+
 # send_standard_packet(move_to)
-send_standard_packet(firgelli_down)
-
-sleep(1)
-
-# move_to = [400,400,True,0,False,800]
-# send_standard_packet(move_to)
-
-# move_to = [400,0,True,0,False,800]
-# send_standard_packet(move_to)
-
-# move_to = [0,0,True,0,False,800]
-# send_standard_packet(move_to)
-
-# send_standard_packet(firgelli_up)
-# send_special_packet()
 # sleep(1)
+
+send_standard_packet([0, 0, 850, 800, 1, 1, 1])
+send_standard_packet([0, 400, 850, 800, 1, 1, 1])
+send_standard_packet([400, 400, 850, 800, 1, 1, 1])
+send_standard_packet([400, 0, 850, 800, 1, 1, 1])
+send_standard_packet([0, 0, 850, 800, 1, 1, 1])
+
+##############################################################################
+
+# PICK UP
+# [x, y, z, step_time, xy_abs, z_abs, GO]
+
+offX=400
+offY=190
+up=850
+down=300
+
+# send_standard_packet([0,0,up,800,1,1,1])
+# sleep(1)
+# send_standard_packet([0,offY,up,800,1,1,1])
+# sleep(1)
+# send_standard_packet([offX,offY,up,800,1,1,1])
+# sleep(1)
+# send_standard_packet([offX,offY,down,800,1,1,1])
+# sleep(2)
+# send_standard_packet([0,offY,down,800,1,1,1])
+
+# PUT DOWN
+
+# send_standard_packet([0,0,down,800,1,1,1])
+# sleep(1)
+# send_standard_packet([0,offY,down,800,1,1,1])
+# sleep(1)
+# send_standard_packet([offX,offY,down,800,1,1,1])
+# sleep(1)
+# send_standard_packet([offX,offY,up,800,1,1,1])
+# sleep(2)
+# send_standard_packet([0,offY,up,800,1,1,1])
+
+##############################################################################
 
 ##############################################################################
 

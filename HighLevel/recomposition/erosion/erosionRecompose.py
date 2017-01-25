@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from HighLevel.common import util
+from common.util import *
 
 
 class erosionRecomposer(object):
@@ -49,6 +49,5 @@ class erosionRecomposer(object):
             out_pts.append(list_pts)
 
         drawnImg = util.draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
-
         util.save(drawnImg)
         return orders

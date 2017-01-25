@@ -6,15 +6,15 @@ import cv2
 class skeletonRecomposer(object):
 
     def __init__(self, image, args):
-        self.desiredImage = image
+        self.binImg = image
 
     def recompose(self):
 
-        (thresh, binImg) = cv2.threshold(self.desiredImage, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        # (thresh, binImg) = cv2.threshold(self.desiredImage, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
         #display(binImg)
 
-        pathImg = self.skeletonize(binImg)
+        pathImg = self.skeletonize(self.binImg)
 
         ## Remove points that do not have enough neighbors
         radius = 3
@@ -34,7 +34,7 @@ class skeletonRecomposer(object):
 
         paths = self.reducePaths(paths,1000)
 
-        paths = mapLLT(paths,self.desiredImage.shape)
+        paths = mapLLT(paths,self.binImg.shape)
 
         return paths
 

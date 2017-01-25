@@ -75,6 +75,7 @@ class serial_comms():
 		self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
 		self.ser.write(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
 		self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
+
 		self.ser.write(mask)
 		
 		self.ser.write(b'\xef')
