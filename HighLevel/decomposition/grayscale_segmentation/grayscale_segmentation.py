@@ -5,13 +5,12 @@ import copy
 from HighLevel.common import util
 import numpy as np
 
-def grayscale_segment(image_name, paint_colors, scale_factor = 1):
+def grayscale_segment(image_name, paint_colors, scale = 4):
     #paint_colors = 4 # The number of greys to segment the image into, INCLUDING black and white
-    scale = 4 # How much to resize by, as a divisor
 
     gradient = util.getFileByName(image_name)
 
-    rows, cols, channels = gradient.shape
+    cols, rows, channels = gradient.shape
 
     gradient = cv2.resize(gradient, (rows/scale, cols/scale))
 
@@ -47,11 +46,12 @@ def grayscale_segment(image_name, paint_colors, scale_factor = 1):
     layer_images = [threshed_image]
 
     for thresh in thresh_vals:
-        print thresh
         thresh = int(thresh)
         image_to_segment = copy.deepcopy(threshed_image)
-        print image_to_segment, " is the image, and the threshval is:", thresh
         image_to_segment[np.where((image_to_segment != [thresh,thresh,thresh]).all(axis = 2))] = [255,255,255]
         layer_images.append(image_to_segment)
+    # If you want to output the images here.
+    #for x in range(0,len(layer_images)):
+    #    util.save(layer_images[x], "img" + str(x))
 
-    return layer_images
+    return layer_images[0], layer_images[1::]
