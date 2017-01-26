@@ -119,7 +119,7 @@ def testLLT(LLT,scale = 2,paper_size = (11*25.4,8.5*25.4)):
     drawnImg = drawLines(lines,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),2)
     display(drawnImg)
 
-def loadLLT(path = 'orders.txt'):
+def loadLLT(fname = 'orders.txt'):
     LLT=[]
     with open(fname) as f:
         stroke = []
@@ -129,18 +129,18 @@ def loadLLT(path = 'orders.txt'):
                 stroke = []
             else:
                 coords = line.split(" ")
-                stroke.append(coords)
+                stroke.append([float(coords[0]),float(coords[1]),float(coords[2])])
     return LLT
 
-def saveLLT(LLT,path = 'orders.txt'):
-    with open(fname) as f:
+def saveLLT(LLT,fname = 'orders.txt'):
+    with open(fname,'w') as f:
         stroke = []
         for path_i in range(len(LLT)):
-            path = paths[path_i]
+            path = LLT[path_i]
             list_pts=[]
             for pt_i in range(len(path)):
                 pt=path[pt_i]
-                f.write(str(pt[0]) + ' '+ str(pt[1]) + ' ' + str(pt[2]) + '\n')
+                f.write(str(pt[0]) + ' '+ str(pt[1]) + ' ' + str(pt[2]) + ' \n')
             f.write('\n')
 
 def testOrders(path='orders.txt',scale = 2,paper_size = (11*25.4,8.5*25.4)):
