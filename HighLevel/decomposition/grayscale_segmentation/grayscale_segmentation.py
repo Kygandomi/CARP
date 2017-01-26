@@ -2,13 +2,14 @@ import sys
 sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work on Odell's computer
 import cv2
 import copy
-from HighLevel.common import util
+# from HighLevel.common import util
+import common.util as util
 import numpy as np
 
-def grayscale_segment(image_name, paint_colors, scale = 4):
+def grayscale_segment(grayscale_image, paint_colors, scale = 4):
     #paint_colors = 4 # The number of greys to segment the image into, INCLUDING black and white
 
-    gradient = util.getFileByName(image_name)
+    gradient = grayscale_image
 
     cols, rows, channels = gradient.shape
 
