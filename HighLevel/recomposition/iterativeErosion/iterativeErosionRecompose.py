@@ -35,7 +35,6 @@ class iterativeErosionRecomposer(object):
                 for pt_i in range(0,len(cnt),10):
                     pt=cnt[pt_i][0]
                     pt=util.mapToCanvas(pt,self.desiredImage.shape[:2],paper_size)
-<<<<<<< HEAD
 
                     orders.append([pt[0] , pt[1], self.brush_thickness])
 
@@ -47,11 +46,7 @@ class iterativeErosionRecomposer(object):
         orders.extend(out_pts)
         drawnImg = util.draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
         util.display(drawnImg)
-=======
-                    stroke.append([pt[0] , pt[1], self.brush_thickness])
-                stroke.append(stroke[0])
-                orders.append(stroke)
->>>>>>> 0c25b9f9a7b36d2cca1de4aaba9aadc9e4667a73
+
         return orders
 
     def hasColor(self, img, color):
