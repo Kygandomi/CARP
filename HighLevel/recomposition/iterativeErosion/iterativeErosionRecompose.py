@@ -44,7 +44,7 @@ class iterativeErosionRecomposer(object):
                     list_pts.append(pt)
 
                 out_pts.append(list_pts)
-                        # drawnImg = util.draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
+            # drawnImg = util.draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
             # util.display(drawnImg)
         orders.extend(out_pts)
         drawnImg = util.draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
