@@ -58,7 +58,7 @@ class paint_orders():
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
 
-		element = [random.randint(0,25), random.randint(0,25), 0, 800, 1, 0, 0]
+		element = [random.randint(0,100), random.randint(0,100), 0, 800, 1, 0, 0]
 		self.send_standard_packet(element)
 
 		firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
@@ -79,6 +79,7 @@ class paint_orders():
 
 		# Record how far we've gone (0.1 mm)
 		MAX_DIST = 1600
+		DOWN_COST = 50
 		paint_distance = MAX_DIST
 
 		# Put Brush Down ? 
@@ -116,7 +117,7 @@ class paint_orders():
 				if put_brush_down: 
 					print "Putting Brush Down..."
 					put_brush_down = False
-					
+					paint_distance += DOWN_COST
 					firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
 					self.send_standard_packet(firgelli_down)
 

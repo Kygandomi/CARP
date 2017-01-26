@@ -45,7 +45,7 @@ sleep(1)
 print "Preprocessing"
 
 # take in image to process
-input_image = 'resources/images/input/p2_blue.png'
+input_image = 'resources/images/input/circle.png'
 
 desiredImg = cv2.imread(input_image, cv2.IMREAD_UNCHANGED)
 
