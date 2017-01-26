@@ -53,7 +53,7 @@ def get_canvas_image(video_feed):
 #############################################################
 
 # Setup
-# initialize sercomm to arduino ...
+# need to initialize sercomm to arduino ...
 camera = cv2.VideoCapture(0)
 similarity_threshold = 50
 num_regions = 1
@@ -81,7 +81,7 @@ while(error > 0 and error < similarity_threshold):
 	LLT_regions = []
 
 	# Recompose regions of difference
-	for paint_color, region in diff_regions.items(): 
+	for paint_color, region in diff_regions.items() : 
 		recomposer = skeletonRecomposer(region, [])
 		recomp_LLT = recomposer.recompose()
 		LLT_regions += recomp_LLT
