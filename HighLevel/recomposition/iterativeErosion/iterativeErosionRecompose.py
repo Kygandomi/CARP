@@ -27,28 +27,17 @@ class iterativeErosionRecomposer(object):
             # util.display(binImg)
 
             contourImg, contours, hierarchy = cv2.findContours(255-binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
-            # util.display(contourImg)   
-
-            out_pts = []
+            # util.display(contourImg)
 
             for cnt_i in range(len(contours)):
                 cnt = contours[cnt_i]
-                list_pts=[]
+                stroke=[]
                 for pt_i in range(0,len(cnt),10):
                     pt=cnt[pt_i][0]
-
                     pt=util.mapToCanvas(pt,self.desiredImage.shape[:2],paper_size)
-
-                    orders.append([pt[0] , pt[1], self.brush_thickness])
-
-                    list_pts.append(pt)
-
-                out_pts.append(list_pts)
-                        # drawnImg = util.draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
-            # util.display(drawnImg)
-        orders.extend(out_pts)
-        drawnImg = util.draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
-        util.display(drawnImg)
+                    stroke.append([pt[0] , pt[1], self.brush_thickness])
+                stroke.append(stroke[0])
+                orders.append(stroke)
         return orders
 
     def hasColor(self, img, color):

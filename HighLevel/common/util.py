@@ -14,6 +14,10 @@ def output(img,name="output"):
     save(img,name)
     display(img,name)
 
+#img2 = cv2.resize(img,(destination.Width,destination.Height), interpolation = cv2.INTER_CUBIC)
+
+#img2 = cv2.copyMakeBorder(img1,top,bottom,left,right,cv2.BORDER_CONSTANT,value=[255,255,255])
+
 def circleKernel(radius,thickness = -1):
     """ Return a kernal representing a circle with the given radius and thickness (in pixels)"""
     brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,thickness).astype('uint8')
@@ -31,7 +35,7 @@ def getPoints(img,color=255):
 
 def getNeighborPoints(pt,kernel = np.ones((3,3)),excludeSelf = True, sort = True):
     """ Returns a list of points which are neighbors of the given point.
-        Neighbors are depicted as '1' in the given (Default 8-connected)"""
+        Neighbors are depicted as '1' in the given kernel (Default 8-connected)"""
     shape = kernel.shape
     anchor = (int(shape[0]/2),int(shape[1]/2))
     points = []
@@ -115,22 +119,33 @@ def testLLT(LLT,scale = 2,paper_size = (11*25.4,8.5*25.4)):
     drawnImg = drawLines(lines,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),2)
     display(drawnImg)
 
-def testOrders(path='orders.text',scale = 2,paper_size = (11*25.4,8.5*25.4)):
-    """	Displays the expected output of the given orders text file"""
-    in_pts = []
-    with open(path) as f:
+def loadLLT(path = 'orders.txt'):
+    LLT=[]
+    with open(fname) as f:
         stroke = []
-        # For each line in the file
         for line in f:
             if line == '\n' :
-                in_pts.append(stroke)
+                LLT.append(stroke)
                 stroke = []
             else:
                 coords = line.split(" ")
-                stroke.append((scale*float(coords[0]),scale*float(coords[1])))
+                stroke.append(coords)
+    return LLT
 
-    drawnImg = drawLines(in_pts,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),2)
-    display(drawnImg)
+def saveLLT(LLT,path = 'orders.txt'):
+    with open(fname) as f:
+        stroke = []
+        for path_i in range(len(LLT)):
+            path = paths[path_i]
+            list_pts=[]
+            for pt_i in range(len(path)):
+                pt=path[pt_i]
+                f.write(str(pt[0]) + ' '+ str(pt[1]) + ' ' + str(pt[2]) + '\n')
+            f.write('\n')
+
+def testOrders(path='orders.txt',scale = 2,paper_size = (11*25.4,8.5*25.4)):
+    """	Displays the expected output of the given orders text file"""
+    testLLT(loadLLT(path),scale,paper_size)
 
 def draw(pts,img,thickness=3):
     """this is what this does"""
