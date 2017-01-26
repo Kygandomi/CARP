@@ -29,12 +29,12 @@ for i in range(len(ports_list)):
 	arduino_ser = ser_comm.serial_comms(port, baud)
 	if(arduino_ser.connect()):
 		print "Serial Comm Connected"
-		could_connect = true
+		could_connect = True
 		break
 
 # Comment back in when we have an actual serial port
-# if not could_connect : 
-# 	raise Exception('Could not connect...')
+if not could_connect : 
+	raise Exception('Could not connect...')
 
 # Sleep to verify a solid connection
 sleep(1)
@@ -45,7 +45,7 @@ sleep(1)
 print "Preprocessing"
 
 # take in image to process
-input_image = getFileByName('hands.png')
+input_image = 'resources/images/input/p2_blue.png'
 
 desiredImg = cv2.imread(input_image, cv2.IMREAD_UNCHANGED)
 
@@ -57,7 +57,7 @@ desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 ################### DECOMPOSITION  ###############################
 ##################################################################
 # print "Decomposition"
-# grayscale_segment(image_name, paint_colors, scale_factor = 1)
+# image_root, image_set = grayscale_segment("skull.png", 4)
 
 ##################################################################
 ################### RECOMPOSITION  ###############################
@@ -65,7 +65,8 @@ desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 print "Recomposition"
 
 # Create a recomposer
-recomposer = iterativeErosionRecomposer(binImg, [5])
+recomposer = iterativeErosionRecomposer(binImg, [4])
+# recomposer = skeletonRecomposer(binImg, [])
 
 LLT = recomposer.recompose()
 
@@ -81,6 +82,8 @@ print "Let's Paint a Picture ~"
 # Lets Paint
 paint_routine = PaintOrders.paint_orders(arduino_ser)
 paint_routine.Paint(LLT)
+
+print "Routine Complete, Enjoy ! "
 
 
 

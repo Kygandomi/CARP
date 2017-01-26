@@ -112,7 +112,7 @@ void setup(){
   myPID.SetOutputLimits(-255,255);
   
   // Initial Firgelli Setpoint
-  Setpoint = 500;
+  Setpoint = 850;
   
   // Turn on PID
   myPID.SetMode(AUTOMATIC);

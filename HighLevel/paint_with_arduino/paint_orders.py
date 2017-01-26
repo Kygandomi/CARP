@@ -27,7 +27,7 @@ class paint_orders():
 		# Check the go flag -- not go time
 		if(packet[6] == 0):
 			# Wait a bit for Arduino to process point
-			sleep(0.2)
+			sleep(0.1)
 
 		# Check the go flag -- its go time
 		elif(packet[6] == 1):
@@ -44,15 +44,15 @@ class paint_orders():
 			print "Brush Stroke Motion Complete."
 
 			# Sleep for a bit for the firgelli
-			sleep(2)
+			sleep(1)
 
 	'Routine for reloading paint on the brush'
 	def getPaint(self):
 		print "Getting Paint ..."
 
 		# Fergelli Height Values
-		down_val = 340
-		up_val = 700
+		down_val = 380
+		up_val = 800
 
 		# Get Paint Routine
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
@@ -74,11 +74,11 @@ class paint_orders():
 
 		# Record Fergelli Height Values
 		down_val = 360
-		up_val = 700
+		up_val = 550
 		final_up_val = 800
 
-		# Record how far we've gone
-		MAX_DIST = 2000
+		# Record how far we've gone (0.1 mm)
+		MAX_DIST = 1600
 		paint_distance = MAX_DIST
 
 		# Put Brush Down ? 
@@ -119,7 +119,6 @@ class paint_orders():
 					
 					firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
 					self.send_standard_packet(firgelli_down)
-					sleep(1)
 
 
 			# Done with current brush stroke
@@ -132,7 +131,7 @@ class paint_orders():
 		# Paint Routine Complete pick up Fergelli and return to start
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
-		element = [0, 0, 0, final_up_val, 1, 0, 0]
+		element = [0, 0, 0, final_up_val, 1, 1, 1]
 		self.send_standard_packet(element)
 
 
