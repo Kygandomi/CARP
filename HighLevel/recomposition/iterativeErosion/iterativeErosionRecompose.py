@@ -38,6 +38,9 @@ class iterativeErosionRecomposer(object):
                     stroke.append([pt[0] , pt[1], self.brush_thickness])
                 stroke.append(stroke[0])
                 orders.append(stroke)
+        # drawnImg = util.draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
+        # util.display(drawnImg)
+
         return orders
 
     def hasColor(self, img, color):

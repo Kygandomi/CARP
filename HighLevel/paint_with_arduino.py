@@ -8,6 +8,8 @@
 # Import dependencies
 from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
+from decomposition.grayscale_segmentation import *
+from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from recomposition.skeleton.skeletonRecompose import *
 from common.util import *
 from time import sleep
@@ -43,11 +45,19 @@ sleep(1)
 print "Preprocessing"
 
 # take in image to process
-input_image = 'resources/images/input/pig.png'
+input_image = getFileByName('hands.png')
 
 desiredImg = cv2.imread(input_image, cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
+
+(thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+
+##################################################################
+################### DECOMPOSITION  ###############################
+##################################################################
+# print "Decomposition"
+# grayscale_segment(image_name, paint_colors, scale_factor = 1)
 
 ##################################################################
 ################### RECOMPOSITION  ###############################
@@ -55,7 +65,7 @@ desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 print "Recomposition"
 
 # Create a recomposer
-recomposer = skeletonRecomposer(desiredImg_grey, [])
+recomposer = iterativeErosionRecomposer(binImg, [5])
 
 LLT = recomposer.recompose()
 
