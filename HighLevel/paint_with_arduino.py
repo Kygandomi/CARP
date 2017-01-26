@@ -29,12 +29,12 @@ for i in range(len(ports_list)):
 	arduino_ser = ser_comm.serial_comms(port, baud)
 	if(arduino_ser.connect()):
 		print "Serial Comm Connected"
-		could_connect = True
+		could_connect = true
 		break
 
 # Comment back in when we have an actual serial port
-if not could_connect : 
-	raise Exception('Could not connect...')
+# if not could_connect : 
+# 	raise Exception('Could not connect...')
 
 # Sleep to verify a solid connection
 sleep(1)
