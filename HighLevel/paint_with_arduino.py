@@ -49,6 +49,7 @@ desiredImg = cv2.imread(input_image, cv2.IMREAD_UNCHANGED)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 
+(thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
 ##################################################################
 ################### DECOMPOSITION  ###############################
@@ -61,13 +62,13 @@ desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 print "Recomposition"
 
 # Create a recomposer
-recomposer = skeletonRecomposer(desiredImg_grey, [])
+recomposer = skeletonRecomposer(binImg, [])
 
 LLT = recomposer.recompose()
 
 print "LLT ", LLT
 
-# testLLT(LLT,3)
+testLLT(LLT,3)
 
 ##################################################################
 ####################  PAINTING ROUTINE  ##########################

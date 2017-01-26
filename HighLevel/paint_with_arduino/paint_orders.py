@@ -41,13 +41,15 @@ class paint_orders():
 				read_val = self.arduino_ser.recieve_packet()
 				parse_val = self.arduino_ser.parse_packet(read_val)
 				sleep(0.1)
-			# print "Brush Stroke Motion Complete."
+			print "Brush Stroke Motion Complete."
 
 			# Sleep for a bit for the firgelli
 			sleep(2)
 
 	'Routine for reloading paint on the brush'
 	def getPaint(self):
+		print "Getting Paint ..."
+
 		# Fergelli Height Values
 		down_val = 340
 		up_val = 700
@@ -67,9 +69,11 @@ class paint_orders():
 
 	'Paint Routine for Creating the desired image'
 	def Paint(self, LLT):
+		# Scale 
+		scale_val = 8.7
 
 		# Record Fergelli Height Values
-		down_val = 340
+		down_val = 360
 		up_val = 700
 		final_up_val = 800
 
@@ -82,11 +86,9 @@ class paint_orders():
 
 		# For every brush stroke represented in the LLT 
 		for brush_stroke in LLT:
-			print "brush_stroke ", brush_stroke
 			
 			# For every coordinate in the brush stroke
 			for point_index in range(len(brush_stroke)) : 
-				print "point_index ", point_index
 				
 				# If the paint distance has exceed the maximum alloted
 				if(paint_distance >= MAX_DIST):
@@ -98,11 +100,8 @@ class paint_orders():
 					paint_distance = 0
 
 				# Get next global position to move the gantry
-				dx = brush_stroke[point_index][0]
-				dy = brush_stroke[point_index][1]
-
-				print "dx ", dx
-				print "dy ", dy 
+				dx = brush_stroke[point_index][0] * scale_val
+				dy = brush_stroke[point_index][1] * scale_val
 
 				# Send element to arduino
 				element = [dx, dy, 0, 800, 1, 0, 0]
@@ -110,12 +109,12 @@ class paint_orders():
 
 				# The brush is currently down and paint is being applied, so increment paint distance
 				if not put_brush_down:
-					paint_distance += math.sqrt((dx-brush_stroke[max(0,point_index-1)][0])**2 + (dy-brush_stroke[max(0,point_index-1)][1])**2)
-					# print "distance: ", paint_distance
+					paint_distance += math.sqrt((dx-(brush_stroke[max(0,point_index-1)][0]*scale_val))**2 + (dy-(brush_stroke[max(0,point_index-1)][1]*scale_val))**2)
+					print "distance: ", paint_distance
 
 				# The brush needs to be put back down
-				else:
-					# print "Putting Brush Down..."
+				if put_brush_down: 
+					print "Putting Brush Down..."
 					put_brush_down = False
 					
 					firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
