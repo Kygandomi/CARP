@@ -100,8 +100,8 @@ class paint_orders():
 					paint_distance = 0
 
 				# Get next global position to move the gantry
-				dx = brush_stroke[point_index][0] * scale_val
-				dy = brush_stroke[point_index][1] * scale_val
+				dx = int(brush_stroke[point_index][0] * scale_val)
+				dy = int(brush_stroke[point_index][1] * scale_val)
 
 				# Send element to arduino
 				element = [dx, dy, 0, 800, 1, 0, 0]
@@ -131,7 +131,7 @@ class paint_orders():
 		# Paint Routine Complete pick up Fergelli and return to start
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
-		element = [0, 0, 0, final_up_val, 1, 1, 1]
+		element = [0, 0, final_up_val, 1, 1, 1]
 		self.send_standard_packet(element)
 
 
