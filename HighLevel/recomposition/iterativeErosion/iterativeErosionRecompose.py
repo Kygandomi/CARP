@@ -23,7 +23,7 @@ class iterativeErosionRecomposer(object):
         orders = []
 
         while self.hasColor(binImg,0):
-            binImg = cv2.dilate(binImg, util.circleKernel(1), iterations = self.brush_thickness)
+            binImg = cv2.dilate(binImg, util.circleKernel(3), iterations = self.brush_thickness)
             # util.display(binImg)
 
             contourImg, contours, hierarchy = cv2.findContours(255-binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
