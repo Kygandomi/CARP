@@ -1,7 +1,7 @@
 from grayscale_segmentation import grayscale_segment
 from HighLevel.common import util
 
-image_root, image_set = grayscale_segment("grayscale_test.png", 2)
+image_root, image_set = grayscale_segment("grayscale_test.png", 5)
 
 util.display(image_root)
 
