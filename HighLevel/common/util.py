@@ -149,10 +149,8 @@ def loadLLT(fname = 'orders.txt'):
 
 def saveLLT(LLT,fname = 'orders.txt'):
     with open(fname,'w') as f:
-        stroke = []
         for path_i in range(len(LLT)):
             path = LLT[path_i]
-            list_pts=[]
             for pt_i in range(len(path)):
                 pt=path[pt_i]
                 f.write(str(pt[0]) + ' '+ str(pt[1]) + ' ' + str(pt[2]) + ' \n')
@@ -182,14 +180,25 @@ def readImage(fileName,path="resources/images/input/",type_flag = cv2.IMREAD_COL
     return resize(read_file,size)
 
 #TODO: Make this smarter, just give higher directory and recursive search
-def getFileByName(fileName,path="../../resources/images/input/"):
+def getFileByName(fileName,path="resources/images/input/"):
     read_file =  cv2.imread(path + fileName, cv2.IMREAD_UNCHANGED)
     if read_file is None:
         raise ValueError('Error in attempt to read file. Are you sure the file is there?')
     return read_file
 
-def getFileByName_8UC1(fileName,path="../../resources/images/input/"):
+def getFileByName_8UC1(fileName,path="resources/images/input/"):
     read_file =  cv2.imread(path + fileName, cv2.CV_8UC1)
     if read_file is None:
         raise ValueError('Error in attempt to read file. Are you sure the file is there?')
     return read_file
+
+def open_image(img, kernel_radius = 5, itera = 1):
+    """Assumes image has black image on white background"""
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kernel_radius,kernel_radius))
+    return cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=itera)
+
+
+def close_image(img, kernel_radius = 5, itera = 1):
+    """Assumes image has black image on white background"""
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kernel_radius,kernel_radius))
+    return cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel, iterations=itera)

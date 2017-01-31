@@ -1,10 +1,6 @@
-
-import sys
-sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work on Odell's computer
-import cv2
-import copy
-from HighLevel.common import util
+from common import util
 import numpy as np
+
 # BLUE, GREEN, RED is the order for OpenCV pixel color values.
 
 def classify_px(px, colors):
@@ -16,12 +12,12 @@ def classify_px(px, colors):
     return color_norm.index(min(color_norm))
 
 
-def color_segment(image_name, colors):
-    image = util.getFileByName(image_name)
+def color_segment(image, colors):
 
     rows, cols, _ = image.shape
 
-
+    # @TODO, this should use image.item and image.itemset as per below link, to speed things up.
+    # http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_core/py_basic_ops/py_basic_ops.html
     # For each pixel line in the image
     for pixel_line in range(0, len(image)):
         #For each pixel in the line of pixels
@@ -31,7 +27,7 @@ def color_segment(image_name, colors):
             new_px = colors[color_val]
             (image[pixel_line])[pixel] = new_px
 
-    util.display(image)
+    util.display(util.open_image(util.close_image(image)))
 
     color_images = [] # The 1-color images.
 
@@ -42,15 +38,7 @@ def color_segment(image_name, colors):
 
         color_image[np.where((image == colors[color]).all(axis = 2))] = [0]
 
-
         color_images.append(color_image) # Add to the list of color specific images.
-
-    # This is just some example/cruft, this should never be implemented here.
-    # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5,5))
-    # for cimage in range(0, len(color_images)):
-    #     color_images[cimage] = cv2.morphologyEx(color_images[cimage], cv2.MORPH_CLOSE, kernel, iterations=1)
-    #     color_images[cimage] = cv2.morphologyEx(color_images[cimage], cv2.MORPH_OPEN, kernel, iterations=1)
-
 
     return [colors, color_images, [image]]
 

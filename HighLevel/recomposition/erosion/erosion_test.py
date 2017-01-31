@@ -1,5 +1,3 @@
-import sys
-sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work on Odell's computer
 import cv2
 from erosionRecompose import erosionRecomposer
 

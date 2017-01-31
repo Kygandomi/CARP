@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from common.util import *
+from common import util
 
 
 class erosionRecomposer(object):

@@ -1,7 +1,9 @@
 from grayscale_segmentation import grayscale_segment
-from HighLevel.common import util
+from common import util
 
-image_root, image_set = grayscale_segment("grayscale_test.png", 5)
+image = util.getFileByName("grayscale_test.png", "../../resources/images/input/")
+
+image_root, image_set = grayscale_segment(image, 5)
 
 util.display(image_root)
 
