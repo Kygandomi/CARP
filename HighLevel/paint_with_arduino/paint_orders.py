@@ -46,12 +46,44 @@ class paint_orders():
 			# Sleep for a bit for the firgelli
 			sleep(1)
 
+	'Routine for getting brush'
+	def getBrush(self, old_brush_index, new_brush_index):
+		print "Switching Brushes ..."
+
+		firgelli_insert_height = 0
+		firgelli_lift_out_height = 0
+
+		firgelli_up = [0, 0, firgelli_insert_height, 800, 0, 1, 1]
+
+		# put current brush back
+		if(old_brush_index == 0):
+			old_x_pos = 0
+			old_x_pos = 0
+			element = [old_x_pos, old_y_pos, down_val, 800, 0, 1, 1]
+		elif(old_brush_index == 1):
+			old_x_pos = 0
+			old_y_pos = 0
+			element = [old_x_pos, old_y_pos, down_val, 800, 0, 1, 1]
+		elif(old_brush_index == 2):
+			old_x_pos = 0
+			old_y_pos = 0
+			element = [old_x_pos, old_y_pos, down_val, 800, 0, 1, 1]
+
+
+		# get new brush pos
+		if(new_brush_index == 0):
+			pass
+		elif(new_brush_index == 1):
+			pass
+		elif(new_brush_index == 2):
+			pass
+
 	'Routine for reloading paint on the brush'
-	def getPaint(self):
+	def getPaint(self, well_index):
 		print "Getting Paint ..."
 
 		# Fergelli Height Values
-		down_val = 380
+		down_val = 373
 		up_val = 800
 
 		# Get Paint Routine
@@ -73,12 +105,13 @@ class paint_orders():
 		scale_val = 8.7
 
 		# Record Fergelli Height Values
-		down_val = 360
+		down_val = 350
 		up_val = 550
 		final_up_val = 800
 
 		# Record how far we've gone (0.1 mm)
-		MAX_DIST = 1600
+		MAX_DIST = 1342
+		MAX_DIST_END = 500
 		DOWN_COST = 50
 		paint_distance = MAX_DIST
 
@@ -126,7 +159,7 @@ class paint_orders():
 			firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 			self.send_standard_packet(firgelli_up)
 			put_brush_down  = True
-			if(MAX_DIST-paint_distance < 300):
+			if(MAX_DIST-paint_distance < MAX_DIST_END):
 				paint_distance = MAX_DIST
 
 		# Paint Routine Complete pick up Fergelli and return to start

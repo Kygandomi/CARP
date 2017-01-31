@@ -80,7 +80,7 @@ class serial_comms():
 		
 		self.ser.write(b'\xef')
 
-	'Read data from the PCB'
+	'Read data from the Arduino'
 	def recieve_packet(self):
 		# Collect output response
 		response = []
