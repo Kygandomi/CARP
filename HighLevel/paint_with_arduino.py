@@ -8,7 +8,6 @@
 # Import dependencies
 from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
-from decomposition.grayscale_segmentation.grayscale_segmentation import *
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from recomposition.skeleton.skeletonRecompose import *
 from common.util import *
@@ -39,60 +38,99 @@ if not could_connect :
 # Sleep to verify a solid connection
 sleep(1)
 
+###############################################################################################################
+# WITH DECOMPOSITION !
+# ##################################################################
+# ###################### PREPROCESSING  ############################
+# ##################################################################
+# print "Preprocessing"
+
+# # take in image to process
+# input_image = 'resources/images/input/grayscale_test.png'
+
+# desiredImg = cv2.imread(input_image, cv2.IMREAD_COLOR)
+
+# ##################################################################
+# ################### DECOMPOSITION  ###############################
+# ##################################################################
+# # print "Decomposition"
+# # image_root, image_set = grayscale_segment(desiredImg, 3)
+
+# ##################################################################
+# ############ RECOMPOSITION & PAINT ROUTINE  ######################
+# ##################################################################
+
+# # Lets Paint
+# paint_routine = PaintOrders.paint_orders(arduino_ser)
+
+# for img in image_set:
+# 	display(img)
+
+# 	# Binarize img first
+# 	gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# 	(thresh, binImg) = cv2.threshold(gray_img, 1, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+
+# 	display(binImg)
+
+# 	# Create a recomposer
+# 	print "Recomposition"
+# 	# recomposer = iterativeErosionRecomposer(binImg, [2])
+# 	recomposer = skeletonRecomposer(binImg, [])
+
+# 	LLT = recomposer.recompose()
+
+# 	print "LLT to Paint: ", LLT
+# 	testLLT(LLT,3)
+
+# 	print "Let's Paint a Picture ~"
+# 	paint_routine.Paint(llt)
+
+# 	print "LLT Finished "
+
+# print "Routine Complete, Enjoy ! "
+
+###############################################################################################################
+# WITHOUT DECOMPOSITION !
 ##################################################################
 ###################### PREPROCESSING  ############################
 ##################################################################
 print "Preprocessing"
 
 # take in image to process
-input_image = 'resources/images/input/grayscale_test.png'
+desiredImg = readImage("beachball_red.png", type_flag=1)
 
-desiredImg = cv2.imread(input_image, cv2.IMREAD_COLOR)
+desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
+
+(thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
 ##################################################################
 ################### DECOMPOSITION  ###############################
 ##################################################################
-print "Decomposition"
-image_root, image_set = grayscale_segment(desiredImg, 3)
+# print "Decomposition"
 
 ##################################################################
-############ RECOMPOSITION & PAINT ROUTINE  ######################
+################### RECOMPOSITION  ###############################
 ##################################################################
+print "Recomposition"
+
+# Create a recomposer
+# recomposer = skeletonRecomposer(binImg, [])
+recomposer = iterativeErosionRecomposer(binImg, [4])
+
+LLT = recomposer.recompose()
+
+print "LLT ", LLT
+
+testLLT(LLT,3)
+
+##################################################################
+####################  PAINTING ROUTINE  ##########################
+##################################################################
+print "Let's Paint a Picture ~"
 
 # Lets Paint
 paint_routine = PaintOrders.paint_orders(arduino_ser)
-
-for img in image_set:
-	display(img)
-
-	# Binarize img first
-	gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	(thresh, binImg) = cv2.threshold(gray_img, 1, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-
-	display(binImg)
-
-	# Create a recomposer
-	print "Recomposition"
-	# recomposer = iterativeErosionRecomposer(binImg, [2])
-	recomposer = skeletonRecomposer(binImg, [])
-
-	LLT = recomposer.recompose()
-
-	print "LLT ", LLT
-
-	testLLT(LLT,3)
-
-	print "Let's Paint a Picture ~"
-	paint_routine.Paint(llt)
-
-	print "LLT Finished "
-
-
-print "Routine Complete, Enjoy ! "
-
-
-
-	
+paint_routine.Paint(LLT)
 
 
 
