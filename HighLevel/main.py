@@ -4,7 +4,7 @@ from recomposition.erosion.erosionRecompose import *
 from common.util import *
 import cv2
 
-fname = 'resources/images/input/circle_fill.png'
+fname = 'resources/images/input/circle.png'
 
 desiredImg = cv2.imread(fname, cv2.IMREAD_UNCHANGED)
 
@@ -17,6 +17,6 @@ recomposer = iterativeErosionRecomposer(binImg, [6])
 
 LLT = recomposer.recompose()
 
-testLLT(LLT,3)
+testLLT(LLT,scale=3,thickness=24)
 
 print "Done"
