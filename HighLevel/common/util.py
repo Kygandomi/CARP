@@ -16,6 +16,21 @@ def output(img,name="output"):
 
 #img2 = cv2.resize(img,(destination.Width,destination.Height), interpolation = cv2.INTER_CUBIC)
 
+def resize(img,max_dim=1000):
+    rows, cols, _ = img.shape
+
+    if rows == max_dim or cols==max_dim:
+        return img
+
+    method = cv2.INTER_CUBIC
+    if max(rows,cols)>max_dim:
+        method = cv2.INTER_AREA
+
+    if rows<cols:
+        return cv2.resize(img,(max_dim,max_dim*rows/cols),interpolation = method)
+    else:
+        return cv2.resize(img,(max_dim*cols/rows,max_dim),interpolation = method)
+
 #img2 = cv2.copyMakeBorder(img1,top,bottom,left,right,cv2.BORDER_CONSTANT,value=[255,255,255])
 
 def circleKernel(radius,thickness = -1):
@@ -157,6 +172,14 @@ def draw(pts,img,thickness=3):
                 cv2.line(img,(int(pts[i][c][0]),int(pts[i][c][1])),(int(pts[i][c+1][0]),int(pts[i][c+1][1])),0,thickness)
 
     return img
+
+def readImage(fileName,path="resources/images/input/",type_flag = cv2.IMREAD_COLOR,size = 1000):
+    read_file =  cv2.imread(path + fileName, type_flag)
+    if read_file is None:
+        raise ValueError('Error in attempt to read file. Are you sure the file is there?')
+    if size<=0:
+        return read_file
+    return resize(read_file,size)
 
 #TODO: Make this smarter, just give higher directory and recursive search
 def getFileByName(fileName,path="../../resources/images/input/"):

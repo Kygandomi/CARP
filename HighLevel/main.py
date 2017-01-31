@@ -4,19 +4,17 @@ from recomposition.erosion.erosionRecompose import *
 from common.util import *
 import cv2
 
-fname = 'resources/images/input/circle.png'
-
-desiredImg = cv2.imread(fname, cv2.IMREAD_UNCHANGED)
+desiredImg = readImage("grayscale_test.png")
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
 # recomposer = skeletonRecomposer(binImg, [2])
-recomposer = iterativeErosionRecomposer(binImg, [6])
+recomposer = iterativeErosionRecomposer(binImg, [2])
 # recomposer = erosionRecomposer(binImg, [2])
 
 LLT = recomposer.recompose()
 
-testLLT(LLT,scale=3,thickness=24)
+testLLT(LLT,scale=3,thickness=6)
 
 print "Done"
