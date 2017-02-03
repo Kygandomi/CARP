@@ -11,12 +11,12 @@ black = [0,0,0]
 
 random_test = [[188,49,156],[188,135,49],[27,163,27],[0,174,255],[15,15,175],[113,252,139]]
 
-image = util.getFileByName("multiflower.png","../../resources/images/input/")
+image = util.getFileByName("bball.png","../../resources/images/input/")
 
 
-colors, color_segments, segmented_image = color_segment(image, [yellow, red, black])
+colors, color_segments, segmented_image = color_segment(image, [yellow, red, blue, white])
 
+# util.save(segmented_image[0], "boat_colored")
 
 for image in color_segments:
     util.display(util.open_image(image), "opened")
-    # util.save(util.open_image(util.close_image(image)), "Open + close")

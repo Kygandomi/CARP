@@ -11,7 +11,7 @@ def classify_px(px, colors):
     # Return the index value of the color that has the smallest error compared to the pixel
     return color_norm.index(min(color_norm))
 
-
+# TODO: Make this do the thing Nick said with canvas colors not beoing output
 def color_segment(image, colors):
 
     rows, cols, _ = image.shape
@@ -27,7 +27,7 @@ def color_segment(image, colors):
             new_px = colors[color_val]
             (image[pixel_line])[pixel] = new_px
 
-    util.display(util.open_image(util.close_image(image)))
+    util.save(util.open_image(util.close_image(image)))
 
     color_images = [] # The 1-color images.
 
