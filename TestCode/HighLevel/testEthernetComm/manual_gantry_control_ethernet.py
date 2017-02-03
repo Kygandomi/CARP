@@ -7,13 +7,13 @@ import math
 from time import sleep
 
 # Connect to PMD over ethernet
-ip = ''
-port = 0000
+ip = '192.168.178.7'
+port = 1234
 pmd_com = eth_comm.ethernet_comms(ip, port)
 pmd_com.connect()
 
-packet = [10, 10, 10, 10, 10, 10, 10]
-send_num = 5
+packet = [1, 2, 3, 4, 5, 6, 7]
+send_num = 1
 
 while(send_num > 0):
 	pmd_com.send_standard_packet(packet)

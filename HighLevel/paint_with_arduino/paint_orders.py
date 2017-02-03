@@ -50,33 +50,46 @@ class paint_orders():
 	def getBrush(self, old_brush_index, new_brush_index):
 		print "Switching Brushes ..."
 
-		firgelli_insert_height = 0
-		firgelli_lift_out_height = 0
+		firgelli_insert_height = 300
+		firgelli_lift_out_height = 850
+		x_depth = 400
 
 		firgelli_up = [0, 0, firgelli_insert_height, 800, 0, 1, 1]
 
-		# put current brush back
-		if(old_brush_index == 0):
-			old_x_pos = 0
-			old_x_pos = 0
-			element = [old_x_pos, old_y_pos, down_val, 800, 0, 1, 1]
-		elif(old_brush_index == 1):
-			old_x_pos = 0
-			old_y_pos = 0
-			element = [old_x_pos, old_y_pos, down_val, 800, 0, 1, 1]
-		elif(old_brush_index == 2):
-			old_x_pos = 0
-			old_y_pos = 0
-			element = [old_x_pos, old_y_pos, down_val, 800, 0, 1, 1]
+		brush_offsets = [[3300,1900],[3300,1250]]
 
+		# put current brush back
+		placeBrush(brush_offsets[old_brush_index])
 
 		# get new brush pos
-		if(new_brush_index == 0):
-			pass
-		elif(new_brush_index == 1):
-			pass
-		elif(new_brush_index == 2):
-			pass
+		pickBrush(brush_offsets[new_brush_index])
+
+		def pickBrush(offset_point):
+			offX=offset_point[0]
+			offY=offset_point[1]
+
+			send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
+			sleep(1)
+			send_standard_packet([offX+x_depth,offY,firgelli_lift_out_height,800,1,1,1])
+			sleep(1)
+			send_standard_packet([offX+x_depth,offY,firgelli_insert_height,800,1,1,1])
+			sleep(1)
+			send_standard_packet([offX,offY,firgelli_insert_height,800,1,1,1])
+			sleep(1)
+
+		def placeBrush(offset_point):
+			offX=offset_point[0]
+			offY=offset_point[1]
+
+			send_standard_packet([offX,offY,firgelli_insert_height,800,1,1,1])
+			sleep(1)
+			send_standard_packet([offX+x_depth,offY,firgelli_insert_height,800,1,1,1])
+			sleep(1)
+			send_standard_packet([offX+x_depth,offY,firgelli_lift_out_height,800,1,1,1])
+			sleep(1)
+			send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
+			sleep(1)
+
 
 	'Routine for reloading paint on the brush'
 	def getPaint(self, well_index):

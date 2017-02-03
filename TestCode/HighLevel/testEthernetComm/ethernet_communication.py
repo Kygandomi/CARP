@@ -28,6 +28,7 @@ class ethernet_comms():
 			print(name + ' is open...')
 			return True
 		except:
+			print "failed to connect"
 			return False
 
 	'Disconnects PMD'
