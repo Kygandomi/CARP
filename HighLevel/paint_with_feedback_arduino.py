@@ -10,6 +10,7 @@
 from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
 from recomposition.skeleton.skeletonRecompose import *
+from color_segmentation import color_segment
 from common.util import *
 from time import sleep
 import cv2

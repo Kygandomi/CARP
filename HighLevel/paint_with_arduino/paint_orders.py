@@ -14,6 +14,9 @@ class paint_orders():
 	def __init__(self, arduino_ser):
 		# Save the ser com to use
 		self.arduino_ser = arduino_ser
+		self.old_brush_index = -1
+		self.brush_offsets = [[3300,1900],[3300,1250]]
+		self.well_offsets = [[3300,1900],[3300,1250]]
 
 	'Routine for sending a standard packet via Serial' 
 	def send_standard_packet(self, packet):
@@ -47,49 +50,50 @@ class paint_orders():
 			sleep(1)
 
 	'Routine for getting brush'
-	def getBrush(self, old_brush_index, new_brush_index):
+	def getBrush(self, new_brush_index):
 		print "Switching Brushes ..."
 
-		firgelli_insert_height = 300
-		firgelli_lift_out_height = 850
+		firgelli_insert_height = 370
+		firgelli_lift_out_height = 950
 		x_depth = 400
-
-		firgelli_up = [0, 0, firgelli_insert_height, 800, 0, 1, 1]
-
-		brush_offsets = [[3300,1900],[3300,1250]]
-
-		# put current brush back
-		placeBrush(brush_offsets[old_brush_index])
-
-		# get new brush pos
-		pickBrush(brush_offsets[new_brush_index])
 
 		def pickBrush(offset_point):
 			offX=offset_point[0]
 			offY=offset_point[1]
 
-			send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
+			self.send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
 			sleep(1)
-			send_standard_packet([offX+x_depth,offY,firgelli_lift_out_height,800,1,1,1])
+			self.send_standard_packet([offX+x_depth,offY,firgelli_lift_out_height,800,1,1,1])
 			sleep(1)
-			send_standard_packet([offX+x_depth,offY,firgelli_insert_height,800,1,1,1])
+			self.send_standard_packet([offX+x_depth,offY,firgelli_insert_height,800,1,1,1])
 			sleep(1)
-			send_standard_packet([offX,offY,firgelli_insert_height,800,1,1,1])
+			self.send_standard_packet([offX,offY,firgelli_insert_height,800,1,1,1])
 			sleep(1)
 
 		def placeBrush(offset_point):
 			offX=offset_point[0]
 			offY=offset_point[1]
 
-			send_standard_packet([offX,offY,firgelli_insert_height,800,1,1,1])
+			self.send_standard_packet([offX,offY,firgelli_insert_height,800,1,1,1])
 			sleep(1)
-			send_standard_packet([offX+x_depth,offY,firgelli_insert_height,800,1,1,1])
+			self.send_standard_packet([offX+x_depth,offY,firgelli_insert_height,800,1,1,1])
 			sleep(1)
-			send_standard_packet([offX+x_depth,offY,firgelli_lift_out_height,800,1,1,1])
+			self.send_standard_packet([offX+x_depth,offY,firgelli_lift_out_height,800,1,1,1])
 			sleep(1)
-			send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
+			self.send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
 			sleep(1)
 
+		firgelli_up = [0, 0, firgelli_insert_height, 800, 0, 1, 1]
+
+		if(self.old_brush_index != -1):
+			# put current brush back
+			placeBrush(self.brush_offsets[self.old_brush_index])
+
+		# get new brush pos
+		pickBrush(self.brush_offsets[new_brush_index])
+
+		# Save old brush
+		self.old_brush_index = new_brush_index
 
 	'Routine for reloading paint on the brush'
 	def getPaint(self, well_index):
@@ -99,11 +103,18 @@ class paint_orders():
 		down_val = 373
 		up_val = 800
 
+		offX=self.well_offsets[well_index][0]
+		offY=self.well_offsets[well_index][1]
+
+		if(well_index < 0):
+			offX = 0
+			offY = 0
+
 		# Get Paint Routine
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
 
-		element = [random.randint(0,100), random.randint(0,100), 0, 800, 1, 0, 0]
+		element = [random.randint(offX,offX+100), random.randint(offY,offY+100), 0, 800, 1, 0, 0]
 		self.send_standard_packet(element)
 
 		firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
@@ -112,8 +123,15 @@ class paint_orders():
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
 
+	def returnToStart(self):
+		# Paint Routine Complete pick up Fergelli and return to start
+		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
+		self.send_standard_packet(firgelli_up)
+		element = [0, 0, final_up_val, 800, 1, 1, 1]
+		self.send_standard_packet(element)
+
 	'Paint Routine for Creating the desired image'
-	def Paint(self, LLT):
+	def Paint(self, LLT, well_index):
 		# Scale 
 		scale_val = 8.7
 
@@ -141,7 +159,7 @@ class paint_orders():
 				if(paint_distance >= MAX_DIST):
 
 					# Get more paint and re-do the last few points
-					self.getPaint()
+					self.getPaint(well_index)
 					point_index = max(0,point_index-3)
 					put_brush_down = True
 					paint_distance = 0
@@ -175,11 +193,7 @@ class paint_orders():
 			if(MAX_DIST-paint_distance < MAX_DIST_END):
 				paint_distance = MAX_DIST
 
-		# Paint Routine Complete pick up Fergelli and return to start
-		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
-		self.send_standard_packet(firgelli_up)
-		element = [0, 0, final_up_val, 800, 1, 1, 1]
-		self.send_standard_packet(element)
+		
 
 
 
