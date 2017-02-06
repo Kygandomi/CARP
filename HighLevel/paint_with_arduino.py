@@ -61,7 +61,7 @@ red = [0,0,255]
 white = [255,255,255]
 black = [0,0,0]
 
-colors, color_segments, segmented_image = color_segment(desiredImg, [blue, green, white])
+segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, [blue, green],white)
 
 for image in color_segments:
 	display(image)

@@ -15,7 +15,7 @@ class graph():
 		self.node_list = []
 		for i in range(self.size):
 			point = self.point_list[i]
-			n = node(self.getIndex(point),point)
+			n = node(i,point)
 			self.node_list.append(n)
 		if autoBuild:
 			self.build()
