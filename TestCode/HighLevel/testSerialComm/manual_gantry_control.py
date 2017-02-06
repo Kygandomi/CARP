@@ -54,11 +54,11 @@ sleep(1)
 ####### Square Calibration Routine ######
 print "Square Calibration Routine"
 # Standard PAcket: [x y z step_time xy_abs z_abs go_flag]
-firgelli_up = [0, 0, 700, 800, 0, 1, 1]
-firgelli_down = [0, 0, 340, 800, 0, 1, 1]
+firgelli_up = [0, 0, 950, 800, 0, 1, 1]
+firgelli_down = [0, 0, 600, 800, 0, 1, 1]
 
 # Let's draw a square
-send_standard_packet(firgelli_up)
+# send_standard_packet(firgelli_up)
 # sleep(1)
 
 # firgelli_up = [0, 0, 850, 800, 0, 1, 1]

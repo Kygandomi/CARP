@@ -33,8 +33,8 @@ for i in range(len(ports_list)):
 		break
 
 # Comment back in when we have an actual serial port
-# if not could_connect : 
-# 	raise Exception('Could not connect...')
+if not could_connect : 
+	raise Exception('Could not connect...')
 
 # Sleep to verify a solid connection
 sleep(1)
@@ -75,6 +75,7 @@ paint_routine = PaintOrders.paint_orders(arduino_ser)
 
 # Recomp and Paint
 for index in range(len(color_segments)-1):
+	print "Index ", index
 	img = color_segments[index]
 
 	print "Fetching new brush"
