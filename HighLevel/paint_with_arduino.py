@@ -9,7 +9,7 @@
 from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
-from decomposition.color_segmentation.color_segmentation import color_segment
+from decomposition.color_segmentation.color_segmentation import *
 from recomposition.skeleton.skeletonRecompose import *
 from common.util import *
 from time import sleep
@@ -33,8 +33,8 @@ for i in range(len(ports_list)):
 		break
 
 # Comment back in when we have an actual serial port
-if not could_connect : 
-	raise Exception('Could not connect...')
+# if not could_connect : 
+# 	raise Exception('Could not connect...')
 
 # Sleep to verify a solid connection
 sleep(1)
@@ -67,7 +67,7 @@ for image in color_segments:
 	display(image)
 
 ##################################################################
-############ RECOMPOSITION & PAINT ROUTINE  ######################
+############ RECOMPOSITION & PAINT ROUTINE ######################
 ##################################################################
 
 # Lets Paint
