@@ -1,5 +1,6 @@
 from common import util
 import numpy as np
+import cv2
 
 # BLUE, GREEN, RED is the order for OpenCV pixel color values.
 
@@ -22,6 +23,17 @@ def classify_px(px, colors):
             best_color = color
     return best_color
 
+def classify_hsv(h,hues):
+    best_hue = 0
+    best_diff = abs(h-hues[0])
+
+    for index in range(1, len(hues)):
+        diff = abs(h-hues[index])
+        if diff<best_diff:
+            best_diff = diff
+            best_hue = index
+    return best_hue
+
 # TODO: Make this do the thing Nick said with canvas colors not beoing output
 def color_segment(image, paint_colors,canvas_color = [255,255,255]):
 
@@ -43,22 +55,20 @@ def color_segment(image, paint_colors,canvas_color = [255,255,255]):
 
     for i in range(rows):
         for j in range(cols):
-            image[i,j]=colors[classify_px(image[i,j], colors)]
+            image[i,j]=classify_px(image[i,j], colors)
             # color = classify_px(np.array([image.item(i,j,0),image.item(i,j,1),image.item(i,j,2)]), colors)
             # image.itemset((i,j,0),color[0])
             # image.itemset((i,j,1),color[1])
             # image.itemset((i,j,2),color[2])
 
     util.save(util.open_image(util.close_image(image)))
-
+    print "generating images"
     bin_images = [] # The 1-color images.
 
     for index in range(0, len(paint_colors)):
         # Create a deep copy of the image
         bin_image = 255-np.zeros((rows,cols,1), np.uint8)
-
         bin_image[np.where((image == paint_colors[index]).all(axis = 2))] = [0]
-
         bin_images.append(bin_image) # Add to the list of color specific images.
 
     bin_image = 255-np.zeros((rows,cols,1), np.uint8)
@@ -66,3 +76,39 @@ def color_segment(image, paint_colors,canvas_color = [255,255,255]):
 
     return [image, bin_images, bin_image]
 
+def color_segment_hsv(image, paint_colors, canvas_color = [255,255,255]):
+    rows, cols, _ = image.shape
+
+    hsv_image = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
+    hsv_paints = cv2.cvtColor(np.uint8([paint_colors]),cv2.COLOR_BGR2HSV)[0].tolist()
+    hsv_canvas = cv2.cvtColor(np.uint8([[canvas_color]]),cv2.COLOR_BGR2HSV)[0][0].tolist()
+
+    colors=[canvas_color]
+    colors.extend(paint_colors)
+
+    hsv_colors=[hsv_canvas]
+    hsv_colors.extend(hsv_paints)
+
+    h,s,v = cv2.split(np.uint8([hsv_colors]))
+    h=h[0]
+
+    for i in range(rows):
+        for j in range(cols):
+            image[i,j]=colors[classify_hsv(hsv_image.item(i,j,0), h)]
+
+    print "generating images"
+    bin_images = [] # The 1-color images.
+
+    for index in range(0, len(paint_colors)):
+        # Create a deep copy of the image
+        bin_image = 255-np.zeros((rows,cols,1), np.uint8)
+        bin_image[np.where((image == paint_colors[index]).all(axis = 2))] = [0]
+        bin_image = util.open_image(bin_image)
+        bin_image = util.close_image(bin_image)
+        bin_images.append(bin_image) # Add to the list of color specific images.
+
+    bin_image = 255-np.zeros((rows,cols,1), np.uint8)
+    bin_image[np.where((image == canvas_color).all(axis = 2))] = [0]
+    bin_image = util.open_image(bin_image)
+    bin_image = util.close_image(bin_image)
+    return [image, bin_images, bin_image]
