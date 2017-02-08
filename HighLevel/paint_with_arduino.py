@@ -47,7 +47,7 @@ sleep(1)
 print "Preprocessing"
 
 # take in image to process
-desiredImg = readImage("flask.png", type_flag=cv2.IMREAD_COLOR)
+desiredImg = readImage("boat2.png", type_flag=1)
 
 ##################################################################
 ################### DECOMPOSITION  ###############################
@@ -61,7 +61,7 @@ red = [0,0,255]
 white = [255,255,255]
 black = [0,0,0]
 
-segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, [blue, green],white)
+segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, [yellow, red, black],white)
 
 for image in color_segments:
 	display(image)
@@ -106,7 +106,7 @@ print "Routine Complete, Enjoy ! "
 # print "Preprocessing"
 
 # # take in image to process
-# desiredImg = readImage("beachball_red.png", type_flag=1)
+# desiredImg = readImage("pikachu.png", type_flag=1)
 
 # desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 
@@ -123,8 +123,8 @@ print "Routine Complete, Enjoy ! "
 # print "Recomposition"
 
 # # Create a recomposer
-# # recomposer = skeletonRecomposer(binImg, [])
-# recomposer = iterativeErosionRecomposer(binImg, [4])
+# recomposer = skeletonRecomposer(binImg, [])
+# # recomposer = iterativeErosionRecomposer(binImg, [4])
 
 # LLT = recomposer.recompose()
 
