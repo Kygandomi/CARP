@@ -62,7 +62,6 @@ def color_segment(image, paint_colors,canvas_color = [255,255,255]):
             # image.itemset((i,j,2),color[2])
 
     util.save(util.open_image(util.close_image(image)))
-    print "generating images"
     bin_images = [] # The 1-color images.
 
     for index in range(0, len(paint_colors)):
