@@ -10,6 +10,7 @@ from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from decomposition.color_segmentation.color_segmentation import *
+from decomposition.color_segmentation.color_quantization import *
 from recomposition.skeleton.skeletonRecompose import *
 from common.util import *
 from time import sleep
@@ -61,7 +62,9 @@ red = [0,0,255]
 white = [255,255,255]
 black = [0,0,0]
 
-segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, [yellow, red, black],white)
+colors = color_quantize(desiredImg,4)
+
+segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, [black],white)
 
 for image in color_segments:
 	display(image)
@@ -74,26 +77,23 @@ for image in color_segments:
 paint_routine = PaintOrders.paint_orders(arduino_ser)
 
 # Recomp and Paint
-for index in range(len(color_segments)-1):
-	print "Index ", index
-	img = color_segments[index]
+for index in range(len(color_segments)):
+    print "Index: ", index
+    img = color_segments[index]
+    
+    print "-Recomposition"
+    # recomposer = iterativeErosionRecomposer(img, [3])
+    recomposer = skeletonRecomposer(img, [])
+    LLT = recomposer.recompose()
+    testLLT(LLT,3)
 
-	print "Fetching new brush"
-	paint_routine.getBrush(index)
+    print "Fetching new brush"
+    paint_routine.getBrush(index)
 
-	print "Recomposition"
-	recomposer = iterativeErosionRecomposer(img, [3])
-	# recomposer = skeletonRecomposer(img, [])
+    print "Let's Paint a Picture ~"
+    paint_routine.Paint(LLT, index)
 
-	LLT = recomposer.recompose()
-
-	print "LLT to Paint: ", LLT
-	testLLT(LLT,3)
-
-	print "Let's Paint a Picture ~"
-	paint_routine.Paint(LLT, index)
-
-	print "LLT Finished "
+    print "LLT Finished "
 	
 paint_routine.returnToStart()
 print "Routine Complete, Enjoy ! "
