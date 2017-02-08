@@ -1,10 +1,7 @@
-import sys
 import cv2
 import numpy as np
 
 from CameraException import *
-
-sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work on Odell's computer
 
 
 class Camera(object):

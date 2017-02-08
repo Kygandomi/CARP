@@ -25,6 +25,8 @@ def buildPallete(color_string):
     """
     palette = []
     color_string = color_string.split(" ")
+    color_string = [x for x in color_string if "" != x]
+    print color_string
     for color in color_string:
         color = color.lower()
         try:
