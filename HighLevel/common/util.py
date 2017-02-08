@@ -186,6 +186,13 @@ def getFileByName(fileName,path="resources/images/input/"):
         raise ValueError('Error in attempt to read file. Are you sure the file is there?')
     return read_file
 
+#TODO: Make this smarter, just give higher directory and recursive search
+def getFileByNameNoAlpha(fileName,path="resources/images/input/"):
+    read_file =  cv2.imread(path + fileName, cv2.IMREAD_COLOR)
+    if read_file is None:
+        raise ValueError('Error in attempt to read file. Are you sure the file is there?')
+    return read_file
+
 def getFileByName_8UC1(fileName,path="resources/images/input/"):
     read_file =  cv2.imread(path + fileName, cv2.CV_8UC1)
     if read_file is None:
