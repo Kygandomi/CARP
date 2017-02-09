@@ -1,6 +1,7 @@
 from common import util
 import numpy as np
 import cv2
+from scipy.cluster.vq import vq
 
 # BLUE, GREEN, RED is the order for OpenCV pixel color values.
 
@@ -39,8 +40,7 @@ def color_segment(image, paint_colors,canvas_color = [255,255,255]):
 
     rows, cols, _ = image.shape
 
-    colors=[canvas_color]
-    colors.extend(paint_colors)
+    colors = np.concatenate((np.array([canvas_color]),np.array(paint_colors)))
 
     # @TODO, this should use image.item and image.itemset as per below link, to speed things up.
     # http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_core/py_basic_ops/py_basic_ops.html
@@ -53,15 +53,23 @@ def color_segment(image, paint_colors,canvas_color = [255,255,255]):
     #         new_px = colors[color_val]
     #         (image[pixel_line])[pixel] = new_px
 
-    for i in range(rows):
-        for j in range(cols):
-            image[i,j]=classify_px(image[i,j], colors)
-            # color = classify_px(np.array([image.item(i,j,0),image.item(i,j,1),image.item(i,j,2)]), colors)
-            # image.itemset((i,j,0),color[0])
-            # image.itemset((i,j,1),color[1])
-            # image.itemset((i,j,2),color[2])
+    # for i in range(rows):
+    #     for j in range(cols):
+    #         image[i,j]=classify_px(image[i,j], colors)
+    #         # color = classify_px(np.array([image.item(i,j,0),image.item(i,j,1),image.item(i,j,2)]), colors)
+    #         # image.itemset((i,j,0),color[0])
+    #         # image.itemset((i,j,1),color[1])
+    #         # image.itemset((i,j,2),color[2])
 
-    util.save(util.open_image(util.close_image(image)))
+    pixel = np.reshape(image,(image.shape[0]*image.shape[1],3))
+    qnt,_ = vq(pixel,colors)
+
+    # reshaping the result of the quantization
+    centers_idx = np.reshape(qnt,(image.shape[0],image.shape[1]))
+    image = colors[centers_idx]
+    image = np.uint8(image)
+
+    util.output(util.open_image(util.close_image(image)))
     bin_images = [] # The 1-color images.
 
     for index in range(0, len(paint_colors)):

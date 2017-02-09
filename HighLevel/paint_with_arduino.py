@@ -62,9 +62,13 @@ red = [0,0,255]
 white = [255,255,255]
 black = [0,0,0]
 
+print "Quantization"
 colors = color_quantize(desiredImg,4)
-
-segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, [black],white)
+colors = remove_canvas(colors,white)
+#colors = classify(colors,[blue,green,yellow,red,black])
+print colors
+print "Segmentation"
+segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, colors, white)
 
 for image in color_segments:
 	display(image)
@@ -81,7 +85,7 @@ for index in range(len(color_segments)):
     print "Index: ", index
     img = color_segments[index]
     
-    print "-Recomposition"
+    print "Recomposition"
     # recomposer = iterativeErosionRecomposer(img, [3])
     recomposer = skeletonRecomposer(img, [])
     LLT = recomposer.recompose()
