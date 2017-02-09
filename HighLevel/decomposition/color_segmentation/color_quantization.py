@@ -3,8 +3,9 @@ import numpy as np
 import cv2
 from scipy.cluster.vq import kmeans,vq
 
-def color_quantize(image, n_colors=2):
-    small_img = util.resize(image,200)
+def color_quantize(image, n_colors=2, size_to=200):
+    if size_to>0:
+        small_img = util.resize(image,size_to)
     pixel = np.reshape(np.float32(small_img),(small_img.shape[0]*small_img.shape[1],3))
 
     # performing the clustering

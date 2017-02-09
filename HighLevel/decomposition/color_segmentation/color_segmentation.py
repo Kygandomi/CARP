@@ -75,11 +75,11 @@ def color_segment(image, paint_colors,canvas_color = [255,255,255]):
     for index in range(0, len(paint_colors)):
         # Create a deep copy of the image
         bin_image = 255-np.zeros((rows,cols,1), np.uint8)
-        bin_image[np.where((image == paint_colors[index]).all(axis = 2))] = [0]
+        bin_image[np.where((centers_idx == index+1))] = [0]
         bin_images.append(bin_image) # Add to the list of color specific images.
 
     bin_image = 255-np.zeros((rows,cols,1), np.uint8)
-    bin_image[np.where((image == canvas_color).all(axis = 2))] = [0]
+    bin_image[np.where((centers_idx == 0))] = [0]
 
     return [image, bin_images, bin_image]
 

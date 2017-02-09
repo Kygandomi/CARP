@@ -48,7 +48,7 @@ sleep(1)
 print "Preprocessing"
 
 # take in image to process
-desiredImg = readImage("boat2.png", type_flag=1)
+desiredImg = readImage("medusa_raft.png", type_flag=1)
 
 ##################################################################
 ################### DECOMPOSITION  ###############################
