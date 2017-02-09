@@ -66,7 +66,7 @@ print "Quantization"
 colors = color_quantize(desiredImg,4)
 colors = remove_canvas(colors,white)
 #colors = classify(colors,[blue,green,yellow,red,black])
-print colors
+
 print "Segmentation"
 segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, colors, white)
 
