@@ -3,6 +3,8 @@ import numpy as np
 from common import util
 from common import color_pallete
 import copy
+import time
+from CanvasCamera import Camera
 from CameraException import *
 from color_segmentation import color_segment
 
@@ -55,48 +57,83 @@ def correct_image(src_imset, painted_imset):
     return color_corrections, canvas_corrections
 
 
-# warped_canvas = cv2.imread("CameraFeedback/1.png", cv2.IMREAD_UNCHANGED)
-warped_picture = cv2.imread("CameraFeedback/flask_mod.png", cv2.IMREAD_COLOR)
+cam = Camera(1)
+boat = util.getFileByName("boat2.png", "../resources/images/input/")
 
-src_img = util.getFileByNameNoAlpha("flask.png", "../resources/images/input/") #cv2.imread("CameraFeedback/fake.png", cv2.IMREAD_COLOR)
-
-
-
-# dewarped_canvas = dewarp(warped_canvas)
-# dewarped_picture = dewarp(warped_picture)
-dewarped_picture = warped_picture
-# src_img = dewarp(src_img)
+# print warped_canvas
 
 
+while 1:
+    print "test"
+    img = cam.read_camera()
+    # cv2.imshow('orig', warped_canvas)
+    # util.display(warped_canvas)
+    # util.display(cam.read_camera())
 
-_, h, w = warped_picture.shape
+    dewarp_img = dewarp(img)
 
-xinit = 430
-xlim = 370
-yinit = 130
-ylim = 660
+    a, w, h = dewarp_img.shape
 
-# dewarped_canvas = dewarped_canvas[yinit:h-ylim, xinit:w-xlim] # NOTE: its img[y: y + h, x: x + w]
-# segmented_picture = dewarped_picture[yinit:h-ylim, xinit:w-xlim] # NOTE: its img[y: y + h, x: x + w]
-# src_img = src_img[yinit:h-ylim, xinit:w-xlim] # NOTE: its img[y: y + h, x: x + w]
-segmented_picture = dewarped_picture
-
-util.display(segmented_picture)
-util.display(src_img)
+    dewarp_img = dewarp_img[70:w-250, 170:h-170]
 
 
-palette = color_pallete.buildPallete("blue   green")
+    time.sleep(0.1)
+
+    try:
+        cam.generate_transform(dewarp_img)
+        img_to_show = cam.get_canvas(dewarp_img)
+    except CameraTransformError:
+        img_to_show = boat
+
+    # img_to_show = dewarp_img
+    cv2.imshow('orig', img_to_show)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
 
-colors, color_segments, segmented_image = color_segment(dewarped_picture, palette)
-colors_src, color_segments_src, segmented_image_src = color_segment(src_img, palette)
-
-paint_color_corrections, paint_canvas_corrections = correct_image(color_segments_src, color_segments)
-
-for elt in paint_color_corrections:
-    util.display(elt)
-
-for elt in paint_canvas_corrections:
-    util.display(elt)
-
-#  util.display(get_canvas(None, dewarped_canvas)) # Shit's broken - Odell needs LED's
+#
+# # warped_canvas = cv2.imread("CameraFeedback/1.png", cv2.IMREAD_UNCHANGED)
+# warped_picture = cv2.imread("CameraFeedback/flask_mod.png", cv2.IMREAD_COLOR)
+#
+# src_img = util.getFileByNameNoAlpha("flask.png", "../resources/images/input/") #cv2.imread("CameraFeedback/fake.png", cv2.IMREAD_COLOR)
+#
+#
+#
+# # dewarped_canvas = dewarp(warped_canvas)
+# # dewarped_picture = dewarp(warped_picture)
+# dewarped_picture = warped_picture
+# # src_img = dewarp(src_img)
+#
+#
+#
+# _, h, w = warped_picture.shape
+#
+# xinit = 430
+# xlim = 370
+# yinit = 130
+# ylim = 660
+#
+# # dewarped_canvas = dewarped_canvas[yinit:h-ylim, xinit:w-xlim] # NOTE: its img[y: y + h, x: x + w]
+# # segmented_picture = dewarped_picture[yinit:h-ylim, xinit:w-xlim] # NOTE: its img[y: y + h, x: x + w]
+# # src_img = src_img[yinit:h-ylim, xinit:w-xlim] # NOTE: its img[y: y + h, x: x + w]
+# segmented_picture = dewarped_picture
+#
+# util.display(segmented_picture)
+# util.display(src_img)
+#
+#
+# palette = color_pallete.buildPallete("blue green")
+#
+#
+# colors, color_segments, segmented_image = color_segment(dewarped_picture, palette)
+# colors_src, color_segments_src, segmented_image_src = color_segment(src_img, palette)
+#
+# paint_color_corrections, paint_canvas_corrections = correct_image(color_segments_src, color_segments)
+#
+# for elt in paint_color_corrections:
+#     util.display(elt)
+#
+# for elt in paint_canvas_corrections:
+#     util.display(elt)
+#
+# #  util.display(get_canvas(None, dewarped_canvas)) # Shit's broken - Odell needs LED's
