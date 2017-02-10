@@ -57,7 +57,7 @@ print "Decomposition"
 
 blue = [255,0,0]
 green = [0,255,0]
-yellow = [0,233,255]
+yellow = [154,233,255]
 red = [0,0,255]
 white = [255,255,255]
 black = [0,0,0]
@@ -71,7 +71,8 @@ print "Segmentation"
 segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, colors, white)
 
 for image in color_segments:
-	display(image)
+	img4 = open_image(image)
+	display(img4)
 
 ##################################################################
 ############ RECOMPOSITION & PAINT ROUTINE ######################
@@ -80,24 +81,32 @@ for image in color_segments:
 # Lets Paint
 paint_routine = PaintOrders.paint_orders(arduino_ser)
 
+# Recomposers to use
+recompItErosion1 = iterativeErosionRecomposer(open_image(color_segments[0]), [3])
+recompItErosion2 = iterativeErosionRecomposer(open_image(color_segments[1]), [2])
+recompSkeleton = skeletonRecomposer(open_image(color_segments[2]), [])
+recomposers = [recompItErosion1, recompItErosion2, recompSkeleton]
+
 # Recomp and Paint
 for index in range(len(color_segments)):
-    print "Index: ", index
-    img = color_segments[index]
-    
-    print "Recomposition"
-    # recomposer = iterativeErosionRecomposer(img, [3])
-    recomposer = skeletonRecomposer(img, [])
-    LLT = recomposer.recompose()
-    testLLT(LLT,3)
+	print "Index ", index
+	# img = color_segments[index]
+	# img = open_image(img)
 
-    print "Fetching new brush"
-    paint_routine.getBrush(index)
+	print "Fetching new brush"
+	paint_routine.getBrush(index)
 
-    print "Let's Paint a Picture ~"
-    paint_routine.Paint(LLT, index)
+	print "Recomposition"
+	recomposer = recomposers[index]
+	LLT = recomposer.recompose()
 
-    print "LLT Finished "
+	print "LLT to Paint: ", LLT
+	testLLT(LLT,3)
+
+	print "Let's Paint a Picture ~"
+	paint_routine.Paint(LLT)
+
+	print "LLT Finished "
 	
 paint_routine.returnToStart()
 print "Routine Complete, Enjoy ! "
