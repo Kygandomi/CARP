@@ -15,7 +15,8 @@ class paint_orders():
 		# Save the ser com to use
 		self.arduino_ser = arduino_ser
 		self.old_brush_index = -1
-		self.brush_offsets = [[3312,2515],[3315,1900]]
+		self.well_index = -1
+		self.brush_offsets = [[3312,2515],[3320,1880]]
 		self.well_offsets = [[3312,2515],[3315,1975]]
 
 	'Routine for sending a standard packet via Serial' 
@@ -95,6 +96,10 @@ class paint_orders():
 			self.old_brush_index = new_brush_index
 			return
 
+		
+		new_brush_index = new_brush_index % len(self.brush_offsets)
+
+
 		# get new brush pos
 		pickBrush(self.brush_offsets[new_brush_index])
 
@@ -103,19 +108,20 @@ class paint_orders():
 
 		# Save old brush
 		self.old_brush_index = new_brush_index
+		self.well_index = new_brush_index
 
 	'Routine for reloading paint on the brush'
-	def getPaint(self, well_index):
+	def getPaint(self):
 		print "Getting Paint ..."
 
 		# Fergelli Height Values
-		down_val = 190
+		down_val = 175
 		up_val = 800
 
-		offX=self.well_offsets[well_index][0]
-		offY=self.well_offsets[well_index][1]
+		offX=self.well_offsets[self.well_index][0]
+		offY=self.well_offsets[self.well_index][1]
 
-		if(well_index < 0):
+		if(self.well_index < 0):
 			offX = 0
 			offY = 0
 
@@ -123,7 +129,7 @@ class paint_orders():
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
 		
-		element = [min(random.randint(offX,offX+80), 4250), min(random.randint(offY,offY+5), 2480), 0, 800, 1, 0, 0]
+		element = [min(random.randint(offX,offX+80), 4220), min(random.randint(offY,offY+5), 2440), 0, 800, 1, 0, 0]
 		self.send_standard_packet(element)
 
 		firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
@@ -146,9 +152,9 @@ class paint_orders():
 		self.send_standard_packet(element)
 
 	'Paint Routine for Creating the desired image'
-	def Paint(self, LLT, well_index):
+	def Paint(self, LLT):
 		# Scale 
-		scale_val = 8.7
+		scale_val = 8.3
 
 		# Record Fergelli Height Values
 		down_val = 200
@@ -156,8 +162,8 @@ class paint_orders():
 		final_up_val = 800
 
 		# Record how far we've gone (0.1 mm)
-		MAX_DIST = 1342
-		MAX_DIST_END = 500
+		MAX_DIST = 3000
+		MAX_DIST_END = 600
 		DOWN_COST = 50
 		paint_distance = MAX_DIST
 
@@ -174,7 +180,7 @@ class paint_orders():
 				if(paint_distance >= MAX_DIST):
 
 					# Get more paint and re-do the last few points
-					self.getPaint(well_index)
+					self.getPaint()
 					point_index = max(0,point_index-3)
 					put_brush_down = True
 					paint_distance = 0
