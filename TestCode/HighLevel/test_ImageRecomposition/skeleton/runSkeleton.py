@@ -47,12 +47,17 @@ def map(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False)
 	src_rows, src_cols = src_shape
 	dst_rows, dst_cols = dst_shape
 
+	dst_rows = float(dst_rows)
+	src_rows = float(src_rows)
+
 	if orient:
-		if (dst_rows/dst_cols>1) and (src_rows/src_cols<1):
-			pt = (pt[1],src_cols-pt[0])
-			src_cols, src_rows = src_shape
-		elif(dst_rows/dst_cols<1) and (src_rows/src_cols>1):
+		if ((dst_rows/dst_cols)>1) and ((src_rows/src_cols)<1):
+			#dst is portrait and src is landscape
 			pt = (src_rows-pt[1],pt[0])
+			src_cols, src_rows = src_shape
+		elif((dst_rows/dst_cols)<1) and ((src_rows/src_cols)>1):
+			# dst is landscape and src is landscape
+			pt = (pt[1],src_cols-pt[0])
 			src_cols, src_rows = src_shape
 
 	if stretch:
@@ -100,10 +105,10 @@ def skeletonize(binImg):
 ############################################################################
 ############################################################################
 	
-desiredImg = cv2.imread('../images/triforce.png', cv2.IMREAD_UNCHANGED)
+desiredImg = cv2.imread('../images/thang.png', cv2.IMREAD_UNCHANGED)
 brush_thickness = 2
 
-paper_size = (11*25.4,8.5*25.4)
+paper_size = (8.5*25.4,11*25.4)
 
 desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
 

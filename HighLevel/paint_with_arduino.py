@@ -10,6 +10,7 @@ from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from decomposition.color_segmentation.color_segmentation import *
+from decomposition.color_segmentation.color_quantization import *
 from recomposition.skeleton.skeletonRecompose import *
 from common.util import *
 from time import sleep
@@ -47,7 +48,7 @@ sleep(1)
 print "Preprocessing"
 
 # take in image to process
-desiredImg = readImage("boat2.png", type_flag=1)
+desiredImg = readImage("medusa_raft.png", type_flag=1)
 
 ##################################################################
 ################### DECOMPOSITION  ###############################
@@ -61,7 +62,13 @@ red = [0,0,255]
 white = [255,255,255]
 black = [0,0,0]
 
-segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, [yellow, red, black],white)
+print "Quantization"
+colors = color_quantize(desiredImg,4)
+colors = remove_canvas(colors,white)
+#colors = classify(colors,[blue,green,yellow,red,black])
+
+print "Segmentation"
+segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, colors, white)
 
 for image in color_segments:
 	img4 = open_image(image)

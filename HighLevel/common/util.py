@@ -70,19 +70,28 @@ def getNeighborPoints(pt,kernel = np.ones((3,3)),excludeSelf = True, sort = True
     return np.array(points)
 
 #TODO?: Modify to accept numpy array of points, thereby allowing the function to solve multiple points at once
-def mapToCanvas(pt,src_shape,dst_shape = (11*25.4,8.5*25.4),orient=True,stretch = False):
+def mapToCanvas(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False):
     """ Maps the given point in one image shape to its corresponding point in another shape.
         Options to automatically stretch and/or rotate the image in order to fill the destination shape
         Also returns scale and offset (in the case of no stretching) or scaleX and scaleY"""
     src_rows, src_cols = src_shape
     dst_rows, dst_cols = dst_shape
 
+    dst_rows = float(dst_rows)
+    dst_cols = float(dst_cols)
+    src_rows = float(src_rows)
+    src_cols = float(src_cols)
+
     if orient:
+        #dst is portrait and src is landscape
         if (dst_rows/dst_cols>1) and (src_rows/src_cols<1):
-            pt = (pt[1],src_cols-pt[0])
-            src_cols, src_rows = src_shape
-        elif(dst_rows/dst_cols<1) and (src_rows/src_cols>1):
+            #rotate 90 degrees right
             pt = (src_rows-pt[1],pt[0])
+            src_cols, src_rows = src_shape
+        # dst is landscape and src is landscape
+        elif(dst_rows/dst_cols<1) and (src_rows/src_cols>1):
+            #rotate 90 degrees left
+            pt = (pt[1],src_cols-pt[0])
             src_cols, src_rows = src_shape
 
     if stretch:
@@ -110,7 +119,7 @@ def drawLines(pts,img,thickness=3,showSteps=False):
                 display(img)
     return img
 
-def mapLLT(LLT,src_shape,dst_shape = (11*25.4,8.5*25.4),orient=True,stretch = False):
+def mapLLT(LLT,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False):
     out_pts = []
     for stroke in LLT:
         list_pts=[]
@@ -121,7 +130,7 @@ def mapLLT(LLT,src_shape,dst_shape = (11*25.4,8.5*25.4),orient=True,stretch = Fa
     return out_pts
 
 
-def testLLT(LLT,scale = 2,paper_size = (11*25.4,8.5*25.4),thickness=2):
+def testLLT(LLT,scale = 2,paper_size = (8.5*25.4,11*25.4),thickness=2):
     """	Displays the expected output of the given orders text file"""
     lines = []
     for stroke in LLT:
@@ -156,7 +165,7 @@ def saveLLT(LLT,fname = 'orders.txt'):
                 f.write(str(pt[0]) + ' '+ str(pt[1]) + ' ' + str(pt[2]) + ' \n')
             f.write('\n')
 
-def testOrders(path='orders.txt',scale = 2,paper_size = (11*25.4,8.5*25.4)):
+def testOrders(path='orders.txt',scale = 2,paper_size = (8.5*25.4,11*25.4)):
     """	Displays the expected output of the given orders text file"""
     testLLT(loadLLT(path),scale,paper_size)
 
@@ -182,6 +191,13 @@ def readImage(fileName,path="resources/images/input/",type_flag = cv2.IMREAD_COL
 #TODO: Make this smarter, just give higher directory and recursive search
 def getFileByName(fileName,path="resources/images/input/"):
     read_file =  cv2.imread(path + fileName, cv2.IMREAD_UNCHANGED)
+    if read_file is None:
+        raise ValueError('Error in attempt to read file. Are you sure the file is there?')
+    return read_file
+
+#TODO: Make this smarter, just give higher directory and recursive search
+def getFileByNameNoAlpha(fileName,path="resources/images/input/"):
+    read_file =  cv2.imread(path + fileName, cv2.IMREAD_COLOR)
     if read_file is None:
         raise ValueError('Error in attempt to read file. Are you sure the file is there?')
     return read_file
