@@ -55,12 +55,33 @@ desiredImg = readImage("star_flower.png", type_flag=1)
 ##################################################################
 print "Decomposition"
 
+<<<<<<< HEAD
 segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 6,[], color_pallete.white)
 
 display(desiredImg)
 display(segmented_image)
 for index in range(len(color_segments)):
 	display(color_segments[index],str(colors[index]))
+=======
+blue = [255,0,0]
+green = [0,255,0]
+yellow = [154,233,255]
+red = [0,0,255]
+white = [255,255,255]
+black = [0,0,0]
+
+print "Quantization"
+colors = color_quantize(desiredImg,4)
+colors = remove_canvas(colors,white)
+#colors = classify(colors,[blue,green,yellow,red,black])
+
+print "Segmentation"
+segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, colors, white)
+
+for image in color_segments:
+	img4 = open_image(image)
+	display(img4)
+>>>>>>> origin/master
 
 ##################################################################
 ############ RECOMPOSITION & PAINT ROUTINE ######################
@@ -69,8 +90,15 @@ for index in range(len(color_segments)):
 # Lets Paint
 paint_routine = PaintOrders.paint_orders(arduino_ser)
 
+# Recomposers to use
+recompItErosion1 = iterativeErosionRecomposer(open_image(color_segments[0]), [3])
+recompItErosion2 = iterativeErosionRecomposer(open_image(color_segments[1]), [2])
+recompSkeleton = skeletonRecomposer(open_image(color_segments[2]), [])
+recomposers = [recompItErosion1, recompItErosion2, recompSkeleton]
+
 # Recomp and Paint
 for index in range(len(color_segments)):
+<<<<<<< HEAD
     print "Index: ", index
     img = color_segments[index]
     
@@ -87,6 +115,26 @@ for index in range(len(color_segments)):
     paint_routine.Paint(LLT, index)
 
     print "LLT Finished "
+=======
+	print "Index ", index
+	# img = color_segments[index]
+	# img = open_image(img)
+
+	print "Fetching new brush"
+	paint_routine.getBrush(index)
+
+	print "Recomposition"
+	recomposer = recomposers[index]
+	LLT = recomposer.recompose()
+
+	print "LLT to Paint: ", LLT
+	testLLT(LLT,3)
+
+	print "Let's Paint a Picture ~"
+	paint_routine.Paint(LLT)
+
+	print "LLT Finished "
+>>>>>>> origin/master
 	
 paint_routine.returnToStart()
 print "Routine Complete, Enjoy ! "

@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
-
+from common import util
+import time
 from CameraException import *
 
 
@@ -74,10 +75,12 @@ class Camera(object):
         long_contours = [] # Create an array for the long edges to be held
 
         for cnt in contours:
-            if 15000<cv2.contourArea(cnt) < 850000: # Tuned to prevent small contours, but also not consider image edges a contour @TODO: objects for canvases?
+            if 50000<cv2.contourArea(cnt) < 500000: # Tuned to prevent small contours, but also not consider image edges a contour @TODO: objects for canvases?
+                print cv2.contourArea(cnt)
                 long_contours.append(cnt) # Record any long contours
-                cv2.drawContours(image,[cnt],0,(0,255,0),2) # Draw those contours onto the image
-
+                #cv2.drawContours(image,[cnt],0,(0,255,0),2) # Draw those contours onto the image
+                #util.save(image, str(time.time()))
+        print "Long contours found: ", len(long_contours)
         try:
             rect = cv2.minAreaRect(long_contours[0]) # Generate a rectangle based on the long contour surrounding the page
         except IndexError:
@@ -123,7 +126,7 @@ class Camera(object):
         M = cv2.getPerspectiveTransform(ordered_rect, dst)
         self.canvas_transformation_data = M, maxWidth, maxHeight
 
-
+    # TODO build in dewarping to this module.
     def get_canvas(self):
         """
         From a camera object, retrieves the canvas.
@@ -131,6 +134,24 @@ class Camera(object):
         """
 
         camera_image = self.read_camera() # Attempts to make a new read from the camera.
+
+        if self.canvas_transformation_data is None: # If we have not generated a transformation yet (ie, first run)
+            self.generate_transform(camera_image) # Generate the transformation
+
+        # Either using the previously generated transform, or with our fresh new transform, do the transform+crop
+
+        canvas_transformed_image = self.four_point_transform(camera_image)
+
+        return canvas_transformed_image
+
+    def get_canvas(self, image):
+        """
+        From a camera object, retrieves the canvas.
+        Takes in a dewarped image.
+        :return:
+        """
+
+        camera_image = image # Accepts a dewarped image.
 
         if self.canvas_transformation_data is None: # If we have not generated a transformation yet (ie, first run)
             self.generate_transform(camera_image) # Generate the transformation
