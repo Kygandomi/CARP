@@ -55,33 +55,12 @@ desiredImg = readImage("star_flower.png", type_flag=1)
 ##################################################################
 print "Decomposition"
 
-<<<<<<< HEAD
 segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 6,[], color_pallete.white)
 
 display(desiredImg)
 display(segmented_image)
 for index in range(len(color_segments)):
 	display(color_segments[index],str(colors[index]))
-=======
-blue = [255,0,0]
-green = [0,255,0]
-yellow = [154,233,255]
-red = [0,0,255]
-white = [255,255,255]
-black = [0,0,0]
-
-print "Quantization"
-colors = color_quantize(desiredImg,4)
-colors = remove_canvas(colors,white)
-#colors = classify(colors,[blue,green,yellow,red,black])
-
-print "Segmentation"
-segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, colors, white)
-
-for image in color_segments:
-	img4 = open_image(image)
-	display(img4)
->>>>>>> origin/master
 
 ##################################################################
 ############ RECOMPOSITION & PAINT ROUTINE ######################
