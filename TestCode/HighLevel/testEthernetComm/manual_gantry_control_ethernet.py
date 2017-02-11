@@ -12,7 +12,7 @@ port = 1234
 pmd_com = eth_comm.ethernet_comms(ip, port)
 pmd_com.connect()
 
-packet = [1, 2, 3, 4, 5, 6, 7]
+packet = [1000, 0, 300, 800, 1, 1, 1]
 send_num = 1
 
 while(send_num > 0):
@@ -20,10 +20,14 @@ while(send_num > 0):
 	send_num -= 1
 	print "sending"
 
-while( parse_val != 0):
-	# Interpret incoming signals
-	read_val = pmd_com.recieve_packet()
-	print "read val ", read_val
-	parse_val = pmd_com.parse_packet(read_val)
-	print "parse_val", parse_val
-	sleep(0.1)
+sleep(1.5)
+
+parse_val = 1
+
+# Interpret incoming signals
+read_val = pmd_com.recieve_packet()
+print "read val ", read_val
+sleep(0.1)
+parse_val = pmd_com.parse_packet(read_val)
+print "parse val ", parse_val
+sleep(0.1)

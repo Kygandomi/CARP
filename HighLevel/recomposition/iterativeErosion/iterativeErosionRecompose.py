@@ -10,8 +10,6 @@ class iterativeErosionRecomposer(object):
 
     def recompose(self):
 
-        paper_size = (11*25.4,8.5*25.4)
-
         # desiredImg_grey = cv2.cvtColor(self.desiredImage, cv2.COLOR_BGR2GRAY)
         # (thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
@@ -33,7 +31,7 @@ class iterativeErosionRecomposer(object):
                 stroke=[]
                 for pt_i in range(0,len(cnt),10):
                     pt=cnt[pt_i][0]
-                    pt=util.mapToCanvas(pt,self.desiredImage.shape[:2],paper_size)
+                    pt=util.mapToCanvas(pt,self.desiredImage.shape[:2])
                     stroke.append([pt[0] , pt[1], self.brush_thickness])
                 stroke.append(stroke[0])
                 orders.append(stroke)

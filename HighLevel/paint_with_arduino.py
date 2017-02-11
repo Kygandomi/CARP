@@ -9,10 +9,10 @@
 from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
-from decomposition.color_segmentation.color_segmentation import *
-from decomposition.color_segmentation.color_quantization import *
+from decomposition.decomp_color.decomp_color import *
 from recomposition.skeleton.skeletonRecompose import *
 from common.util import *
+from common import color_pallete
 from time import sleep
 import cv2
 
@@ -48,30 +48,19 @@ sleep(1)
 print "Preprocessing"
 
 # take in image to process
-desiredImg = readImage("medusa_raft.png", type_flag=1)
+desiredImg = readImage("star_flower.png", type_flag=1)
 
 ##################################################################
 ################### DECOMPOSITION  ###############################
 ##################################################################
 print "Decomposition"
 
-blue = [255,0,0]
-green = [0,255,0]
-yellow = [0,233,255]
-red = [0,0,255]
-white = [255,255,255]
-black = [0,0,0]
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 6,[], color_pallete.white)
 
-print "Quantization"
-colors = color_quantize(desiredImg,4)
-colors = remove_canvas(colors,white)
-#colors = classify(colors,[blue,green,yellow,red,black])
-
-print "Segmentation"
-segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, colors, white)
-
-for image in color_segments:
-	display(image)
+display(desiredImg)
+display(segmented_image)
+for index in range(len(color_segments)):
+	display(color_segments[index],str(colors[index]))
 
 ##################################################################
 ############ RECOMPOSITION & PAINT ROUTINE ######################
@@ -86,8 +75,8 @@ for index in range(len(color_segments)):
     img = color_segments[index]
     
     print "Recomposition"
-    # recomposer = iterativeErosionRecomposer(img, [3])
-    recomposer = skeletonRecomposer(img, [])
+    recomposer = iterativeErosionRecomposer(img, [3])
+    # recomposer = skeletonRecomposer(img, [])
     LLT = recomposer.recompose()
     testLLT(LLT,3)
 

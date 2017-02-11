@@ -15,7 +15,7 @@
 #include "PMDperiph.h"
 #include "PMDsys.h"
 
-#define BUFSIZE   20 
+#define BUFSIZE   256
 #define MAJOR_VERSION 1
 #define MINOR_VERSION 0
 
@@ -29,12 +29,18 @@ USER_CODE_TASK(pmd_ethernet)
 	PMDresult result;
 	int open;
 	
+	open =0;
+	
 	memset(data, 0, BUFSIZE);
 
 	while(1){
 		PMDprintf("Attempting to open the communications port\n");
-		result = PMDPeriphOpenTCP( &hPeriph, NULL, PMD_IP4_ADDR(192,168,178,1), 1234, 0 ); // listen for a TCP connection on port 1234
-		open = 1;
+		result = PMDPeriphOpenTCP( &hPeriph, NULL, 0, 1234, 5000 ); // listen for a TCP connection on port 1234
+		PMDprintf("Result: %d \n",result);
+		if(!result){
+			open = 1;
+			PMDTaskWait(1000);
+		}
 		
 		while(open){
 			PMDprintf("Attempting to recieve data\n");
