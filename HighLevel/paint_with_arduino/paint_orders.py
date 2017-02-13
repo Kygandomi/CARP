@@ -16,8 +16,10 @@ class paint_orders():
 		self.arduino_ser = arduino_ser
 		self.old_brush_index = -1
 		self.well_index = -1
-		self.brush_offsets = [[3312,2515],[3320,1880]]
-		self.well_offsets = [[3312,2515],[3315,1975]]
+		# self.brush_offsets = [[3312,2515],[3320,1880]]
+		# self.well_offsets = [[3312,2515],[3315,1975]]
+		self.brush_offsets = [[3240, 1650]]
+		self.well_offsets = [[3240, 1650]]
 
 	'Routine for sending a standard packet via Serial' 
 	def send_standard_packet(self, packet):
@@ -49,6 +51,11 @@ class paint_orders():
 
 			# Sleep for a bit for the firgelli
 			sleep(1)
+
+	'Move the gantry to a particular location'
+	def moveGantry(self, x, y):
+		element = [x, y, 0, 800, 1, 0, 0]
+		self.send_standard_packet(element)
 
 	'Routine for getting brush'
 	def getBrush(self, new_brush_index):
@@ -115,7 +122,7 @@ class paint_orders():
 		print "Getting Paint ..."
 
 		# Fergelli Height Values
-		down_val = 175
+		down_val = 250
 		up_val = 800
 
 		offX=self.well_offsets[self.well_index][0]
@@ -154,10 +161,10 @@ class paint_orders():
 	'Paint Routine for Creating the desired image'
 	def Paint(self, LLT):
 		# Scale 
-		scale_val = 8.3
+		scale_val = 10
 
 		# Record Fergelli Height Values
-		down_val = 200
+		down_val = 270
 		up_val = 350
 		final_up_val = 800
 

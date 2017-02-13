@@ -1,10 +1,10 @@
 import sys
 sys.path.append('/usr/local/lib/python2.7/site-packages') # This makes it work on Odell's computer
-
+sys.path.append('..\..\..\HighLevel')
 
 import cv2
 import random
-from HighLevel.common import util
+from common import util
 import numpy as np
 
 #skull = #cv2.imread('../../resources/images/input/skull.jpg', cv2.IMREAD_UNCHANGED)

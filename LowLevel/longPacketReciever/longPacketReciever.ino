@@ -3,10 +3,10 @@
 #include <PID_v1.h>
 
 #define BAUD           115200
-#define MAX_BUF        15  
+#define MAX_BUF        16  
 #define MAX_COMMANDS   400
 
-#define SERIAL_ELEMENT_LEN 10
+#define SERIAL_ELEMENT_LEN 11
 
 #define F1 52
 #define F2 53
@@ -125,9 +125,9 @@ void loop(){
   // If there are no commands left in the list and we're not reading over Serial    
   if(current_command_index < 0 && sim_command_index == 0 && !Serial.available()){
       // Report our status back to the High Level
-      Serial.write(0xFE);
-      Serial.write(0x00);
-      Serial.write(0xEF);
+//      Serial.write(0xFE);
+//      Serial.write(0x00);
+//      Serial.write(0xEF);
       delay(5);
   }
 
@@ -184,10 +184,10 @@ void loop(){
 // This method is called before a motor movement command is called
 void startCommand(){
   
-  Serial.print("Command ");
-  Serial.print(current_command_index);
-  Serial.print(" of ");
-  Serial.println(length_command);
+//  Serial.print("Command ");
+//  Serial.print(current_command_index);
+//  Serial.print(" of ");
+//  Serial.println(length_command);
   
   // Increment the Current Command Index
   current_command_index++;
@@ -330,8 +330,8 @@ void runFirgelli(){
 
 // This method is for performing the Forward Kinematics of the Robot
 void forwardKinematics(long delta_x, long delta_y, long* m1_steps_local, long* m2_steps_local){
-    float s2 = (delta_x+delta_y)*1.09;//*0.70710678118*1.09;//=//*.7707463915;
-    float s1 = (delta_y-delta_x)*1.09;//*0.70710678118*1.09;//=//*.7707463915;
+    float s2 = (delta_x+delta_y)*1.07;//*0.70710678118*1.09;//=//*.7707463915;
+    float s1 = (delta_y-delta_x)*1.07;//*0.70710678118*1.09;//=//*.7707463915;
 
     *m1_steps_local = (long)s1;
     *m2_steps_local = (long)s2;
@@ -342,11 +342,12 @@ void processBuffer(){
 //  Serial.println("Processing Buffer");
   int i = 1;
   if(i + SERIAL_ELEMENT_LEN <= buffer_pos){
-      int x = (buffer[i] << 8) + buffer[i+1];
-      int y = (buffer[i+2] << 8) + buffer[i+3];
-      int z = (buffer[i+4] << 8) + buffer[i+5];
+      i = i+1;
+      int x = (buffer[i+1] << 8) + buffer[i];
+      int y = (buffer[i+3] << 8) + buffer[i+2];
+      int z = (buffer[i+5] << 8) + buffer[i+4];
       
-      int min_step_time = (buffer[i+6] << 8) + buffer[i+7]; 
+      int min_step_time = (buffer[i+7] << 8) + buffer[i+6]; 
       
       boolean xy_abs_flag = (boolean)(buffer[i+8] & 0x02);
       boolean z_abs_flag = (boolean)(buffer[i+8] & 0x04);
@@ -369,7 +370,7 @@ void processBuffer(){
       Serial.println(go_flag);   
       
       if(end_bit != 239){
-       Serial.println("Something went wrong o_o");
+//       Serial.println("Something went wrong o_o");
        return; 
       }
       
@@ -408,10 +409,10 @@ void processBuffer(){
         }
       
         if(!z_abs_flag){
-         Serial.println("Not Z abs");
+//         Serial.println("Not Z abs");
          sim_f += z;
         }else{
-         Serial.println("Z abs");
+//         Serial.println("Z abs");
          sim_f = z; 
         }
       
@@ -455,7 +456,7 @@ void processBuffer(){
         
        // If Go flag execute the list of commands and reset global variables
        if(go_flag > 0){
-          Serial.println("Go Go Go!");
+//          Serial.println("Go Go Go!");
           length_command = sim_command_index;
           current_command_index = -1;
           sim_command_index = 0;

@@ -110,12 +110,10 @@ def color_segment_hsv(image, paint_colors, canvas_color = [255,255,255]):
         # Create a deep copy of the image
         bin_image = 255-np.zeros((rows,cols,1), np.uint8)
         bin_image[np.where((image == paint_colors[index]).all(axis = 2))] = [0]
-        bin_image = util.open_image(bin_image)
-        bin_image = util.close_image(bin_image)
+
         bin_images.append(bin_image) # Add to the list of color specific images.
 
     bin_image = 255-np.zeros((rows,cols,1), np.uint8)
     bin_image[np.where((image == canvas_color).all(axis = 2))] = [0]
-    bin_image = util.open_image(bin_image)
-    bin_image = util.close_image(bin_image)
+
     return [image, bin_images, bin_image]

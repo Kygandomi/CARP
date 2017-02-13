@@ -208,6 +208,7 @@ def getFileByName_8UC1(fileName,path="resources/images/input/"):
         raise ValueError('Error in attempt to read file. Are you sure the file is there?')
     return read_file
 
+# TODO Rename this so it's not misleading, also teach Odell how to properly do life
 def open_image(img, kernel_radius = 5, itera = 1):
     """Assumes image has black image on white background"""
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kernel_radius,kernel_radius))

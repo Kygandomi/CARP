@@ -2,7 +2,7 @@
 # MQP -- CARP Project
 # Ethernet Class -- Handles Communication to PMD
 
-
+from struct import pack,unpack
 import socket   
 
 '''This class handles TCP/IP communication with PMD'''
@@ -19,17 +19,17 @@ class ethernet_comms():
 	'Connects to PMD over Ethernet'
 	def connect(self):
 		# Open Serial Port if possible
-		try :
-			# Connect to serial port
-			self.eth = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			self.eth.connect((TCP_IP, TCP_PORT))
+		# try :
+		# Connect to serial port
+		self.eth = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.eth.connect((self.ip, self.port))
 
-			(name, aliaslist, ipaddrlist) = socket.gethostbyaddr(self.ip )
-			print(name + ' is open...')
-			return True
-		except:
-			print "failed to connect"
-			return False
+		#(name, aliaslist, ipaddrlist) = socket.gethostbyaddr(self.ip )
+		#print(name + ' is open...')
+		return True
+		# except:
+		# 	print "failed to connect"
+		# 	return False
 
 	'Disconnects PMD'
 	def disconnect(self):
@@ -55,22 +55,27 @@ class ethernet_comms():
 
 		mask = chr((z_abs_flag<<2)|(xy_abs_flag<<1)|go_flag)
 
-		self.eth.send(b'\xfe')
+		self.eth.send(pack('c4h2c',b'\xfe',x,y,z,min_step_time,mask,b'\xef'))
 
-		self.eth.send(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
-		self.eth.send(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
-		self.eth.send(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
-		self.eth.send(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
+		# self.eth.send(b'\xfe')
 
-		self.eth.send(mask)
+		# self.eth.send(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
+		# self.eth.send(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
+		# self.eth.send(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
+		# self.eth.send(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
+
+		# self.eth.send(mask)
 		
-		self.eth.send(b'\xef')
+		# self.eth.send(b'\xef')
 
 	'Read data from the PCB'
 	def recieve_packet(self):
 		# Collect output response
 		response_data = self.eth.recv(self.buff_size)
-		return response_data
+		if len(response_data)>0:
+			return unpack('B4h2B',response_data)
+		return []
+		#return unpack(str(len(response_data))+'B',response_data)
 
 	'Parse recieved data'
 	def parse_packet(self, response_data):

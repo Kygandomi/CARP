@@ -17,8 +17,13 @@ colorMap = {
     "black" : [0,0,0]
 }
 
+def all():
+    palette = []
+    for color in colorMap:
+        palette.append(colorMap[color])
+    return palette
 
-def buildPallete(color_string):
+def build(color_string):
     """
     Builds a pallete of colors based on colors specified in the color string.
     :return: [[c1,c2,c3],[c4,c5,c6], ...]
