@@ -37,7 +37,7 @@ def send_standard_packet(packet):
 # Connect to Arduino over serial
 baud = 115200
 
-ports_list = ['COM3', '/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
+ports_list = ['COM3', '/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9', '/dev/cu.usbmodem1421']
 
 for i in range(len(ports_list)):
 	port = ports_list[i]
