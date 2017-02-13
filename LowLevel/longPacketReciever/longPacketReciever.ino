@@ -355,19 +355,19 @@ void processBuffer(){
       
       int end_bit = buffer[i+9];
    
-      Serial.print(x);
-      Serial.print(" ");
-      Serial.print(y);
-      Serial.print(" ");
-      Serial.print(z);
-      Serial.print(" | ");
-      Serial.print(min_step_time);
-      Serial.print(" | ");
-      Serial.print(xy_abs_flag);
-      Serial.print(" ");
-      Serial.print(z_abs_flag);
-      Serial.print(" ");
-      Serial.println(go_flag);   
+//      Serial.print(x);
+//      Serial.print(" ");
+//      Serial.print(y);
+//      Serial.print(" ");
+//      Serial.print(z);
+//      Serial.print(" | ");
+//      Serial.print(min_step_time);
+//      Serial.print(" | ");
+//      Serial.print(xy_abs_flag);
+//      Serial.print(" ");
+//      Serial.print(z_abs_flag);
+//      Serial.print(" ");
+//      Serial.println(go_flag);   
       
       if(end_bit != 239){
 //       Serial.println("Something went wrong o_o");
