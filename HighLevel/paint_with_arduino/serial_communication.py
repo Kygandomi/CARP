@@ -3,6 +3,7 @@
 # Serial Class -- Handles Communication to Arduino
 
 import serial
+from struct import pack,unpack
 
 '''This class handles serial communication with pcb'''
 class serial_comms():
@@ -69,15 +70,17 @@ class serial_comms():
 
 		mask = chr((z_abs_flag<<2)|(xy_abs_flag<<1)|go_flag)
 
-		self.ser.write(b'\xfe')
+		self.ser.write(pack('c4h2c',b'\xfe',x,y,z,min_step_time,mask,b'\xef'))
 
-		self.ser.write(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
-		self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
-		self.ser.write(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
-		self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
-		self.ser.write(mask)
-		
-		self.ser.write(b'\xef')
+		# self.ser.write(b'\xfe')
+        #
+		# self.ser.write(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
+		# self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
+		# self.ser.write(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
+		# self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
+		# self.ser.write(mask)
+		#
+		# self.ser.write(b'\xef')
 
 	'Read data from the PCB'
 	def recieve_packet(self):
@@ -87,7 +90,7 @@ class serial_comms():
 			output = ord(self.ser.read())
 			response.append(output)
 
-		return response
+		return unpack(str(len(response))+'B',response)
 
 	'Parse recieved data'
 	def parse_packet(self, response):

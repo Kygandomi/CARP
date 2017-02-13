@@ -50,6 +50,11 @@ class paint_orders():
 			# Sleep for a bit for the firgelli
 			sleep(1)
 
+	'Move the gantry to a particular location'
+	def moveGantry(self, x, y):
+		element = [x, y, 0, 800, 1, 0, 0]
+		self.send_standard_packet(element)
+
 	'Routine for getting brush'
 	def getBrush(self, new_brush_index):
 		print "Switching Brushes ..."

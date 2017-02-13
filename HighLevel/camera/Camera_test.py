@@ -10,27 +10,7 @@ from color_segmentation import color_segment
 
 
 
-def dewarp(image):
 
-    mtx = np.array([[  4.93988251e+03 ,  0.00000000e+00 ,  6.67427894e+02],
- [  0.00000000e+00 ,  5.29553206e+03  , 4.49712265e+02],
- [  0.00000000e+00 ,  0.00000000e+00 , 1.00000000e+00]])
-
-    dist = np.array([[ -1.10157126e+01 ,  1.27727231e+02 , -1.25121362e-02  ,-4.19927722e-03,
-   -1.67823487e+02]])
-
-
-    gray = image
-
-    h,  w = gray.shape[:2]
-    newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
-    dewarped_canvas = cv2.undistort(gray, mtx, dist, None, newcameramtx)
-
-    x,y,w,h = roi
-
-    dewarped_canvas = dewarped_canvas[y:y+h, x:x+w]
-
-    return dewarped_canvas
 
 def correct_image(src_imset, painted_imset):
     """
@@ -58,37 +38,53 @@ def correct_image(src_imset, painted_imset):
 
 
 cam = Camera(1)
+
 boat = util.getFileByName("boat2.png", "../resources/images/input/")
 
 # print warped_canvas
 
 
-while 1:
-    print "test"
-    img = cam.read_camera()
-    # cv2.imshow('orig', warped_canvas)
-    # util.display(warped_canvas)
-    # util.display(cam.read_camera())
+print "test"
+img = cam.read_camera()
+# cv2.imshow('orig', warped_canvas)
+# util.display(warped_canvas)
+# util.display(cam.read_camera())
 
-    dewarp_img = dewarp(img)
+dewarp_img = cam.dewarp(img)
 
-    a, w, h = dewarp_img.shape
+a, w, h = dewarp_img.shape
 
-    dewarp_img = dewarp_img[70:w-250, 170:h-170]
+dewarp_img = dewarp_img[70:w-250, 170:h-170]
 
 
-    time.sleep(0.1)
+time.sleep(0.1)
 
-    try:
-        cam.generate_transform(dewarp_img)
-        img_to_show = cam.get_canvas(dewarp_img)
-    except CameraTransformError:
-        img_to_show = boat
+try:
+    cam.generate_transform(dewarp_img)
+    img_to_show = cam.get_canvas(dewarp_img)
+except CameraTransformError:
+    img_to_show = boat
 
-    # img_to_show = dewarp_img
-    cv2.imshow('orig', img_to_show)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+# img_to_show = dewarp_img
+util.display(img_to_show, "Painting canvas")
+
+
+###
+# paint paint paint paint paint
+###
+
+# Read in the image and dewarp it.
+painted_image = cam.dewarp(cam.read_camera())
+
+color_corrections, canvas_corrections = correct_image(boat, painted_image)
+
+###
+# paint the new thing
+###
+
+print "DONE"
+
+
 
 
 #

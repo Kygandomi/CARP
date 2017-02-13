@@ -9,92 +9,192 @@
 # Import Dependencies
 from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
+from recomposition.iterativeErosion.iterativeErosionRecompose import *
+from decomposition.color_segmentation.color_segmentation import *
+from decomposition.color_segmentation.color_quantization import *
 from recomposition.skeleton.skeletonRecompose import *
-from color_segmentation import color_segment
 from common.util import *
 from time import sleep
 import cv2
-
-#############################################################
-# returns error and region of difference
-def calculate_error(decomp_input, decomposed_canvas):
-	num_pixels_different = 0
-	regions_to_paint = {}
-
-	# Just a really awful pixel by pixel comparison
-	for index in range(0, len(decomp_input)): 
-		decomp_area = decomp_input[index]
-		canvas_area = decomposed_canvas[index]
-		(area_width, area_height) = decomp_area.shape
-
-		paint_region = "matrix of same size decomp area"
-		paint_val = 255
-
-		for x in range(0, area_width):
-			for y in range(0, area_height):
-				val = decomp_area[x][y]
-				if val != 255:
-					paint_val = val
-					canvas_val = canvas_area[x][y]
-
-					if canvas_val != paint_val:
-						num_pixels_different += 1
-						paint_region[x][y] = paint_val
+from CanvasCamera import Camera
+from CameraException import *
 
 
-		if not paint_val in regions_to_paint.keys() and paint_val != 255:
-			regions_to_paint[paint_val] = paint_region[x][y]
+##################################################################
+##########################  SETUP COMMUNICATIONS  ################
+##################################################################
+print "Setup"
 
-	return num_pixels_different, regions_to_paint
+# Establish Serial Connection with the Arduino
+baud = 115200
+ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
+could_connect = False
+for i in range(len(ports_list)):
+	port = ports_list[i]
+	arduino_ser = ser_comm.serial_comms(port, baud)
+	if(arduino_ser.connect()):
+		print "Serial Comm Connected"
+		could_connect = True
+		break
 
-def get_canvas_image(video_feed):
-	ret, canvas_image = video_feed.read()
-	return canvas_image
+# Comment back in when we have an actual serial port
+# if not could_connect :
+# 	raise Exception('Could not connect...')
 
-#############################################################
+# Sleep to verify a solid connection
+sleep(1)
 
-# Setup
-# need to initialize sercomm to arduino ...
-camera = cv2.VideoCapture(0)
-similarity_threshold = 50
-num_regions = 1
 
-# Paint Orders Object
+##################################################################
+# INIT PAINTING OBJECT
 paint_routine = PaintOrders.paint_orders(arduino_ser)
 
-# take in image to process
-input_image = 'resources/images/input/pig.png'
+## Move gantry out of the way
+paint_routine.moveGantry(-50, 0)
 
-# take in a canvas image
-canvas_image = get_canvas_image(camera)
+# Camera setup, gantry is still away
+##################################################################
 
-# decompose input image
-decomposed_input = 0
+cam = Camera(1)
 
-# decompose canvas image
-decomposed_canvas = 0
+boat = util.getFileByName("boat2.png", "../resources/images/input/")
 
-# Calculate error and obtain regions of differnce
-error, diff_regions = calculate_error(decomposed_input, decomposed_canvas)
+img = cam.read_camera()
+util.save(img, "01_camera_read")
 
-# while the error is valid and is not less than the similarity threshold
-while(error > 0 and error < similarity_threshold):
-	LLT_regions = []
+dewarp_img = cam.dewarp(img)
+a, w, h = dewarp_img.shape
+dewarp_img = dewarp_img[70:w-250, 170:h-170]
+util.save(img, "02_dewarp_camera_read")
 
-	# Recompose regions of difference
-	for paint_color, region in diff_regions.items() : 
-		recomposer = skeletonRecomposer(region, [])
-		recomp_LLT = recomposer.recompose()
-		LLT_regions += recomp_LLT
 
-	# Maybe later we can sort the LLTs into an ordered list ?
-	# Paint LLTs of each region
-	for LLT in LLT_regions:
-		paint_routine.Paint(LLT)
 
-	# Update canvas variables
-	canvas_image = get_canvas_image(camera)
-	decomposed_canvas = 0
+try:
+	cam.generate_transform(dewarp_img)
+	img_to_show = cam.get_canvas(dewarp_img)
+except CameraTransformError:
+	img_to_show = boat
 
-	error, diff_regions = calculate_error(decomposed_input, decomposed_canvas)
+util.display(img_to_show, "Painting canvas")
+util.save(img, "03_camera_transform")
+
+
+##################################################################
+# DECOMP
+# For the future, if we don't want to use the boat.
+#desiredImg = readImage("medusa_raft.png", type_flag=1)
+desiredImg = boat
+
+white = [255,255,255]
+
+print "Quantization"
+colors = color_quantize(desiredImg,4)
+colors = remove_canvas(colors,white)
+
+print "Segmentation"
+segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, colors, white)
+
+util.save(img, "04_color_desegmented_image")
+
+
+for image in color_segments:
+	img4 = open_image(image)
+	display(img4)
+
+
+##################################################################
+## Move gantry into paint position
+paint_routine.moveGantry(0, 0)
+
+##################################################################
+
+# Recomposers to use
+recompItErosion1 = iterativeErosionRecomposer(open_image(color_segments[0]), [3])
+recompItErosion2 = iterativeErosionRecomposer(open_image(color_segments[1]), [2])
+recompSkeleton = skeletonRecomposer(open_image(color_segments[2]), [])
+recomposers = [recompItErosion1, recompItErosion2, recompSkeleton]
+
+# Recomp and Paint
+for index in range(len(color_segments)):
+	print "Index ", index
+	# img = color_segments[index]
+	# img = open_image(img)
+
+	print "Fetching new brush"
+	paint_routine.getBrush(index)
+
+	print "Recomposition"
+	recomposer = recomposers[index]
+	LLT = recomposer.recompose()
+
+	print "LLT to Paint: ", LLT
+	testLLT(LLT,3)
+
+	print "Let's Paint a Picture ~"
+	paint_routine.Paint(LLT)
+
+	print "LLT Finished "
+
+paint_routine.returnToStart()
+print "Routine Complete, Enjoy ! "
+
+##################################################################
+## Move gantry out of the way
+paint_routine.moveGantry(-50, 0)
+
+##################################################################
+
+painted_image = cam.dewarp(cam.read_camera())
+util.save(img, "05_painting")
+
+
+correction_segments, canvas_correction_segment = cam.correct_image(segmented_image, painted_image)
+for image in correction_segments:
+	img4 = open_image(image)
+	display(img4)
+
+
+##################################################################
+## Move gantry out of the way
+paint_routine.moveGantry(0, 0)
+
+##################################################################
+
+######
+# painting the things
+
+# Recomp and Paint
+for index in range(len(correction_segments)):
+	print "Index ", index
+	img = correction_segments[index]
+	img = open_image(img)
+
+	print "Fetching new brush"
+	paint_routine.getBrush(index)
+
+	print "Recomposition"
+	recomposer = iterativeErosionRecomposer(img, [3])
+	LLT = recomposer.recompose()
+
+	print "LLT to Paint: ", LLT
+	testLLT(LLT,3)
+
+	print "Let's Paint a Picture ~"
+	paint_routine.Paint(LLT)
+
+	print "LLT Finished "
+
+paint_routine.returnToStart()
+print "Routine Complete, Enjoy ! "
+
+
+paint_routine.moveGantry(-50, 0)
+
+img = cam.read_camera()
+util.save(img, "06_camera_read_final")
+
+dewarp_img = cam.dewarp(img)
+a, w, h = dewarp_img.shape
+dewarp_img = dewarp_img[70:w-250, 170:h-170]
+util.save(img, "07_dewarp_camera_read_final")
 
