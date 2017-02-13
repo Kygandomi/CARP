@@ -12,7 +12,7 @@ port = 1234
 pmd_com = eth_comm.ethernet_comms(ip, port)
 pmd_com.connect()
 
-packet = [1000, 0, 300, 800, 1, 1, 1]
+packet = [0, 0, 800, 800, 1, 1, 1]
 send_num = 1
 
 while(send_num > 0):

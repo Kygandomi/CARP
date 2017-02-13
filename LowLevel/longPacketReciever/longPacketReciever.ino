@@ -184,10 +184,10 @@ void loop(){
 // This method is called before a motor movement command is called
 void startCommand(){
   
-  Serial.print("Command ");
-  Serial.print(current_command_index);
-  Serial.print(" of ");
-  Serial.println(length_command);
+//  Serial.print("Command ");
+//  Serial.print(current_command_index);
+//  Serial.print(" of ");
+//  Serial.println(length_command);
   
   // Increment the Current Command Index
   current_command_index++;
@@ -342,11 +342,12 @@ void processBuffer(){
 //  Serial.println("Processing Buffer");
   int i = 1;
   if(i + SERIAL_ELEMENT_LEN <= buffer_pos){
-      int x = (buffer[i] << 8) + buffer[i+1];
-      int y = (buffer[i+2] << 8) + buffer[i+3];
-      int z = (buffer[i+4] << 8) + buffer[i+5];
+      i = i+1;
+      int x = (buffer[i+1] << 8) + buffer[i];
+      int y = (buffer[i+3] << 8) + buffer[i+2];
+      int z = (buffer[i+5] << 8) + buffer[i+4];
       
-      int min_step_time = (buffer[i+6] << 8) + buffer[i+7]; 
+      int min_step_time = (buffer[i+7] << 8) + buffer[i+6]; 
       
       boolean xy_abs_flag = (boolean)(buffer[i+8] & 0x02);
       boolean z_abs_flag = (boolean)(buffer[i+8] & 0x04);
@@ -354,22 +355,22 @@ void processBuffer(){
       
       int end_bit = buffer[i+9];
    
-      Serial.print(x);
-      Serial.print(" ");
-      Serial.print(y);
-      Serial.print(" ");
-      Serial.print(z);
-      Serial.print(" | ");
-      Serial.print(min_step_time);
-      Serial.print(" | ");
-      Serial.print(xy_abs_flag);
-      Serial.print(" ");
-      Serial.print(z_abs_flag);
-      Serial.print(" ");
-      Serial.println(go_flag);   
+//      Serial.print(x);
+//      Serial.print(" ");
+//      Serial.print(y);
+//      Serial.print(" ");
+//      Serial.print(z);
+//      Serial.print(" | ");
+//      Serial.print(min_step_time);
+//      Serial.print(" | ");
+//      Serial.print(xy_abs_flag);
+//      Serial.print(" ");
+//      Serial.print(z_abs_flag);
+//      Serial.print(" ");
+//      Serial.println(go_flag);   
       
       if(end_bit != 239){
-       Serial.println("Something went wrong o_o");
+//       Serial.println("Something went wrong o_o");
        return; 
       }
       
@@ -455,7 +456,7 @@ void processBuffer(){
         
        // If Go flag execute the list of commands and reset global variables
        if(go_flag > 0){
-          Serial.println("Go Go Go!");
+//          Serial.println("Go Go Go!");
           length_command = sim_command_index;
           current_command_index = -1;
           sim_command_index = 0;
