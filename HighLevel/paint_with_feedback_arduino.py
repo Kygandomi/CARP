@@ -10,29 +10,26 @@
 from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
-from decomposition.color_segmentation.color_segmentation import *
-from decomposition.color_segmentation.color_quantization import *
+from decomposition.decomp_color.decomp_color import *
 from recomposition.skeleton.skeletonRecompose import *
 from common.util import *
+from common import color_pallete
+
 from time import sleep
 import cv2
-<<<<<<< HEAD
 from camera.CanvasCamera import Camera
-from camera import CameraException
-=======
-from CanvasCamera import Camera
-from CameraException import *
->>>>>>> de0393a93ddf27dad182709f6849e8ca87ac4e96
+from camera.CameraException import *
 
 
-##################################################################
-##########################  SETUP COMMUNICATIONS  ################
-##################################################################
+
+# ##################################################################
+# ##########################  SETUP COMMUNICATIONS  ################
+# ##################################################################
 print "Setup"
 
 # Establish Serial Connection with the Arduino
 baud = 115200
-ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
+ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9', '/dev/cu.usbmodem1421']
 could_connect = False
 for i in range(len(ports_list)):
 	port = ports_list[i]
@@ -50,7 +47,6 @@ for i in range(len(ports_list)):
 sleep(1)
 
 
-<<<<<<< HEAD
 gantry_offX = -80
 gantry_offY = -300
 
@@ -64,38 +60,18 @@ paint_routine.moveGantry(gantry_offX, gantry_offY)
 # Camera setup, gantry is still away
 ##################################################################
 
-cam = Camera(0)
+cam = Camera(1)
 
 boat = util.getFileByName("circle.png", "resources/images/input/")
 
-=======
-##################################################################
-# INIT PAINTING OBJECT
-paint_routine = PaintOrders.paint_orders(arduino_ser)
-
-## Move gantry out of the way
-paint_routine.moveGantry(-50, 0)
-
-# Camera setup, gantry is still away
-##################################################################
-
-cam = Camera(1)
-
-boat = util.getFileByName("boat2.png", "../resources/images/input/")
-
->>>>>>> de0393a93ddf27dad182709f6849e8ca87ac4e96
 img = cam.read_camera()
 util.save(img, "01_camera_read")
 
 dewarp_img = cam.dewarp(img)
 a, w, h = dewarp_img.shape
-dewarp_img = dewarp_img[70:w-250, 170:h-170]
-<<<<<<< HEAD
+dewarp_img = dewarp_img[70:w-450, 170:h-170]
 util.save(dewarp_img, "02_dewarp_camera_read")
-=======
-util.save(img, "02_dewarp_camera_read")
 
->>>>>>> de0393a93ddf27dad182709f6849e8ca87ac4e96
 
 
 try:
@@ -104,12 +80,8 @@ try:
 except CameraTransformError:
 	img_to_show = boat
 
-util.display(img_to_show, "Painting canvas")
-<<<<<<< HEAD
+
 util.save(img_to_show, "03_camera_transform")
-=======
-util.save(img, "03_camera_transform")
->>>>>>> de0393a93ddf27dad182709f6849e8ca87ac4e96
 
 
 ##################################################################
@@ -120,12 +92,7 @@ desiredImg = boat
 
 white = [255,255,255]
 
-print "Quantization"
-colors = color_quantize(desiredImg,4)
-colors = remove_canvas(colors,white)
-
-print "Segmentation"
-segmented_image, color_segments, canvas_segment  = color_segment(desiredImg, colors, white)
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 6,[], color_pallete.white)
 
 util.save(img, "04_color_desegmented_image")
 
@@ -142,17 +109,6 @@ paint_routine.moveGantry(0, 0)
 ##################################################################
 
 # Recomposers to use
-<<<<<<< HEAD
-# recompItErosion1 = iterativeErosionRecomposer(open_image(color_segments[0]), [3])
-# recompItErosion2 = iterativeErosionRecomposer(open_image(color_segments[1]), [2])
-# recompSkeleton = skeletonRecomposer(open_image(color_segments[2]), [])
-# recomposers = [recompItErosion1, recompItErosion2, recompSkeleton]
-=======
-recompItErosion1 = iterativeErosionRecomposer(open_image(color_segments[0]), [3])
-recompItErosion2 = iterativeErosionRecomposer(open_image(color_segments[1]), [2])
-recompSkeleton = skeletonRecomposer(open_image(color_segments[2]), [])
-recomposers = [recompItErosion1, recompItErosion2, recompSkeleton]
->>>>>>> de0393a93ddf27dad182709f6849e8ca87ac4e96
 
 # Recomp and Paint
 for index in range(len(color_segments)):
@@ -164,11 +120,7 @@ for index in range(len(color_segments)):
 	paint_routine.getBrush(index)
 
 	print "Recomposition"
-<<<<<<< HEAD
 	recomposer = iterativeErosionRecomposer(img, [3])
-=======
-	recomposer = recomposers[index]
->>>>>>> de0393a93ddf27dad182709f6849e8ca87ac4e96
 	LLT = recomposer.recompose()
 
 	print "LLT to Paint: ", LLT
@@ -184,11 +136,8 @@ print "Routine Complete, Enjoy ! "
 
 ##################################################################
 ## Move gantry out of the way
-<<<<<<< HEAD
 paint_routine.moveGantry(gantry_offX, gantry_offY)
-=======
-paint_routine.moveGantry(-50, 0)
->>>>>>> de0393a93ddf27dad182709f6849e8ca87ac4e96
+
 
 ##################################################################
 

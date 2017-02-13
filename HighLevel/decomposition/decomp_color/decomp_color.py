@@ -48,6 +48,7 @@ def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
 def color_quantize(image, n_colors=2, size_to=200):
     if size_to>0:
         small_img = util.resize(image,size_to)
+
     pixel = np.reshape(np.float32(small_img),(small_img.shape[0]*small_img.shape[1],3))
 
     # performing the clustering
@@ -62,12 +63,6 @@ def classify(img_colors, paint_colors):
 
     # return list of new paint colors plus canvas color
     return colors[qnt]
-
-def classify_hsv(hsv_img,paint_colors):
-    hsv_img = cv2.cvtColor(np.uint8([hsv_img]),cv2.COLOR_BGR2HSV)[0].tolist():
-    hsv_paints = cv2.cvtColor(np.uint8([paint_colors]),cv2.COLOR_BGR2HSV)[0].tolist():
-    
-    pass
 
 def remove_canvas(img_colors,canvas_color = [255,255,255]):
     # Find index of img_color that most closely matches canvas color

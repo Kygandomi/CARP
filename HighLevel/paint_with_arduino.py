@@ -77,24 +77,6 @@ recomposers = [recompItErosion1, recompItErosion2, recompSkeleton]
 
 # Recomp and Paint
 for index in range(len(color_segments)):
-<<<<<<< HEAD
-    print "Index: ", index
-    img = color_segments[index]
-    
-    print "Recomposition"
-    recomposer = iterativeErosionRecomposer(img, [3])
-    # recomposer = skeletonRecomposer(img, [])
-    LLT = recomposer.recompose()
-    testLLT(LLT,3)
-
-    print "Fetching new brush"
-    paint_routine.getBrush(index)
-
-    print "Let's Paint a Picture ~"
-    paint_routine.Paint(LLT, index)
-
-    print "LLT Finished "
-=======
 	print "Index ", index
 	# img = color_segments[index]
 	# img = open_image(img)
@@ -113,8 +95,7 @@ for index in range(len(color_segments)):
 	paint_routine.Paint(LLT)
 
 	print "LLT Finished "
->>>>>>> origin/master
-	
+
 paint_routine.returnToStart()
 print "Routine Complete, Enjoy ! "
 

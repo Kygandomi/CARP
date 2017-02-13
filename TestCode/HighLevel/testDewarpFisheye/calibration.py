@@ -16,7 +16,7 @@ objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
 
 # count !
-count = 0;
+count = 0
 cap = cv2.VideoCapture(1)
 print ""
 
@@ -27,13 +27,19 @@ print ""
 #         print "Found camera " + str(i)
 #         # break
 
-while(True and count < 10):
+#
+# [[  91.57894609    0.          120.08037509]
+#  [   0.           66.62907172  162.19912701]
+#  [   0.            0.            1.        ]]
+# [[ -8.40580329  13.1388804   -1.59667278   0.07779641 -10.56091074]]
+
+while(True and count < 15):
     # Capture frame-by-frame
     ret1, frame = cap.read()
 
     # Our operations on the frame come here
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    gray = cv2.resize(gray,(0,0), fx=0.2, fy=0.2) 
+    #gray = cv2.resize(gray,(0,0), fx=0.2, fy=0.2)
 
     # Find the chess board corners
     ret2, corners = cv2.findChessboardCorners(gray, (7,6),None)
@@ -49,7 +55,7 @@ while(True and count < 10):
         # Draw and display the corners
         img = cv2.drawChessboardCorners(gray, (7,6), corners2,ret2)
         cv2.imshow('img',img)
-        cv2.waitKey(500)
+        cv2.waitKey(2000)
         count += 1
 
     cv2.imshow('frame',gray)
