@@ -19,17 +19,17 @@ class ethernet_comms():
 	'Connects to PMD over Ethernet'
 	def connect(self):
 		# Open Serial Port if possible
-		# try :
+		try :
 		# Connect to serial port
-		self.eth = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.eth.connect((self.ip, self.port))
+			self.eth = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			self.eth.connect((self.ip, self.port))
 
-		#(name, aliaslist, ipaddrlist) = socket.gethostbyaddr(self.ip )
-		#print(name + ' is open...')
-		return True
-		# except:
-		# 	print "failed to connect"
-		# 	return False
+			#(name, aliaslist, ipaddrlist) = socket.gethostbyaddr(self.ip )
+			#print(name + ' is open...')
+			return True
+		except:
+		 	print "failed to connect"
+			return False
 
 	'Disconnects PMD'
 	def disconnect(self):
@@ -72,6 +72,7 @@ class ethernet_comms():
 	def recieve_packet(self):
 		# Collect output response
 		response_data = self.eth.recv(self.buff_size)
+		print 'response: ',repr(response_data)
 		if len(response_data)>0:
 			return unpack('B4h2B',response_data)
 		return []
