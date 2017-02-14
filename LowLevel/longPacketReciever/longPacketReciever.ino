@@ -125,9 +125,9 @@ void loop(){
   // If there are no commands left in the list and we're not reading over Serial    
   if(current_command_index < 0 && sim_command_index == 0 && !Serial.available()){
       // Report our status back to the High Level
-//      Serial.write(0xFE);
-//      Serial.write(0x00);
-//      Serial.write(0xEF);
+      Serial.write(0xFE);
+      Serial.write(0x00);
+      Serial.write(0xEF);
       delay(5);
   }
 

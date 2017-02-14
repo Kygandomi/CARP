@@ -47,8 +47,8 @@ for i in range(len(ports_list)):
 sleep(1)
 
 
-gantry_offX = -80
-gantry_offY = -300
+gantry_offX = -70
+gantry_offY = -200
 
 ##################################################################
 # INIT PAINTING OBJECT
@@ -62,7 +62,7 @@ paint_routine.moveGantry(gantry_offX, gantry_offY)
 
 cam = Camera(1)
 
-boat = util.getFileByName("circle.png", "resources/images/input/")
+boat = util.readImage("circle.png", "resources/images/input/")
 
 img = cam.read_camera()
 util.save(img, "01_camera_read")
@@ -92,14 +92,14 @@ desiredImg = boat
 
 white = [255,255,255]
 
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 6,[], color_pallete.white)
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 2,[], color_pallete.white)
 
-util.save(img, "04_color_desegmented_image")
+util.save(segmented_image, "04_color_desegmented_image")
 
 
-for image in color_segments:
-	img4 = open_image(image)
-	display(img4)
+# for image in color_segments:
+# 	img4 = open_image(image)
+# 	display(img4)
 
 
 ##################################################################
@@ -142,13 +142,13 @@ paint_routine.moveGantry(gantry_offX, gantry_offY)
 ##################################################################
 
 painted_image = cam.dewarp(cam.read_camera())
-util.save(img, "05_painting")
+util.save(painted_image, "05_painting")
 
 
 correction_segments, canvas_correction_segment = cam.correct_image(segmented_image, painted_image)
-for image in correction_segments:
-	img4 = open_image(image)
-	display(img4)
+# for image in correction_segments:
+# 	img4 = open_image(image)
+# 	display(img4)
 
 
 ##################################################################
@@ -193,5 +193,5 @@ util.save(img, "06_camera_read_final")
 dewarp_img = cam.dewarp(img)
 a, w, h = dewarp_img.shape
 dewarp_img = dewarp_img[70:w-250, 170:h-170]
-util.save(img, "07_dewarp_camera_read_final")
+util.save(dewarp_img, "07_dewarp_camera_read_final")
 

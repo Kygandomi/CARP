@@ -73,16 +73,16 @@ class serial_comms():
 		self.ser.write(pack('c4h2c',b'\xfe',x,y,z,min_step_time,mask,b'\xef'))
 
 		# self.ser.write(b'\xfe')
-        
+        #
 		# self.ser.write(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
 		# self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
 		# self.ser.write(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
 		# self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
 		# self.ser.write(mask)
-		
+		#
 		# self.ser.write(b'\xef')
 
-	'Read data from the Arduino'
+	'Read data from the PCB'
 	def recieve_packet(self):
 		# Collect output response
 		response = []

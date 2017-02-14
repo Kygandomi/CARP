@@ -90,7 +90,7 @@ class serial_comms():
 			output = ord(self.ser.read())
 			response.append(output)
 
-		return unpack(str(len(response))+'B',response)
+		return response
 
 	'Parse recieved data'
 	def parse_packet(self, response):
