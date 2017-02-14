@@ -10,16 +10,20 @@
 #define MAX_ACC		179
 #define MAX_VEL		1174405
 
+#define FIRGELLI_POT_VOLTAGE 5
+
 #define MAJOR_VERSION 1
 #define MINOR_VERSION 0
 
 USER_CODE_VERSION(MAJOR_VERSION,MINOR_VERSION);
 
+PMDresult StopController(PMDAxisHandle* pAxis);
 PMDresult RunController(PMDAxisHandle* pAxis,int tolerance, PMDPeriphHandle* phPeriphIO, PMDuint32 AnalogChannel);	
 void ConfigureAnalogFeedbackAxis(PMDAxisHandle* pAxis);
 void inverseKinematics(long delta_x, long delta_y, long* m1_steps_local, long* m2_steps_local);
 void parsePacket(PMDuint8* buffer, PMDAxisHandle* hAxis, int start_index, long* a1_pos, long* a2_pos, long* a3_pos);
 void linear_move(PMDAxisHandle* hAxis,PMDint32 a1_pos, PMDint32 a2_pos, PMDint32 a3_pos);
+PMDint16 filterAnalog(PMDPeriphHandle* phPeriphIO, PMDuint32 AnalogChannel);
 
 //*********************************************************************//
 //*********************************************************************//
@@ -51,10 +55,11 @@ USER_CODE_TASK( pmd_control )
 	PMDint32 a2_pos;
 	PMDint32 a3_pos;
 	
+	PMDSetPosition(&hAxis[2],(800*32768*FIRGELLI_POT_VOLTAGE)/(1000*10));
 	//Run Homing
 	
 	while(1){
-	
+		//RunController(&hAxis[2],400,&hPeriphIO,PMDMachineIO_AICh1);
 		PMDprintf("Attempting to open the communications port\n");
 		result = PMDPeriphOpenTCP( &hPeriph, NULL, 0, 1234, 5000 ); // listen for a TCP connection on port 1234
 		if(!result){
@@ -62,10 +67,10 @@ USER_CODE_TASK( pmd_control )
 		}
 		
 		while(open){
-			RunController(&hAxis[2],100,&hPeriphIO,PMDMachineIO_AICh1);
-			PMDprintf("Attempting to recieve data\n");
-			result = PMDPeriphReceive(&hPeriph, &data, &bytesReceived, BUFSIZE, 5000);
-			
+			RunController(&hAxis[2],200,&hPeriphIO,PMDMachineIO_AICh1);
+			//PMDprintf("Attempting to recieve data\n");
+			result = PMDPeriphReceive(&hPeriph, &data, &bytesReceived, BUFSIZE, 5);
+			//PMDprintf("result: %x \n",result);
 			switch (result) {
 				default:
 				case PMD_ERR_NotConnected:
@@ -73,6 +78,8 @@ USER_CODE_TASK( pmd_control )
 					PMDPeriphClose(&hPeriph);
 					open = 0;
 					PMDprintf("Closing\n");
+				break;
+				case PMD_ERR_Timeout:
 				break;
 				case PMD_ERR_OK:
 					PMDprintf("New data received, number of bytes=%d\n", bytesReceived);
@@ -84,6 +91,7 @@ USER_CODE_TASK( pmd_control )
 					linear_move(hAxis,a1_pos,a2_pos,a3_pos);
 				break;
 			}
+			StopController(&hAxis[2]);
 			//PMDprintf("Done\n");
 			//PMDPeriphClose(&hPeriph);
 		}
@@ -143,7 +151,7 @@ void parsePacket(PMDuint8* buffer, PMDAxisHandle* hAxis, int start_index, PMDint
 	PMDprintf("x: %d, y: %d, z: %d \n",x,y,z);
 
 	inverseKinematics(x,y,a1_pos,a2_pos);
-	*a3_pos = (z*32768)/1000;
+	*a3_pos = (z*32768*FIRGELLI_POT_VOLTAGE)/(1000*10);
 	
 	if(!xy_abs_flag){
 		PMDGetPosition(&hAxis[0],&curr_m1);
@@ -178,6 +186,21 @@ void ConfigureAnalogFeedbackAxis(PMDAxisHandle* pAxis)
     PMDSetOperatingMode(pAxis,0x003);  //Voltage Mode
 }
 
+PMDint16 filterAnalog(PMDPeriphHandle* phPeriphIO, PMDuint32 AnalogChannel){
+	
+	//Weighted Average
+	static PMDint16 average = 0;
+	PMDint16 actposition;
+	float sigma = .70;	//Higher -> better value but slower to change
+	PMDresult result;
+	
+	PMD_ABORTONERROR(PMDPeriphRead(phPeriphIO, &actposition, AnalogChannel, 1));
+	
+	average = average*(sigma)+actposition*(1-sigma);
+	return average;
+	
+}
+
 PMDresult RunController(PMDAxisHandle* pAxis,int tolerance, PMDPeriphHandle* phPeriphIO, PMDuint32 AnalogChannel)
 {
     PMDint32 destination;
@@ -189,7 +212,11 @@ PMDresult RunController(PMDAxisHandle* pAxis,int tolerance, PMDPeriphHandle* phP
 	PMDGetPosition(pAxis,&destination);
 	
 	//Read Analog position
-	PMD_ABORTONERROR(PMDPeriphRead(phPeriphIO, &actposition, AnalogChannel, 1));
+	actposition = filterAnalog(phPeriphIO, AnalogChannel);
+	//PMD_ABORTONERROR(PMDPeriphRead(phPeriphIO, &actposition, AnalogChannel, 1));
+	
+	//PMDprintf("Z Actual : %d \n",actposition);
+	//PMDprintf("Z Desired: %d \n",destination);
 	
 	error=destination-actposition;
 	command=error*Kp;
@@ -212,3 +239,11 @@ PMDresult RunController(PMDAxisHandle* pAxis,int tolerance, PMDPeriphHandle* phP
 	// PMDprintf("mtrcmd= %d\n",command);
 	return 0;
 }
+
+PMDresult StopController(PMDAxisHandle* pAxis){
+	PMDSetMotorCommand(pAxis,0);
+	PMDUpdate(pAxis);
+	return 0;
+}
+
+
