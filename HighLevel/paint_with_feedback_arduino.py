@@ -28,20 +28,20 @@ from camera.CameraException import *
 print "Setup"
 
 # Establish Serial Connection with the Arduino
-# baud = 115200
-# ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9', '/dev/cu.usbmodem1421']
-# could_connect = False
-# for i in range(len(ports_list)):
-# 	port = ports_list[i]
-# 	arduino_ser = ser_comm.serial_comms(port, baud)
-# 	if(arduino_ser.connect()):
-# 		print "Serial Comm Connected"
-# 		could_connect = True
-# 		break
+baud = 115200
+ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9', '/dev/cu.usbmodem1421']
+could_connect = False
+for i in range(len(ports_list)):
+	port = ports_list[i]
+	arduino_ser = ser_comm.serial_comms(port, baud)
+	if(arduino_ser.connect()):
+		print "Serial Comm Connected"
+		could_connect = True
+		break
 
 # Comment back in when we have an actual serial port
-# if not could_connect :
-# 	raise Exception('Could not connect...')
+if not could_connect :
+	raise Exception('Could not connect...')
 
 # Sleep to verify a solid connection
 sleep(1)
@@ -52,7 +52,7 @@ gantry_offY = -200
 
 ##################################################################
 # # INIT PAINTING OBJECT
-# paint_routine = PaintOrders.paint_orders(arduino_ser)
+paint_routine = PaintOrders.paint_orders(arduino_ser)
 
 # ## Move gantry out of the way
 # paint_routine.moveGantry(gantry_offX, gantry_offY)
@@ -71,7 +71,7 @@ util.save(img, "01_camera_read")
 
 dewarp_img = cam.dewarp(img)
 a, w, h = dewarp_img.shape
-dewarp_img = dewarp_img[70:w-450, 170:h-170]
+# dewarp_img = dewarp_img[70:w-450, 170:h-170]
 util.save(dewarp_img, "02_dewarp_camera_read")
 
 
@@ -106,7 +106,7 @@ util.save(segmented_image, "04_color_desegmented_image")
 
 ##################################################################
 ## Move gantry into paint position
-paint_routine.moveGantry(0, 0)
+# paint_routine.moveGantry(0, 0)
 
 ##################################################################
 
@@ -115,14 +115,13 @@ paint_routine.moveGantry(0, 0)
 # Recomp and Paint
 for index in range(len(color_segments)):
 	print "Index ", index
-	# img = color_segments[index]
-	# img = open_image(img)
+	img = color_segments[index]
 
 	print "Fetching new brush"
 	paint_routine.getBrush(index)
 
 	print "Recomposition"
-	recomposer = iterativeErosionRecomposer(img, [3])
+	recomposer = skeletonRecomposer(img, [])
 	LLT = recomposer.recompose()
 
 	print "LLT to Paint: ", LLT
@@ -138,7 +137,7 @@ print "Routine Complete, Enjoy ! "
 
 ##################################################################
 ## Move gantry out of the way
-paint_routine.moveGantry(gantry_offX, gantry_offY)
+# paint_routine.moveGantry(0, gantry_offY)
 
 
 ##################################################################
@@ -146,7 +145,9 @@ paint_routine.moveGantry(gantry_offX, gantry_offY)
 painted_image = cam.dewarp(cam.read_camera())
 util.save(painted_image, "05_painting")
 
-
+print "Im over here!"
+print "segmented img", segmented_image.shape
+print "painted img", painted_image.shape
 correction_segments, canvas_correction_segment = cam.correct_image(segmented_image, painted_image)
 # for image in correction_segments:
 # 	img4 = open_image(image)
@@ -155,7 +156,7 @@ correction_segments, canvas_correction_segment = cam.correct_image(segmented_ima
 
 ##################################################################
 ## Move gantry out of the way
-paint_routine.moveGantry(0, 0)
+# paint_routine.moveGantry(0, 0)
 
 ##################################################################
 

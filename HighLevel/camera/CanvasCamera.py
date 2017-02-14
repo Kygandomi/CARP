@@ -10,6 +10,10 @@ class Camera(object):
     def __init__(self, port):
         self.port = port
         self.canvas_transformation_data = None
+        self.camera_capture = cv2.VideoCapture(self.port)   # value -> index of camera. My webcam was 0, USB camera was 1.
+        self.camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
 
     @staticmethod
     def correct_image(src_imset, painted_imset):
@@ -23,6 +27,8 @@ class Camera(object):
 
         color_corrections = []
         canvas_corrections = []
+
+        
 
         for image in range(len(painted_imset)):
 
@@ -41,6 +47,8 @@ class Camera(object):
     @staticmethod
     def dewarp(image):
 
+        print "Im in the spot!"
+
         mtx = np.array([[  4.93988251e+03 ,  0.00000000e+00 ,  6.67427894e+02],
         [  0.00000000e+00 ,  5.29553206e+03  , 4.49712265e+02],
         [  0.00000000e+00 ,  0.00000000e+00 , 1.00000000e+00]])
@@ -50,14 +58,22 @@ class Camera(object):
 
 
         gray = image
-
         h,  w = gray.shape[:2]
+
+        print "1"
         newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
+
+        print "Middle?"
+
         dewarped_canvas = cv2.undistort(gray, mtx, dist, None, newcameramtx)
+
+        print "2"
 
         x,y,w,h = roi
 
         dewarped_canvas = dewarped_canvas[y:y+h, x:x+w]
+
+        print "Dewarp Complete"
 
         return dewarped_canvas
 
@@ -67,11 +83,9 @@ class Camera(object):
         :return: returns the image read in from the camera as an opencv image
         """
 
-        camera_capture = cv2.VideoCapture(self.port)   # value -> index of camera. My webcam was 0, USB camera was 1.
-        camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        print "Im in the read cam!" 
 
-        s, img = camera_capture.read() # Attempt a read
+        s, img = self.camera_capture.read() # Attempt a read
         if s:    # frame captured without any errors
             # cv2.imwrite("camera_image.jpg",img) #save image
             return img

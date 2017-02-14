@@ -18,8 +18,8 @@ class paint_orders():
 		self.well_index = -1
 		# self.brush_offsets = [[3312,2515],[3320,1880]]
 		# self.well_offsets = [[3312,2515],[3315,1975]]
-		self.brush_offsets = [[3240, 1650]]
-		self.well_offsets = [[3240, 1650]]
+		self.brush_offsets = [[3300, 1630]]
+		self.well_offsets = [[3200, 1700]]
 
 	'Routine for sending a standard packet via Serial' 
 	def send_standard_packet(self, packet):
@@ -66,7 +66,7 @@ class paint_orders():
 		print "Switching Brushes ..."
 
 		firgelli_extract_height = 600
-		firgelli_insert_height = 700
+		firgelli_insert_height = 600
 		firgelli_lift_out_height = 950
 		x_depth = 400
 
@@ -130,7 +130,7 @@ class paint_orders():
 		print "Getting Paint ..."
 
 		# Fergelli Height Values
-		down_val = 250
+		down_val = 220
 		up_val = 800
 
 		offX=self.well_offsets[self.well_index][0]
@@ -172,12 +172,12 @@ class paint_orders():
 		scale_val = 10
 
 		# Record Fergelli Height Values
-		down_val = 270
+		down_val = 250
 		up_val = 350
 		final_up_val = 800
 
 		# Record how far we've gone (0.1 mm)
-		MAX_DIST = 3000
+		MAX_DIST = 2000
 		MAX_DIST_END = 600
 		DOWN_COST = 50
 		paint_distance = MAX_DIST

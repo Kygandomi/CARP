@@ -214,7 +214,7 @@ void startCommand(){
   
   // Set the Firgelli set point
   Setpoint = current_command.firgelli_pos;
-//  Serial.println(Setpoint);
+  Serial.println(Setpoint);
   
   // Configure the current position of the robot in M1/M2 space
   if(m1_dir){
@@ -339,7 +339,7 @@ void forwardKinematics(long delta_x, long delta_y, long* m1_steps_local, long* m
 
 // This method is used to process the Serial Buffer
 void processBuffer(){
-//  Serial.println("Processing Buffer");
+  Serial.println("Processing Buffer");
   int i = 1;
   if(i + SERIAL_ELEMENT_LEN <= buffer_pos){
       int x = (buffer[i] << 8) + buffer[i+1];
@@ -411,7 +411,7 @@ void processBuffer(){
          Serial.println("Not Z abs");
          sim_f += z;
         }else{
-         Serial.println("Z abs");
+        Serial.println("Z abs");
          sim_f = z; 
         }
       
