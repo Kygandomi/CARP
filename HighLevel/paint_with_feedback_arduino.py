@@ -28,16 +28,16 @@ from camera.CameraException import *
 print "Setup"
 
 # Establish Serial Connection with the Arduino
-baud = 115200
-ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9', '/dev/cu.usbmodem1421']
-could_connect = False
-for i in range(len(ports_list)):
-	port = ports_list[i]
-	arduino_ser = ser_comm.serial_comms(port, baud)
-	if(arduino_ser.connect()):
-		print "Serial Comm Connected"
-		could_connect = True
-		break
+# baud = 115200
+# ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9', '/dev/cu.usbmodem1421']
+# could_connect = False
+# for i in range(len(ports_list)):
+# 	port = ports_list[i]
+# 	arduino_ser = ser_comm.serial_comms(port, baud)
+# 	if(arduino_ser.connect()):
+# 		print "Serial Comm Connected"
+# 		could_connect = True
+# 		break
 
 # Comment back in when we have an actual serial port
 # if not could_connect :
@@ -51,20 +51,22 @@ gantry_offX = -70
 gantry_offY = -200
 
 ##################################################################
-# INIT PAINTING OBJECT
-paint_routine = PaintOrders.paint_orders(arduino_ser)
+# # INIT PAINTING OBJECT
+# paint_routine = PaintOrders.paint_orders(arduino_ser)
 
-## Move gantry out of the way
-paint_routine.moveGantry(gantry_offX, gantry_offY)
+# ## Move gantry out of the way
+# paint_routine.moveGantry(gantry_offX, gantry_offY)
 
 # Camera setup, gantry is still away
 ##################################################################
 
 cam = Camera(1)
 
+
 boat = util.readImage("circle.png", "resources/images/input/")
 
 img = cam.read_camera()
+print "img", img.shape
 util.save(img, "01_camera_read")
 
 dewarp_img = cam.dewarp(img)

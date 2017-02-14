@@ -68,6 +68,9 @@ class Camera(object):
         """
 
         camera_capture = cv2.VideoCapture(self.port)   # value -> index of camera. My webcam was 0, USB camera was 1.
+        camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
         s, img = camera_capture.read() # Attempt a read
         if s:    # frame captured without any errors
             # cv2.imwrite("camera_image.jpg",img) #save image
