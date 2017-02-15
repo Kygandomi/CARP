@@ -18,8 +18,8 @@ class paint_orders():
 		self.well_index = -1
 		# self.brush_offsets = [[3312,2515],[3320,1880]]
 		# self.well_offsets = [[3312,2515],[3315,1975]]
-		self.brush_offsets = [[3300, 1630]]
-		self.well_offsets = [[3200, 1700]]
+		self.brush_offsets = [[3350, 1650]]
+		self.well_offsets = [[3200, 1750]]
 
 	'Routine for sending a standard packet via Serial' 
 	def send_standard_packet(self, packet):
@@ -65,7 +65,7 @@ class paint_orders():
 	def getBrush(self, new_brush_index):
 		print "Switching Brushes ..."
 
-		firgelli_extract_height = 600
+		firgelli_extract_height = 560
 		firgelli_insert_height = 600
 		firgelli_lift_out_height = 950
 		x_depth = 400

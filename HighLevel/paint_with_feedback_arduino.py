@@ -116,7 +116,7 @@ for index in range(len(color_segments)):
 	print "LLT Finished "
 
 paint_routine.returnToStart()
-sleep(3)
+sleep(4)
 print "Routine Complete, Enjoy ! "
 
 ##################################################################
@@ -159,7 +159,7 @@ while(1):
 		paint_routine.getBrush(index)
 
 		print "Recomposition"
-		recomposer = iterativeErosionRecomposer(img, [3])
+		recomposer = skeletonRecomposer(img, [])
 		LLT = recomposer.recompose()
 
 		print "LLT to Paint: ", LLT
@@ -172,6 +172,8 @@ while(1):
 
 	paint_routine.returnToStart()
 	print "Routine Complete, Enjoy ! "
+
+	sleep(4)
 
 	img = cam.read_camera()
 	util.save(img, "06_camera_read_final")
