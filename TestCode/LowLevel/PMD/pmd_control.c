@@ -7,7 +7,7 @@
 #include "Pro-MotionExport.c"
 
 #define BUFSIZE   	256
-#define MAX_ACC		179
+#define MAX_ACC		250
 #define MAX_VEL		1174405
 
 #define FIRGELLI_POT_VOLTAGE 5
@@ -57,6 +57,7 @@ USER_CODE_TASK( pmd_control )
 	
 	PMDSetPosition(&hAxis[2],(800*32768*FIRGELLI_POT_VOLTAGE)/(1000*10));
 	//Run Homing
+	//PMDClearPositionError(phAxis[0])
 	
 	while(1){
 		//RunController(&hAxis[2],400,&hPeriphIO,PMDMachineIO_AICh1);
@@ -111,7 +112,7 @@ void linear_move(PMDAxisHandle* hAxis,PMDint32 a1_pos, PMDint32 a2_pos, PMDint32
 	PMDGetPosition(&hAxis[1],&curr_m2);
 	
 	PMDint32 delta_1 = a1_pos-curr_m1;
-	PMDint32 delta_2 = a1_pos-curr_m1;
+	PMDint32 delta_2 = a2_pos-curr_m2;
 	
 	if(delta_1<0) delta_1 *=-1;
 	if(delta_2<0) delta_2 *=-1;
@@ -120,15 +121,15 @@ void linear_move(PMDAxisHandle* hAxis,PMDint32 a1_pos, PMDint32 a2_pos, PMDint32
 	
 	PMDSetProfileMode(&hAxis[0], PMDTrapezoidalProfile );
 	PMDSetPosition(&hAxis[0], a1_pos);
-	PMDSetVelocity(&hAxis[0],  delta_1>delta_2?MAX_VEL*((float)delta_1/delta_2):MAX_VEL);
-	PMDSetAcceleration(&hAxis[0], MAX_ACC);
-	PMDSetDeceleration(&hAxis[0], MAX_ACC);
+	PMDSetVelocity(&hAxis[0],  (delta_1<delta_2) ? (PMDint32)(MAX_VEL*(((float)delta_1)/delta_2)) : MAX_VEL);
+	PMDSetAcceleration(&hAxis[0], (delta_1<delta_2) ? (PMDint32)(MAX_ACC*(((float)delta_1)/delta_2)) : MAX_ACC);
+	PMDSetDeceleration(&hAxis[0], (delta_1<delta_2) ? (PMDint32)(MAX_ACC*(((float)delta_1)/delta_2)) : MAX_ACC);
 	
 	PMDSetProfileMode(&hAxis[1], PMDTrapezoidalProfile );
 	PMDSetPosition(&hAxis[1], a2_pos);
-	PMDSetVelocity(&hAxis[1], delta_2>delta_1?MAX_VEL*((float)delta_2/delta_1):MAX_VEL);
-	PMDSetAcceleration(&hAxis[1], MAX_ACC);
-	PMDSetDeceleration(&hAxis[1], MAX_ACC);
+	PMDSetVelocity(&hAxis[1], (delta_2<delta_1) ? (PMDint32)(MAX_VEL*(((float)delta_2)/delta_1)) : MAX_VEL);
+	PMDSetAcceleration(&hAxis[1], (delta_2<delta_1) ? (PMDint32)(MAX_ACC*(((float)delta_2)/delta_1)) : MAX_ACC);
+	PMDSetDeceleration(&hAxis[1], (delta_2<delta_1) ? (PMDint32)(MAX_ACC*(((float)delta_2)/delta_1)) : MAX_ACC);
 	
 	PMDSetPosition(&hAxis[2],a3_pos);
 	
