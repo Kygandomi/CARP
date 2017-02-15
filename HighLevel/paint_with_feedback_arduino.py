@@ -89,8 +89,8 @@ paint_imageset(color_segments, paint_routine)
 
 
 while 1:
-
 	painting = cam.get_canvas(cam.dewarp(cam.read_camera()))
+
 
 	rows, cols, _ = painting.shape
 

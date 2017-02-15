@@ -330,8 +330,8 @@ void runFirgelli(){
 
 // This method is for performing the Forward Kinematics of the Robot
 void forwardKinematics(long delta_x, long delta_y, long* m1_steps_local, long* m2_steps_local){
-    float s2 = (delta_x+delta_y)*1.07;//*0.70710678118*1.09;//=//*.7707463915;
-    float s1 = (delta_y-delta_x)*1.07;//*0.70710678118*1.09;//=//*.7707463915;
+    float s2 = (delta_x+delta_y)*1.05;//*0.70710678118*1.09;//=//*.7707463915;
+    float s1 = (delta_y-delta_x)*1.05;//*0.70710678118*1.09;//=//*.7707463915;
 
     *m1_steps_local = (long)s1;
     *m2_steps_local = (long)s2;
