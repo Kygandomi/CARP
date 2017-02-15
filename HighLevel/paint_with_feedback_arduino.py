@@ -59,7 +59,7 @@ paint_routine = PaintOrders.paint_orders(arduino_ser)
 
 cam = Camera(1)
 
-boat = util.readImage("circle.png", "resources/images/input/")
+circle_source_image = util.readImage("circle.png", "resources/images/input/")
 
 img = cam.read_camera()
 util.save(img, "01_camera_read")
@@ -74,17 +74,17 @@ try:
 	cam.generate_transform(dewarp_img)
 	img_to_show = cam.get_canvas(dewarp_img)
 except CameraTransformError:
-	img_to_show = boat
+	img_to_show = circle_source_image
 
 
-util.save(img_to_show, "03_camera_transform")
+util.display(img_to_show, "03_camera_transform")
 
 
 ##################################################################
 # DECOMP
 # For the future, if we don't want to use the boat.
 #desiredImg = readImage("medusa_raft.png", type_flag=1)
-desiredImg = boat
+desiredImg = circle_source_image
 
 white = [255,255,255]
 
@@ -92,11 +92,6 @@ segmented_image, [colors,color_segments], [canvas,canvas_segment]  = \
 	decompose(desiredImg, 2,[], color_pallete.white)
 
 util.save(segmented_image, "04_color_desegmented_image")
-
-
-##################################################################
-## Move gantry into paint position
-# paint_routine.moveGantry(0, 0)
 
 ##################################################################
 
@@ -108,7 +103,7 @@ for index in range(len(color_segments)):
 	img = color_segments[index]
 
 	print "Fetching new brush"
-	# paint_routine.getBrush(index)
+	paint_routine.getBrush(index)
 
 	print "Recomposition"
 	recomposer = skeletonRecomposer(img, [])
@@ -118,11 +113,12 @@ for index in range(len(color_segments)):
 	util.save(testLLT(LLT,3), "circle_from_llt")
 
 	print "Let's Paint a Picture ~"
-	# paint_routine.Paint(LLT)
+	paint_routine.Paint(LLT)
 
 	print "LLT Finished "
 
-# paint_routine.returnToStart()
+paint_routine.returnToStart()
+sleep(3)
 print "Routine Complete, Enjoy ! "
 
 ##################################################################
@@ -131,26 +127,27 @@ painted_image = cam.dewarp(cam.read_camera())
 util.save(painted_image, "05_painting")
 
 painting = cam.get_canvas(painted_image)
-util.display(painting, "painting")
+
+
+
+rows, cols, _ = painting.shape
+
+M = np.float32([[1,0,12],[0,1,21]])
+painting = cv2.warpAffine(painting,M,(cols,rows))
+
 
 palette = color_pallete.build("black white")
 
-segmented_image_act, [colors,color_segments_act], [canvas,canvas_segment]  \
-    = decompose(boat, 0,palette, color_pallete.white)
-segmented_image, [colors,color_segments_src], [canvas,canvas_segment]  \
+segmented_image_act, [colors,color_segments_src], [canvas,canvas_segment]  \
+    = decompose(circle_source_image, 0,palette, color_pallete.white)
+
+segmented_image, [colors,color_segments_act], [canvas,canvas_segment]  \
     = decompose(painting, 0,palette, color_pallete.white)
 
 for elt in range(0, len(color_segments_src)):
 	color_segments_src[elt] = resize_with_buffer(color_segments_src[elt], color_segments_act[elt])
 
 correction_segments, canvas_corrections = cam.correct_image(color_segments_src,color_segments_act)
-for image in correction_segments:
-	img4 = open_image(image)
-	output(img4)
-#
-# for image in canvas_corrections:
-# 	img4 = open_image(image)
-# 	output(img4)
 
 
 ##################################################################
@@ -165,7 +162,7 @@ for index in range(len(correction_segments)):
 	img = open_image(img)
 
 	print "Fetching new brush"
-	# paint_routine.getBrush(index)
+	paint_routine.getBrush(index)
 
 	print "Recomposition"
 	recomposer = iterativeErosionRecomposer(img, [3])
@@ -175,11 +172,11 @@ for index in range(len(correction_segments)):
 	testLLT(LLT,3)
 
 	print "Let's Paint a Picture ~"
-	# paint_routine.Paint(LLT)
+	paint_routine.Paint(LLT)
 
 	print "LLT Finished "
 
-# paint_routine.returnToStart()
+paint_routine.returnToStart()
 print "Routine Complete, Enjoy ! "
 
 
@@ -188,6 +185,5 @@ util.save(img, "06_camera_read_final")
 
 dewarp_img = cam.dewarp(img)
 a, w, h = dewarp_img.shape
-# dewarp_img = dewarp_img[70:w-250, 170:h-170]
 util.save(dewarp_img, "07_dewarp_camera_read_final")
 

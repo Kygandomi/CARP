@@ -29,22 +29,22 @@ class Camera(object):
         color_corrections = []
         canvas_corrections = None
 
+        util.displayarray(src_imset)
+        util.displayarray(painted_imset)
+
         for image in range(len(painted_imset)):
             print "finding error..."
-
-            print painted_imset[image].shape
-            print src_imset[image].shape
 
             error_img = cv2.bitwise_xor(painted_imset[image], src_imset[image])
 
             paint_color = cv2.bitwise_and(error_img, painted_imset[image])
-            color_corrections.append(paint_color)
+            color_corrections.append(255-paint_color)
 
             paint_color = cv2.bitwise_and(error_img, src_imset[image])
             if canvas_corrections is not None:
-                canvas_corrections += paint_color
+                canvas_corrections += 255-paint_color
             else:
-                canvas_corrections = paint_color
+                canvas_corrections = 255-paint_color
 
 
 
