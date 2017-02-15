@@ -7,34 +7,65 @@ import time
 from CanvasCamera import Camera
 from CameraException import *
 from color_segmentation import color_segment
+from decomp_color import *
 
 
+circle_perf = util.readImage("circle.png", "../resources/images/input/")
+circle_actual = util.readImage("circle_painted2.png", "")
 
+h_perf, w_perf, _ = circle_perf.shape
+h_actual, w_actual, _ = circle_actual.shape
 
+perf_ratio = float(h_perf)/float(w_perf)
+actual_ratio =float(h_actual)/float(w_actual)
 
-def correct_image(src_imset, painted_imset):
-    """
-    Generates an array of images, containing area that must be painted by color.
-    Canvas color is not provided in the image sets, and so is interpolated.
+buff = 0,0,0,0
 
-    src_imset: image decomp set containing array of color channels as bin images
-    painted_imset: image decomp set containing array of color channels as bin images
-    """
+if perf_ratio > actual_ratio:
+    odd = False
+    if w_actual %2 == 1: # If we have an odd number of pixels
+        odd = True
+    buff_val = h_perf/actual_ratio
+    buff_val = ((h_perf/actual_ratio)-w_perf) /2
+    buff = 0,0, int(buff_val), int(buff_val) + int(odd)
+elif perf_ratio < actual_ratio:
+    odd = False
+    if w_actual %2 == 1: # If we have an odd number of pixels
+        odd = True
+    buff_val = w_perf/actual_ratio
+    buff_val = ((w_perf/actual_ratio)-h_perf) /2
+    buff = 0,0, int(buff_val), int(buff_val) + int(odd)
+#Else case where they are the same, they can just be reshaped immediately.
 
-    color_corrections = []
-    canvas_corrections = []
+top, bottom, left, right = buff
 
-    for image in range(len(painted_imset)):
+img = cv2.copyMakeBorder(circle_perf, top, bottom, left, right, cv2.BORDER_CONSTANT,value=[255,255,255])
 
-        error_img = cv2.bitwise_xor(painted_imset[image], src_imset[image])
+img = cv2.resize(img, (w_actual, h_actual))
 
-        paint_color = cv2.bitwise_and(error_img, painted_imset[image])
-        color_corrections.append(paint_color)
+cam = Camera(1)
+util.output(circle_actual, "circ act")
 
-        paint_color = cv2.bitwise_and(error_img, src_imset[image])
-        canvas_corrections.append(paint_color)
+palette = color_pallete.build("black white")
 
-    return color_corrections, canvas_corrections
+segmented_image_act, [colors,color_segments_act], [canvas,canvas_segment]  \
+    = decompose(circle_actual, 0,palette, color_pallete.white)
+segmented_image, [colors,color_segments_src], [canvas,canvas_segment]  \
+    = decompose(img, 0,palette, color_pallete.white)
+util.output(color_segments_act[0], "act")
+util.output(color_segments_src[0], "src")
+
+util.output(segmented_image_act, "seg img")
+
+color_corrections, canvas_corrections = cam.correct_image(color_segments_src,color_segments_act)
+
+# print canvas_corrections
+
+util.output(255-canvas_corrections, "canvas_crrections")
+
+for c in color_corrections:
+    util.output (255-c, "color+scorection")
+
 
 
 cam = Camera(1)
@@ -46,6 +77,8 @@ boat = util.getFileByName("boat2.png", "../resources/images/input/")
 
 print "test"
 img = cam.read_camera()
+util.display(img)
+
 # cv2.imshow('orig', warped_canvas)
 # util.display(warped_canvas)
 # util.display(cam.read_camera())
@@ -54,10 +87,12 @@ dewarp_img = cam.dewarp(img)
 
 a, w, h = dewarp_img.shape
 
-dewarp_img = dewarp_img[70:w-250, 170:h-170]
+dewarp_img = dewarp_img[70:w-150, 170:h-170]
 
 
 time.sleep(0.1)
+
+util.display(dewarp_img)
 
 try:
     cam.generate_transform(dewarp_img)
@@ -66,17 +101,24 @@ except CameraTransformError:
     img_to_show = boat
 
 # img_to_show = dewarp_img
-util.display(img_to_show, "Painting canvas")
+util.output(img_to_show, "01 Painting canvas, unpainted")
+
+util.display(boat)
 
 
-###
-# paint paint paint paint paint
-###
 
-# Read in the image and dewarp it.
-painted_image = cam.dewarp(cam.read_camera())
+painted_image = cam.read_camera()
 
-color_corrections, canvas_corrections = correct_image(boat, painted_image)
+util.output(img_to_show, "02 Painting")
+
+dewarped_painted_image = cam.dewarp(painted_image)
+dewarped_painted_image = dewarped_painted_image[70:w-150, 170:h-170]
+
+dewarped_painted_canvas = cam.get_canvas(dewarped_painted_image)
+
+util.output(dewarped_painted_canvas, "03 Painting on canvas")
+
+color_corrections, canvas_corrections = cam.correct_image(boat, painted_image)
 
 ###
 # paint the new thing

@@ -7,6 +7,18 @@ def display(img, name="img"):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+def displayarray(imgs, name="imageset_image"):
+    """
+    Display an array of images
+    :param imgs: image array to display from
+    :param name: name they will be shown with
+    :return:
+    """
+    for img in imgs:
+        cv2.imshow(name, img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
 def save(img, name="test_image"):
     cv2.imwrite(name+".png", img)
 
@@ -31,7 +43,42 @@ def resize(img,max_dim=1000):
     else:
         return cv2.resize(img,(max_dim*cols/rows,max_dim),interpolation = method)
 
-#img2 = cv2.copyMakeBorder(img1,top,bottom,left,right,cv2.BORDER_CONSTANT,value=[255,255,255])
+
+def resize_with_buffer(ideal, actual):
+    """
+    Reshapes an ideal image to suit the dimensions of an actual image.
+
+    :param ideal: The ideal image that needs to be reshaped
+    :param actual: The actual image.
+    :return:
+    """
+    h_perf, w_perf, _ = ideal.shape
+    h_actual, w_actual, _ = actual.shape
+
+    perf_ratio = float(h_perf)/float(w_perf)
+    actual_ratio =float(h_actual)/float(w_actual)
+
+    buff = 0,0,0,0
+
+    if perf_ratio > actual_ratio:
+        odd = False
+        if w_actual %2 == 1: # If we have an odd number of pixels
+            odd = True
+        buff_val = ((h_perf/actual_ratio)-w_perf) /2
+        buff = 0,0, int(buff_val), int(buff_val) + int(odd)
+    elif perf_ratio < actual_ratio:
+        odd = False
+        if w_actual %2 == 1: # If we have an odd number of pixels
+            odd = True
+        buff_val = ((w_perf/actual_ratio)-h_perf) /2
+        buff = 0,0, int(buff_val), int(buff_val) + int(odd)
+
+    top, bottom, left, right = buff
+
+    img = cv2.copyMakeBorder(ideal, top, bottom, left, right, cv2.BORDER_CONSTANT,value=[255,255,255])
+
+    return cv2.resize(img, (w_actual, h_actual))
+
 
 def circleKernel(radius,thickness = -1):
     """ Return a kernal representing a circle with the given radius and thickness (in pixels)"""
@@ -142,6 +189,7 @@ def testLLT(LLT,scale = 2,paper_size = (8.5*25.4,11*25.4),thickness=2):
         lines.append(pt_list)
     drawnImg = drawLines(lines,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),thickness)
     display(drawnImg)
+    return drawnImg
 
 def loadLLT(fname = 'orders.txt'):
     LLT=[]

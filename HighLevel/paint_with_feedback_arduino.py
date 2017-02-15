@@ -54,24 +54,18 @@ gantry_offY = -200
 # # INIT PAINTING OBJECT
 paint_routine = PaintOrders.paint_orders(arduino_ser)
 
-# ## Move gantry out of the way
-# paint_routine.moveGantry(gantry_offX, gantry_offY)
 
-# Camera setup, gantry is still away
 ##################################################################
 
 cam = Camera(1)
 
-
 boat = util.readImage("circle.png", "resources/images/input/")
 
 img = cam.read_camera()
-print "img", img.shape
 util.save(img, "01_camera_read")
 
 dewarp_img = cam.dewarp(img)
 a, w, h = dewarp_img.shape
-# dewarp_img = dewarp_img[70:w-450, 170:h-170]
 util.save(dewarp_img, "02_dewarp_camera_read")
 
 
@@ -94,14 +88,10 @@ desiredImg = boat
 
 white = [255,255,255]
 
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 2,[], color_pallete.white)
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = \
+	decompose(desiredImg, 2,[], color_pallete.white)
 
 util.save(segmented_image, "04_color_desegmented_image")
-
-
-# for image in color_segments:
-# 	img4 = open_image(image)
-# 	display(img4)
 
 
 ##################################################################
@@ -118,45 +108,50 @@ for index in range(len(color_segments)):
 	img = color_segments[index]
 
 	print "Fetching new brush"
-	paint_routine.getBrush(index)
+	# paint_routine.getBrush(index)
 
 	print "Recomposition"
 	recomposer = skeletonRecomposer(img, [])
 	LLT = recomposer.recompose()
 
 	print "LLT to Paint: ", LLT
-	testLLT(LLT,3)
+	util.save(testLLT(LLT,3), "circle_from_llt")
 
 	print "Let's Paint a Picture ~"
-	paint_routine.Paint(LLT)
+	# paint_routine.Paint(LLT)
 
 	print "LLT Finished "
 
-paint_routine.returnToStart()
+# paint_routine.returnToStart()
 print "Routine Complete, Enjoy ! "
-
-##################################################################
-## Move gantry out of the way
-# paint_routine.moveGantry(0, gantry_offY)
-
 
 ##################################################################
 
 painted_image = cam.dewarp(cam.read_camera())
 util.save(painted_image, "05_painting")
 
-print "Im over here!"
-print "segmented img", segmented_image.shape
-print "painted img", painted_image.shape
-correction_segments, canvas_correction_segment = cam.correct_image(segmented_image, painted_image)
-# for image in correction_segments:
+painting = cam.get_canvas(painted_image)
+util.display(painting, "painting")
+
+palette = color_pallete.build("black white")
+
+segmented_image_act, [colors,color_segments_act], [canvas,canvas_segment]  \
+    = decompose(boat, 0,palette, color_pallete.white)
+segmented_image, [colors,color_segments_src], [canvas,canvas_segment]  \
+    = decompose(painting, 0,palette, color_pallete.white)
+
+for elt in range(0, len(color_segments_src)):
+	color_segments_src[elt] = resize_with_buffer(color_segments_src[elt], color_segments_act[elt])
+
+correction_segments, canvas_corrections = cam.correct_image(color_segments_src,color_segments_act)
+for image in correction_segments:
+	img4 = open_image(image)
+	output(img4)
+#
+# for image in canvas_corrections:
 # 	img4 = open_image(image)
-# 	display(img4)
+# 	output(img4)
 
-
-##################################################################
-## Move gantry out of the way
-# paint_routine.moveGantry(0, 0)
 
 ##################################################################
 
@@ -170,7 +165,7 @@ for index in range(len(correction_segments)):
 	img = open_image(img)
 
 	print "Fetching new brush"
-	paint_routine.getBrush(index)
+	# paint_routine.getBrush(index)
 
 	print "Recomposition"
 	recomposer = iterativeErosionRecomposer(img, [3])
@@ -180,21 +175,19 @@ for index in range(len(correction_segments)):
 	testLLT(LLT,3)
 
 	print "Let's Paint a Picture ~"
-	paint_routine.Paint(LLT)
+	# paint_routine.Paint(LLT)
 
 	print "LLT Finished "
 
-paint_routine.returnToStart()
+# paint_routine.returnToStart()
 print "Routine Complete, Enjoy ! "
 
-
-paint_routine.moveGantry(-50, 0)
 
 img = cam.read_camera()
 util.save(img, "06_camera_read_final")
 
 dewarp_img = cam.dewarp(img)
 a, w, h = dewarp_img.shape
-dewarp_img = dewarp_img[70:w-250, 170:h-170]
+# dewarp_img = dewarp_img[70:w-250, 170:h-170]
 util.save(dewarp_img, "07_dewarp_camera_read_final")
 

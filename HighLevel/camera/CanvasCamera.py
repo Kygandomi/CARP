@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from common import util
 import time
+import copy
 from CameraException import *
 
 
@@ -11,8 +12,8 @@ class Camera(object):
         self.port = port
         self.canvas_transformation_data = None
         self.camera_capture = cv2.VideoCapture(self.port)   # value -> index of camera. My webcam was 0, USB camera was 1.
-        self.camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        # self.camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        # self.camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 
     @staticmethod
@@ -26,11 +27,13 @@ class Camera(object):
         """
 
         color_corrections = []
-        canvas_corrections = []
-
-        
+        canvas_corrections = None
 
         for image in range(len(painted_imset)):
+            print "finding error..."
+
+            print painted_imset[image].shape
+            print src_imset[image].shape
 
             error_img = cv2.bitwise_xor(painted_imset[image], src_imset[image])
 
@@ -38,7 +41,12 @@ class Camera(object):
             color_corrections.append(paint_color)
 
             paint_color = cv2.bitwise_and(error_img, src_imset[image])
-            canvas_corrections.append(paint_color)
+            if canvas_corrections is not None:
+                canvas_corrections += paint_color
+            else:
+                canvas_corrections = paint_color
+
+
 
         return color_corrections, canvas_corrections
 
@@ -46,9 +54,6 @@ class Camera(object):
 
     @staticmethod
     def dewarp(image):
-
-        print "Im in the spot!"
-
         mtx = np.array([[  4.93988251e+03 ,  0.00000000e+00 ,  6.67427894e+02],
         [  0.00000000e+00 ,  5.29553206e+03  , 4.49712265e+02],
         [  0.00000000e+00 ,  0.00000000e+00 , 1.00000000e+00]])
@@ -60,7 +65,6 @@ class Camera(object):
         gray = image
         h,  w = gray.shape[:2]
 
-        print "1"
         newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 
         print "Middle?"
@@ -133,20 +137,22 @@ class Camera(object):
 
         # cv2.imwrite("gray_" + str(int(time.time())) + ".jpg",gray_image) #save image
 
+        print image.shape
+
+
         adaptive_thresholded = cv2.adaptiveThreshold(gray_image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
 
         # cv2.imwrite("ad_thresh_" + str(int(time.time())) + ".jpg",adaptive_thresholded) #save image
-
+        image2 = copy.deepcopy(image)
         image, contours, other = cv2.findContours(adaptive_thresholded,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE) # Gather the contours
-
         long_contours = [] # Create an array for the long edges to be held
 
         for cnt in contours:
             if 50000<cv2.contourArea(cnt) < 500000: # Tuned to prevent small contours, but also not consider image edges a contour @TODO: objects for canvases?
                 print cv2.contourArea(cnt)
                 long_contours.append(cnt) # Record any long contours
-                #cv2.drawContours(image,[cnt],0,(0,255,0),2) # Draw those contours onto the image
-                #util.save(image, str(time.time()))
+                #cv2.drawContours(image2,[cnt],0,(0,255,0),2) # Draw those contours onto the image
+                #util.display(image2, str(time.time()))
         print "Long contours found: ", len(long_contours)
         try:
             rect = cv2.minAreaRect(long_contours[0]) # Generate a rectangle based on the long contour surrounding the page
@@ -203,6 +209,7 @@ class Camera(object):
         camera_image = self.read_camera() # Attempts to make a new read from the camera.
 
         if self.canvas_transformation_data is None: # If we have not generated a transformation yet (ie, first run)
+            print "Generating canvas transformation"
             self.generate_transform(camera_image) # Generate the transformation
 
         # Either using the previously generated transform, or with our fresh new transform, do the transform+crop

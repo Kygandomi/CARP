@@ -33,7 +33,7 @@ print ""
 #  [   0.            0.            1.        ]]
 # [[ -8.40580329  13.1388804   -1.59667278   0.07779641 -10.56091074]]
 
-while(True and count < 15):
+while(True and count < 10):
     # Capture frame-by-frame
     ret1, frame = cap.read()
 
@@ -55,7 +55,7 @@ while(True and count < 15):
         # Draw and display the corners
         img = cv2.drawChessboardCorners(gray, (7,6), corners2,ret2)
         cv2.imshow('img',img)
-        cv2.waitKey(2000)
+        cv2.waitKey(500)
         count += 1
 
     cv2.imshow('frame',gray)

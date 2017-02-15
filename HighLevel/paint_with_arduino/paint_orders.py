@@ -43,13 +43,13 @@ class paint_orders():
 
 			# While the gantry has not completed its motion routine
 			while( parse_val != 0):
-				print "got into the while"
 				# Interpret incoming signals
 				read_val = self.arduino_ser.recieve_packet()
 				parse_val = self.arduino_ser.parse_packet(read_val)
-				print "Readval: ", read_val
-				print "parseval: ", parse_val
-				print "generated readval and parseval "
+				if read_val != []:
+					print "Readval: ", read_val
+				if parse_val != -1:
+					print "parseval: ", parse_val
 				sleep(0.1)
 			print "Brush Stroke Motion Complete."
 
