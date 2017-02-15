@@ -20,8 +20,6 @@ import cv2
 from camera.CanvasCamera import Camera
 from camera.CameraException import *
 
-
-
 # ##################################################################
 # ##########################  SETUP COMMUNICATIONS  ################
 # ##################################################################
@@ -96,7 +94,7 @@ util.save(segmented_image, "04_color_desegmented_image")
 ##################################################################
 
 # Recomposers to use
-
+ 
 # Recomp and Paint
 for index in range(len(color_segments)):
 	print "Index ", index
@@ -122,68 +120,63 @@ sleep(3)
 print "Routine Complete, Enjoy ! "
 
 ##################################################################
+while(1):
+	painted_image = cam.dewarp(cam.read_camera())
+	util.save(painted_image, "05_painting")
 
-painted_image = cam.dewarp(cam.read_camera())
-util.save(painted_image, "05_painting")
+	painting = cam.get_canvas(painted_image)
 
-painting = cam.get_canvas(painted_image)
+	rows, cols, _ = painting.shape
 
+	M = np.float32([[1,0,12],[0,1,21]])
+	painting = cv2.warpAffine(painting,M,(cols,rows))
 
+	palette = color_pallete.build("black white")
 
-rows, cols, _ = painting.shape
+	segmented_image_act, [colors,color_segments_src], [canvas,canvas_segment]  \
+	    = decompose(circle_source_image, 0,palette, color_pallete.white)
 
-M = np.float32([[1,0,12],[0,1,21]])
-painting = cv2.warpAffine(painting,M,(cols,rows))
+	segmented_image, [colors,color_segments_act], [canvas,canvas_segment]  \
+	    = decompose(painting, 0,palette, color_pallete.white)
 
+	for elt in range(0, len(color_segments_src)):
+		color_segments_src[elt] = resize_with_buffer(color_segments_src[elt], color_segments_act[elt])
 
-palette = color_pallete.build("black white")
+	correction_segments, canvas_corrections = cam.correct_image(color_segments_src,color_segments_act)
 
-segmented_image_act, [colors,color_segments_src], [canvas,canvas_segment]  \
-    = decompose(circle_source_image, 0,palette, color_pallete.white)
+	print "Out here"
 
-segmented_image, [colors,color_segments_act], [canvas,canvas_segment]  \
-    = decompose(painting, 0,palette, color_pallete.white)
+	##################################################################
+	# painting the things
 
-for elt in range(0, len(color_segments_src)):
-	color_segments_src[elt] = resize_with_buffer(color_segments_src[elt], color_segments_act[elt])
+	# Recomp and Paint
+	for index in range(len(correction_segments)):
+		print "Index ", index
+		img = correction_segments[index]
+		img = open_image(img)
 
-correction_segments, canvas_corrections = cam.correct_image(color_segments_src,color_segments_act)
+		print "Fetching new brush"
+		paint_routine.getBrush(index)
 
+		print "Recomposition"
+		recomposer = iterativeErosionRecomposer(img, [3])
+		LLT = recomposer.recompose()
 
-##################################################################
+		print "LLT to Paint: ", LLT
+		testLLT(LLT,3)
 
-######
-# painting the things
+		print "Let's Paint a Picture ~"
+		paint_routine.Paint(LLT)
 
-# Recomp and Paint
-for index in range(len(correction_segments)):
-	print "Index ", index
-	img = correction_segments[index]
-	img = open_image(img)
+		print "LLT Finished "
 
-	print "Fetching new brush"
-	paint_routine.getBrush(index)
+	paint_routine.returnToStart()
+	print "Routine Complete, Enjoy ! "
 
-	print "Recomposition"
-	recomposer = iterativeErosionRecomposer(img, [3])
-	LLT = recomposer.recompose()
+	img = cam.read_camera()
+	util.save(img, "06_camera_read_final")
 
-	print "LLT to Paint: ", LLT
-	testLLT(LLT,3)
-
-	print "Let's Paint a Picture ~"
-	paint_routine.Paint(LLT)
-
-	print "LLT Finished "
-
-paint_routine.returnToStart()
-print "Routine Complete, Enjoy ! "
-
-
-img = cam.read_camera()
-util.save(img, "06_camera_read_final")
-
-dewarp_img = cam.dewarp(img)
-a, w, h = dewarp_img.shape
-util.save(dewarp_img, "07_dewarp_camera_read_final")
+	dewarp_img = cam.dewarp(img)
+	a, w, h = dewarp_img.shape
+	util.save(dewarp_img, "07_dewarp_camera_read_final")
 

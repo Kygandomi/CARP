@@ -102,11 +102,11 @@ class paint_orders():
 
 		firgelli_up = [0, 0, firgelli_insert_height, 800, 0, 1, 1]
 
-		if(self.old_brush_index != -1):
+		if(self.old_brush_index != -1 and new_brush_index != -1):
 			# put current brush back
 			placeBrush(self.brush_offsets[self.old_brush_index])
 		
-		if(new_brush_index == -1):
+		if(new_brush_index == -1 ):
 			placeBrush(self.brush_offsets[self.old_brush_index])
 			self.old_brush_index = new_brush_index
 			return
@@ -173,7 +173,7 @@ class paint_orders():
 
 		# Record Fergelli Height Values
 		down_val = 250
-		up_val = 350
+		up_val = 400
 		final_up_val = 800
 
 		# Record how far we've gone (0.1 mm)

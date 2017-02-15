@@ -12,8 +12,8 @@ class Camera(object):
         self.port = port
         self.canvas_transformation_data = None
         self.camera_capture = cv2.VideoCapture(self.port)   # value -> index of camera. My webcam was 0, USB camera was 1.
-        # self.camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        # self.camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 
     @staticmethod
@@ -26,11 +26,10 @@ class Camera(object):
         painted_imset: image decomp set containing array of color channels as bin images
         """
 
+        print "Lets correct image"
+
         color_corrections = []
         canvas_corrections = None
-
-        util.displayarray(src_imset)
-        util.displayarray(painted_imset)
 
         for image in range(len(painted_imset)):
             print "finding error..."
