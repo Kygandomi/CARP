@@ -92,8 +92,6 @@ class Camera(object):
         :return: returns the image read in from the camera as an opencv image
         """
 
-        print "Im in the read cam!" 
-
         s, img = self.camera_capture.read() # Attempt a read
         if s:    # frame captured without any errors
             # cv2.imwrite("camera_image.jpg",img) #save image
@@ -162,7 +160,7 @@ class Camera(object):
 
         # cv2.imwrite("gray_" + str(int(time.time())) + ".jpg",gray_image) #save image
 
-        print image.shape
+        # print image.shape
 
         adaptive_thresholded = cv2.adaptiveThreshold(gray_image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
 
@@ -177,7 +175,7 @@ class Camera(object):
                 long_contours.append(cnt) # Record any long contours
                 #cv2.drawContours(image2,[cnt],0,(0,255,0),2) # Draw those contours onto the image
                 #util.display(image2, str(time.time()))
-        print "Long contours found: ", len(long_contours)
+        # print "Long contours found: ", len(long_contours)
         try:
             rect = cv2.minAreaRect(long_contours[0]) # Generate a rectangle based on the long contour surrounding the page
         except IndexError:
