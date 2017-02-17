@@ -52,8 +52,6 @@ def resize_with_buffer(ideal, actual):
     :param actual: The actual image.
     :return:
     """
-
-    print "Resize with Buffer ?"
     h_perf, w_perf, _ = ideal.shape
     h_actual, w_actual, _ = actual.shape
 

@@ -75,16 +75,12 @@ class paint_orders():
 			offY=offset_point[1]
 
 			self.send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
-			print "send 1 complete"
 			sleep(1)
 			self.send_standard_packet([offX+x_depth,offY,firgelli_lift_out_height,800,1,1,1])
-			print "send 2 complete"
 			sleep(1)
 			self.send_standard_packet([offX+x_depth,offY,firgelli_extract_height,800,1,1,1])
-			print "send 3 complete"
 			sleep(1)
 			self.send_standard_packet([offX,offY,firgelli_extract_height,800,1,1,1])
-			print "send 4 complete"
 			sleep(1)
 
 		def placeBrush(offset_point):
