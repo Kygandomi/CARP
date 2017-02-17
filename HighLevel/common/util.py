@@ -43,8 +43,26 @@ def resize(img,max_dim=1000):
     else:
         return cv2.resize(img,(max_dim*cols/rows,max_dim),interpolation = method)
 
+def rotate_image(mat, angle, padding_color = (255,255,255)):
+  height, width = mat.shape[:2]
+  image_center = (width/2, height/2)
 
-def resize_with_buffer(ideal, actual):
+  rotation_mat = cv2.getRotationMatrix2D(image_center, -angle, 1.)
+
+  abs_cos = abs(rotation_mat[0,0])
+  abs_sin = abs(rotation_mat[0,1])
+
+  bound_w = int(height * abs_sin + width * abs_cos)
+  bound_h = int(height * abs_cos + width * abs_sin)
+
+  rotation_mat[0, 2] += bound_w/2 - image_center[0]
+  rotation_mat[1, 2] += bound_h/2 - image_center[1]
+
+  rotated_mat = cv2.warpAffine(mat, rotation_mat, (bound_w, bound_h), borderValue=padding_color)
+  return rotated_mat
+
+
+def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,255,255]):
     """
     Reshapes an ideal image to suit the dimensions of an actual image.
 
@@ -59,6 +77,17 @@ def resize_with_buffer(ideal, actual):
     actual_ratio =float(h_actual)/float(w_actual)
 
     buff = 0,0,0,0
+
+    # If it's acceptable to rotate the image
+    if allowRotaton:
+        # If one is portrait and the other is landscape, then we should rotate.
+        if perf_ratio > 1 and actual_ratio < 1 or perf_ratio < 1 and actual_ratio > 1:
+            print "Rotating image in order to match portrait/landscapeness."
+            ideal = rotate_image(ideal, 90, padding_color=padding_color)
+            pass
+
+    h_perf, w_perf, _ = ideal.shape
+    perf_ratio = float(h_perf)/float(w_perf)
 
     if perf_ratio > actual_ratio:
         odd = False
@@ -75,7 +104,7 @@ def resize_with_buffer(ideal, actual):
 
     top, bottom, left, right = buff
 
-    img = cv2.copyMakeBorder(ideal, top, bottom, left, right, cv2.BORDER_CONSTANT,value=[255,255,255])
+    img = cv2.copyMakeBorder(ideal, top, bottom, left, right, cv2.BORDER_CONSTANT,value=padding_color)
 
     return cv2.resize(img, (w_actual, h_actual))
 
