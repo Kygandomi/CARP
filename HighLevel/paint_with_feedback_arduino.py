@@ -15,7 +15,7 @@ from common import color_pallete
 from time import sleep
 import cv2
 
-def paint_imageset(segments, painter, open_images = False):
+def paint_imageset(segments, painter, cam, open_images = False):
 	for index in range(len(segments)):
 		print "Index ", index
 		img = segments[index]
@@ -27,6 +27,7 @@ def paint_imageset(segments, painter, open_images = False):
 		print "Recomposition"
 		recomposer = skeletonRecomposer(img, [])
 		LLT = recomposer.recompose()
+		LLT = cam.canvas_to_gantry(LLT)
 
 		print "LLT to Paint as been saved to disc: ", LLT
 		util.save(testLLT(LLT,3), "circle_from_llt")
@@ -37,7 +38,7 @@ def paint_imageset(segments, painter, open_images = False):
 		print "LLT Completed."
 
 	painter.returnToStart()
-	sleep(3)
+	sleep(5)
 	print "First pass has been completed."
 
 ## SETUP COMMUNICATIONS
@@ -73,8 +74,10 @@ palette = color_pallete.build("black white")
 desiredImg = util.readImage("circle.png", "resources/images/input/")
 
 
-cam = Camera(1)
-
+cam = Camera(0)
+read_img = cam.read_camera()
+read_img = cam.read_camera()
+read_img = cam.read_camera()
 read_img = cam.read_camera()
 
 dewarp_img = cam.dewarp(read_img)
@@ -83,10 +86,15 @@ a, w, h = dewarp_img.shape
 cam.generate_transform(dewarp_img)
 img_to_show = cam.get_canvas(dewarp_img)
 
+display(img_to_show)
+
+desiredImg = util.resize_with_buffer(desiredImg,img_to_show)
+
+display(desiredImg)
+
 segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 2,[], color_pallete.white)
 
-paint_imageset(color_segments, paint_routine)
-
+paint_imageset(color_segments, paint_routine,cam)
 
 while 1:
 	painting = cam.get_canvas(cam.dewarp(cam.read_camera()))
@@ -98,16 +106,15 @@ while 1:
 	M = np.float32([[1,0,12],[0,1,21]])
 	painting = cv2.warpAffine(painting,M,(cols,rows))
 
-
 	segmented_image_act, [_,color_segments_src], [_,_] = decompose(desiredImg, 0,palette, color_pallete.white)
 
 	_, [_,color_segments_act], [_,_] = decompose(painting, 0,palette, color_pallete.white)
 
 	# Resize each segment
-	for elt in range(0, len(color_segments_src)):
-		color_segments_src[elt] = resize_with_buffer(color_segments_src[elt], color_segments_act[elt])
+	# for elt in range(0, len(color_segments_src)):
+	# 	color_segments_src[elt] = resize_with_buffer(color_segments_src[elt], color_segments_act[elt])
 
 	# Generate correction images
 	correction_segments, canvas_corrections = cam.correct_image(color_segments_src,color_segments_act)
 
-	paint_imageset(correction_segments, paint_routine, open_images = True)
+	paint_imageset(correction_segments, paint_routine, cam ,open_images = True)

@@ -18,8 +18,8 @@ class paint_orders():
 		self.well_index = -1
 		# self.brush_offsets = [[3312,2515],[3320,1880]]
 		# self.well_offsets = [[3312,2515],[3315,1975]]
-		self.brush_offsets = [[3350, 1650]]
-		self.well_offsets = [[3200, 1750]]
+		self.brush_offsets = [[3430, 1950]]
+		self.well_offsets = [[3280, 2050]]
 
 	'Routine for sending a standard packet via Serial' 
 	def send_standard_packet(self, packet):
@@ -169,7 +169,7 @@ class paint_orders():
 	'Paint Routine for Creating the desired image'
 	def Paint(self, LLT):
 		# Scale 
-		scale_val = 10
+		scale_val = 1
 
 		# Record Fergelli Height Values
 		down_val = 250

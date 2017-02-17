@@ -31,7 +31,7 @@ class iterativeErosionRecomposer(object):
                 stroke=[]
                 for pt_i in range(0,len(cnt),10):
                     pt=cnt[pt_i][0]
-                    pt=util.mapToCanvas(pt,self.desiredImage.shape[:2])
+                    # pt=util.mapToCanvas(pt,self.desiredImage.shape[:2])
                     stroke.append([pt[0] , pt[1], self.brush_thickness])
                 stroke.append(stroke[0])
                 orders.append(stroke)

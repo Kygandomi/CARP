@@ -34,7 +34,7 @@ class skeletonRecomposer(object):
 
         paths = self.reducePaths(paths,1000)
 
-        paths = mapLLT(paths,self.binImg.shape)
+        # paths = mapLLT(paths,self.binImg.shape)
 
         return paths
 

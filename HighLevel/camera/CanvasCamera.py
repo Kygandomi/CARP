@@ -11,11 +11,18 @@ class Camera(object):
     def __init__(self, port):
         self.port = port
         self.canvas_transformation_data = None
+        self.canvas_to_dewarp_PT = None
+
+        pts_gantry = np.float32([[400,400],[1000,2000],[2500,1000]])
+        pts_img = np.float32([[463,138],[563,401],[811,236]])
+        self.img_to_gantryAT = cv2.getAffineTransform(pts_img,pts_gantry)
+
         self.camera_capture = cv2.VideoCapture(self.port)   # value -> index of camera. My webcam was 0, USB camera was 1.
         self.camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 
+    # TODO: Move this out of Camera object??
     @staticmethod
     def correct_image(src_imset, painted_imset):
         """
@@ -50,33 +57,32 @@ class Camera(object):
         return color_corrections, canvas_corrections
 
 
-
     @staticmethod
     def dewarp(image):
-        mtx = np.array([[  4.93988251e+03 ,  0.00000000e+00 ,  6.67427894e+02],
-        [  0.00000000e+00 ,  5.29553206e+03  , 4.49712265e+02],
-        [  0.00000000e+00 ,  0.00000000e+00 , 1.00000000e+00]])
+        # OLD BUT WORKS ON ODELLS
+        # mtx = np.array([[  4.93988251e+03 ,  0.00000000e+00 ,  6.67427894e+02],
+        # [  0.00000000e+00 ,  5.29553206e+03  , 4.49712265e+02],
+        # [  0.00000000e+00 ,  0.00000000e+00 , 1.00000000e+00]])
 
-        dist = np.array([[ -1.10157126e+01 ,  1.27727231e+02 , -1.25121362e-02  ,-4.19927722e-03,
-        -1.67823487e+02]])
+        # dist = np.array([[ -1.10157126e+01 ,  1.27727231e+02 , -1.25121362e-02  ,-4.19927722e-03,
+        # -1.67823487e+02]])
 
+        # NEW: Should work on any computer if 1280x720 is explicitly set as resolution
+        mtx =np.array([[  1.10631110e+03,   0.00000000e+00,   6.76280470e+02],
+        [  0.00000000e+00,   1.10214590e+03,   2.61620659e+02],
+        [  0.00000000e+00,   0.00000000e+00,   1.00000000e+00]])
+        dist = np.array([[-0.47479333,  0.23125714,  0.01108992,  0.00123208, -0.04514544]])
 
         gray = image
         h,  w = gray.shape[:2]
 
         newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 
-        print "Middle?"
-
         dewarped_canvas = cv2.undistort(gray, mtx, dist, None, newcameramtx)
-
-        print "2"
 
         x,y,w,h = roi
 
         dewarped_canvas = dewarped_canvas[y:y+h, x:x+w]
-
-        print "Dewarp Complete"
 
         return dewarped_canvas
 
@@ -118,6 +124,26 @@ class Camera(object):
         # return the ordered coordinates
         return rect
 
+    def dewarp_to_gantry(self,pt):
+        return np.dot(self.img_to_gantryAT,[pt[0],pt[1],1])
+
+    def canvas_to_dewarp(self,pt):
+        out = np.dot(self.canvas_to_dewarp_PT,[pt[0],pt[1],1])
+        out = out/out[2]
+        return [out[0],out[1]]
+
+    def canvas_to_gantry(self, LLT):
+        def canvas_to_gantry_pt(pt):
+            return self.dewarp_to_gantry(self.canvas_to_dewarp(pt))
+
+        out_pts = []
+        for stroke in LLT:
+            list_pts=[]
+            for command in stroke:
+                pt=canvas_to_gantry_pt([command[1],command[0]])
+                list_pts.append([pt[0],pt[1]])
+            out_pts.append(list_pts)
+        return out_pts
 
     def four_point_transform(self, image):
         """
@@ -138,7 +164,6 @@ class Camera(object):
 
         print image.shape
 
-
         adaptive_thresholded = cv2.adaptiveThreshold(gray_image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
 
         # cv2.imwrite("ad_thresh_" + str(int(time.time())) + ".jpg",adaptive_thresholded) #save image
@@ -156,6 +181,7 @@ class Camera(object):
         try:
             rect = cv2.minAreaRect(long_contours[0]) # Generate a rectangle based on the long contour surrounding the page
         except IndexError:
+            util.display(image)
             raise CameraTransformError("Unable to get contours from camera image, check that camera image isn't washed out.")
 
         box = cv2.boxPoints(rect) # Generate a box-point object from the rectangle
@@ -196,7 +222,11 @@ class Camera(object):
 
         # compute the perspective transform matrix and then apply it
         M = cv2.getPerspectiveTransform(ordered_rect, dst)
+        inv_M = cv2.getPerspectiveTransform(dst,ordered_rect)
         self.canvas_transformation_data = M, maxWidth, maxHeight
+        self.canvas_to_dewarp_PT = inv_M
+
+
 
     # TODO build in dewarping to this module.
     def get_canvas(self):

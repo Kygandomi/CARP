@@ -17,7 +17,11 @@ imgpoints = [] # 2d points in image plane.
 
 # count !
 count = 0
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH,1280);
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT,720);
+
 print ""
 
 # Figure out where the camera is
@@ -33,7 +37,7 @@ print ""
 #  [   0.            0.            1.        ]]
 # [[ -8.40580329  13.1388804   -1.59667278   0.07779641 -10.56091074]]
 
-while(True and count < 10):
+while(True and count < 15):
     # Capture frame-by-frame
     ret1, frame = cap.read()
 
