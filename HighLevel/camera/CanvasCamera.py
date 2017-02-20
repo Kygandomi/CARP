@@ -155,32 +155,67 @@ class Camera(object):
         return warped
 
 
-    def generate_transform(self, image):
+    def generate_transform(self, image, debug = False):
+
+        # Make a deep copy for debugging later
+        if debug: image_copy = copy.deepcopy(image)
+
+        # Grayscale the image
         gray_image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
-        # cv2.imwrite("gray_" + str(int(time.time())) + ".jpg",gray_image) #save image
+        # Blur the grayscale iamge
+        gray_image = cv2.GaussianBlur(gray_image, (3,3), 0)
 
-        # print image.shape
+        if debug: util.display(gray_image, "gray image blurred")
 
-        adaptive_thresholded = cv2.adaptiveThreshold(gray_image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+        # close the image to provide our own noise reduction
+        gray_image_closed = util.close_image(gray_image, kernel_radius = 15)
 
-        # cv2.imwrite("ad_thresh_" + str(int(time.time())) + ".jpg",adaptive_thresholded) #save image
-        image2 = copy.deepcopy(image)
-        image, contours, other = cv2.findContours(adaptive_thresholded,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE) # Gather the contours
+        if debug: util.display(gray_image_closed, "gray image, openned")
+
+        # Apply an adaptive gaussian treshold to the image
+        adaptive_thresholded = cv2.adaptiveThreshold(gray_image_closed,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+
+        if debug: util.display(adaptive_thresholded, "adaptive thresholded")
+
+        # Now close the image, removing small areas of noise.
+        adaptive_thresholded = util.close_image(gray_image, kernel_radius = 15)
+
+        if debug: util.display(adaptive_thresholded, "addy treshed opened")
+
+        # Apply canny edge detection to isolate edges.
+        adaptive_thresholded_canny = cv2.Canny(adaptive_thresholded, 50,150, apertureSize = 3)
+
+        if debug: util.display(adaptive_thresholded, "addy threshed, canny")
+
+        # Blur the found thresholds.
+        adaptive_thresholded_canny_blur = cv2.GaussianBlur(adaptive_thresholded_canny, (3,3), 0)
+
+        if debug: util.display(adaptive_thresholded_canny_blur, "ady thresh canny blur")
+
+        # Now we find the contours we will be applying.
+        image, contours, other = cv2.findContours(adaptive_thresholded_canny_blur,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE) # Gather the contours
         long_contours = [] # Create an array for the long edges to be held
 
         for cnt in contours:
-            if 50000<cv2.contourArea(cnt) < 500000: # Tuned to prevent small contours, but also not consider image edges a contour @TODO: objects for canvases?
-                print cv2.contourArea(cnt)
+            if 60000<cv2.contourArea(cnt) < 500000: # Tuned to prevent small contours, tuned for 6.75x8.5 as smallest canvas.
                 long_contours.append(cnt) # Record any long contours
-                #cv2.drawContours(image2,[cnt],0,(0,255,0),2) # Draw those contours onto the image
-                #util.display(image2, str(time.time()))
-        # print "Long contours found: ", len(long_contours)
+                if debug: print "area: ", cv2.contourArea(cnt)
+                if debug: print "circ stat: ", cv2.minEnclosingCircle(cnt)
+                if debug: cv2.drawContours(image_copy,[cnt],0,(0,255,127),2) # Draw those contours onto the image
+                if debug: util.display(image_copy, str(time.time()))
+        print "Long contours found: ", len(long_contours)
+
+        # Sort the different contours discovered according to their contourArea.
+        long_contours.sort(key=lambda x: cv2.contourArea(x), reverse=False)
+
+        # Get the smaller transform generated.
         try:
             rect = cv2.minAreaRect(long_contours[0]) # Generate a rectangle based on the long contour surrounding the page
         except IndexError:
             util.display(image)
-            raise CameraTransformError("Unable to get contours from camera image, check that camera image isn't washed out.")
+            raise CameraTransformError("Unable to get contours from camera image, check that camera image isn't washed out. \n \
+            Debug mode was off, try turning it on to isolate the issue. Raising error in 3...2...1...")
 
         box = cv2.boxPoints(rect) # Generate a box-point object from the rectangle
 
@@ -224,35 +259,17 @@ class Camera(object):
         self.canvas_transformation_data = M, maxWidth, maxHeight
         self.canvas_to_dewarp_PT = inv_M
 
-
-
-    # TODO build in dewarping to this module.
-    def get_canvas(self):
+    def get_canvas(self, image = None):
         """
         From a camera object, retrieves the canvas.
+        Takes in a dewarped image, or if no image is given it will take an image from the camera.
         :return:
         """
 
-        camera_image = self.read_camera() # Attempts to make a new read from the camera.
-
-        if self.canvas_transformation_data is None: # If we have not generated a transformation yet (ie, first run)
-            print "Generating canvas transformation"
-            self.generate_transform(camera_image) # Generate the transformation
-
-        # Either using the previously generated transform, or with our fresh new transform, do the transform+crop
-
-        canvas_transformed_image = self.four_point_transform(camera_image)
-
-        return canvas_transformed_image
-
-    def get_canvas(self, image):
-        """
-        From a camera object, retrieves the canvas.
-        Takes in a dewarped image.
-        :return:
-        """
-
-        camera_image = image # Accepts a dewarped image.
+        if image is None:
+            camera_image = self.read_camera() # Attempts to make a new read from the camera.
+        else:
+            camera_image = image # Accepts a dewarped image.
 
         if self.canvas_transformation_data is None: # If we have not generated a transformation yet (ie, first run)
             self.generate_transform(camera_image) # Generate the transformation
