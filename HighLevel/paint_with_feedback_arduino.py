@@ -3,6 +3,7 @@
 
 from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
+from paint_with_pmd import ethernet_communication as eth_comm
 
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from recomposition.skeleton.skeletonRecompose import *
@@ -22,7 +23,10 @@ def paint_imageset(segments, painter, cam, open_images = False):
 	for index in range(len(segments)):
 		print "Index ", index
 		img = segments[index]
+
 		if open_images: img = open_image(img)
+
+		display(img)
 
 		print "Fetching new brush"
 		painter.getBrush(index)
@@ -32,8 +36,8 @@ def paint_imageset(segments, painter, cam, open_images = False):
 		LLT = recomposer.recompose()
 		LLT = cam.canvas_to_gantry(LLT)
 
-		print "LLT to Paint as been saved to disc: ", LLT
-		util.save(testLLT(LLT,3), "circle_from_llt")
+		# print "LLT to Paint as been saved to disc: ", LLT
+		# util.output(testLLT(LLT,3), "Drawn LLT")
 
 		print "Painting LLT..."
 		painter.Paint(LLT)
@@ -67,6 +71,22 @@ def setup_communications():
 	sleep(1)
 	return ser_obj
 
+def setup_communications_eth():
+	# Establish Serial Connection with the Arduino
+	ip = '192.168.178.7'
+	port = 1234
+	pmd_com = eth_comm.ethernet_comms(ip, port)
+
+	connected = False
+
+	#while not connected:
+	connected = pmd_com.connect()
+	if not connected:
+		raise Exception('Could not connect...')
+	# Sleep to verify a solid connection
+	sleep(1)
+	return pmd_com
+
 def calculate_error_threshold():
 	return True
 
@@ -74,19 +94,19 @@ def calculate_error_threshold():
 ## SETUP COMMUNICATIONS
 ########################################################################################################################
 print "Connecting to Controller..."
-arduino_ser = setup_communications()
+com_obj = setup_communications()
 
 ########################################################################################################################
 ## INITIALIZATION OF OBJECTS AND OTHER MISC SETUP REQUIREMENTS
 ########################################################################################################################
-print "Initialization"
+print "Initialization" 
 # Create Paint object and obtain desired image
-paint_routine = PaintOrders.paint_orders(arduino_ser)
-palette = color_pallete.build("black white")
-desiredImg = util.readImage("circle.png", "resources/images/input/")
+paint_routine = PaintOrders.paint_orders(com_obj)
+palette = color_pallete.build("red yellow white")
+desiredImg = util.readImage("boat2.png", "resources/images/input/")
 
 # Initialize Camera Object
-cam = Camera(1)
+cam = Camera(0)
 
 # Remove any bad frames
 for i in range(0,4):
@@ -96,6 +116,8 @@ for i in range(0,4):
 dewarp_img = cam.dewarp(read_img)
 a, w, h = dewarp_img.shape
 
+dewarp_img = cv2.resize(dewarp_img, (0,0),fx=2,fy=2)
+
 cam.generate_transform(dewarp_img)
 img_to_show = cam.get_canvas(dewarp_img)
 display(img_to_show)
@@ -104,7 +126,9 @@ desiredImg = util.resize_with_buffer(desiredImg,img_to_show)
 display(desiredImg)
 
 # Initial Decomposition of image
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 2,[], color_pallete.white)
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 4,[], color_pallete.white)
+
+display(segmented_image)
 
 # Inital Paint Sequence for Image
 paint_imageset(color_segments, paint_routine, cam)
@@ -115,8 +139,9 @@ paint_imageset(color_segments, paint_routine, cam)
 # While the error is too high
 while calculate_error_threshold():
 	print "Feedback Loop..."
-	# Get a new canvas image
+	# Get a new canvas image
 	painting = cam.get_canvas(cam.dewarp(cam.read_camera()))
+	util.save(painting, "PaintingFileAtStartOfFeedbackLoop")
 	rows, cols, _ = painting.shape
 
 	# TODO Remember to remove this when we move to PMD and/or fix the transform issue
