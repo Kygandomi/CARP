@@ -198,7 +198,7 @@ class Camera(object):
         long_contours = [] # Create an array for the long edges to be held
 
         for cnt in contours:
-            if 60000<cv2.contourArea(cnt) < 500000: # Tuned to prevent small contours, tuned for 6.75x8.5 as smallest canvas.
+            if 60000<cv2.contourArea(cnt) < 5000000: # Tuned to prevent small contours, tuned for 6.75x8.5 as smallest canvas.
                 long_contours.append(cnt) # Record any long contours
                 if debug: print "area: ", cv2.contourArea(cnt)
                 if debug: print "circ stat: ", cv2.minEnclosingCircle(cnt)

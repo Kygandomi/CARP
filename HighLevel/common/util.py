@@ -84,27 +84,22 @@ def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,25
         if ((perf_ratio > 1) and (actual_ratio < 1)) or ((perf_ratio < 1) and (actual_ratio > 1)):
             print "Rotating image in order to match portrait/landscapeness."
             ideal = rotate_image(ideal, 90, padding_color=padding_color)
-            pass
 
     h_perf, w_perf, _ = ideal.shape
     perf_ratio = float(h_perf)/float(w_perf)
 
     if perf_ratio > actual_ratio:
-        print "case 1"
         odd = False
         if w_actual %2 == 1: # If we have an odd number of pixels
             odd = True
         buff_val = ((h_perf/actual_ratio)-w_perf) /2
         buff = 0,0, int(buff_val), int(buff_val) + int(odd)
-        print buff
     elif perf_ratio < actual_ratio:
-        print "case 2"
         odd = False
         if w_actual %2 == 1: # If we have an odd number of pixels
             odd = True
         buff_val = ((w_perf*actual_ratio)-h_perf) /2
         buff = int(buff_val), int(buff_val) + int(odd), 0, 0 # int(buff_val), int(buff_val) + int(odd)
-        print buff
 
     top, bottom, left, right = buff
 

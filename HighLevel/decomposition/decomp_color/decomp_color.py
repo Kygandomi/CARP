@@ -45,7 +45,7 @@ def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
 
 #################################################################################
 
-def color_quantize(image, n_colors=2, size_to=200):
+def color_quantize(image, n_colors=2, size_to=300):
     if size_to>0:
         small_img = util.resize(image,size_to)
 
