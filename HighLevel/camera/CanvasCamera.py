@@ -14,13 +14,37 @@ class Camera(object):
         self.canvas_to_dewarp_PT = None
 
         pts_gantry = np.float32([[400,400],[1000,2000],[2500,1000]])
-        pts_img = np.float32([[463,138],[563,401],[811,236]])
+        # pts_img = np.float32([[463,138],[563,401],[811,236]])
+        pts_img = np.float32([[463*2,138*2],[563*2,401*2],[811*2,236*2]])
         self.img_to_gantryAT = cv2.getAffineTransform(pts_img,pts_gantry)
 
-        self.camera_capture = cv2.VideoCapture(self.port)   # value -> index of camera. My webcam was 0, USB camera was 1.
-        self.camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.camera_capture = None
+        self.open(port)
 
+    def isOpened(self):
+        if self.camera_capture is None:
+            return False
+        return self.camera_capture.isOpened()
+
+    def open(self, port):
+        print port
+        if not isinstance(port,(list,tuple)):
+            if not self.camera_capture is None:
+                self.camera_capture.release()
+            self.camera_capture = cv2.VideoCapture(port)   # value -> index of camera. My webcam was 0, USB camera was 1.
+            if not self.camera_capture.isOpened():
+                return False
+            self.port = port
+            self.camera_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+            self.camera_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+            for i in range(0,4):    # Make a bunch of reads because sometimes first few images are all black
+                self.read_camera()
+            return True
+        else:
+            for p in port:
+                if self.open(p):
+                    return True
+            return False
 
     # TODO: Move this out of Camera object??
     @staticmethod
@@ -56,7 +80,6 @@ class Camera(object):
 
         return color_corrections, canvas_corrections
 
-
     @staticmethod
     def dewarp(image):
         # OLD BUT WORKS ON ODELLS
@@ -73,16 +96,17 @@ class Camera(object):
         [  0.00000000e+00,   0.00000000e+00,   1.00000000e+00]])
         dist = np.array([[-0.47479333,  0.23125714,  0.01108992,  0.00123208, -0.04514544]])
 
-        gray = image
-        h,  w = gray.shape[:2]
+        h,  w = image.shape[:2]
 
         newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 
-        dewarped_canvas = cv2.undistort(gray, mtx, dist, None, newcameramtx)
+        dewarped_canvas = cv2.undistort(image, mtx, dist, None, newcameramtx)
 
         x,y,w,h = roi
 
         dewarped_canvas = dewarped_canvas[y:y+h, x:x+w]
+
+        dewarped_canvas = cv2.resize(dewarped_canvas, (0,0),fx=2,fy=2)
 
         return dewarped_canvas
 
@@ -154,8 +178,10 @@ class Camera(object):
         # return the warped image
         return warped
 
+    def genenerate_transform(self, image=None, debug = False):
 
-    def generate_transform(self, image, debug = False):
+        if image is None:
+            image = self.get_dewarped()
 
         # Make a deep copy for debugging later
         if debug: image_copy = copy.deepcopy(image)
@@ -259,6 +285,12 @@ class Camera(object):
         self.canvas_transformation_data = M, maxWidth, maxHeight
         self.canvas_to_dewarp_PT = inv_M
 
+    def get_dewarped(self, image=None):
+        if image is None:
+            return self.dewarp(self.read_camera()) # Attempts to make a new read from the camera.
+        else:
+            return self.dewarp(image) # Returns a dewarped image.
+    
     def get_canvas(self, image = None):
         """
         From a camera object, retrieves the canvas.
@@ -267,7 +299,7 @@ class Camera(object):
         """
 
         if image is None:
-            camera_image = self.read_camera() # Attempts to make a new read from the camera.
+            camera_image = self.get_dewarped() # Attempts to make a new read from the camera.
         else:
             camera_image = image # Accepts a dewarped image.
 

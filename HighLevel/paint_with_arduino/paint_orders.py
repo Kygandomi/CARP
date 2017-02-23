@@ -11,24 +11,26 @@ from time import sleep
 class paint_orders():
 
 	'Constructor for paint orders class'
-	def __init__(self, arduino_ser):
+	def __init__(self, com_obj):
 		# Save the ser com to use
-		self.arduino_ser = arduino_ser
+		self.com_obj = com_obj
 		self.old_brush_index = -1
 		self.well_index = -1
-		# self.brush_offsets = [[3312,2515],[3320,1880]]
-		# self.well_offsets = [[3312,2515],[3315,1975]]
-		self.brush_offsets = [[3430, 1950]]
-		self.well_offsets = [[3280, 2050]]
+
+		# self.brush_offsets = [[3430, 1950]]
+		# self.well_offsets = [[3280, 2050]]
+
+		self.brush_offsets = [[3430, 1950],[3430, 1400]]
+		self.well_offsets = [[3280, 2050],[3280, 1550]]
 
 	'Routine for sending a standard packet via Serial' 
-	def send_standard_packet(self, packet):
+	def send_standard_packet(self, packet, eth=True):
 		# For our convenience a Standard Packet Consists of : 
 		# [x,y,z, min_step_time, xy_abs_flag, z_abs_flag, go_flag] 
 
 		# Send a standard packet to the arduino
-		self.arduino_ser.flush()
-		self.arduino_ser.send_standard_packet(packet)
+		self.com_obj.flush()
+		self.com_obj.send_standard_packet(packet)
 
 		# Check the go flag -- not go time
 		if(packet[6] == 0):
@@ -36,20 +38,21 @@ class paint_orders():
 			sleep(0.1)
 
 		# Check the go flag -- its go time
-		elif(packet[6] == 1):
+		elif(packet[6] == 1 and not eth):
 			# Interpret incoming signals
-			read_val = self.arduino_ser.recieve_packet()
-			parse_val = self.arduino_ser.parse_packet(read_val)
+			read_val = self.com_obj.recieve_packet()
+			print "buff size: ", len(read_val)
+			parse_val = self.com_obj.parse_packet(read_val)
 
 			# While the gantry has not completed its motion routine
 			while( parse_val != 0):
 				# Interpret incoming signals
-				read_val = self.arduino_ser.recieve_packet()
-				parse_val = self.arduino_ser.parse_packet(read_val)
-				if read_val != []:
-					print "Readval: ", read_val
-				if parse_val != -1:
-					print "parseval: ", parse_val
+				read_val = self.com_obj.recieve_packet()
+				parse_val = self.com_obj.parse_packet(read_val)
+				# if read_val != []:
+				# 	print "Readval: ", read_val
+				# if parse_val != -1:
+				# 	print "parseval: ", parse_val
 				sleep(0.1)
 			print "Brush Stroke Motion Complete."
 
@@ -96,22 +99,18 @@ class paint_orders():
 			self.send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
 			sleep(1)
 
-		firgelli_up = [0, 0, firgelli_insert_height, 800, 0, 1, 1]
+		new_brush_index = new_brush_index%len(self.brush_offsets)
 
-		if(self.old_brush_index != -1 and new_brush_index != -1):
-			# put current brush back
+		# put current brush back
+		if(self.old_brush_index != -1):
 			placeBrush(self.brush_offsets[self.old_brush_index])
 		
+		# If we dont want a new brush, return
 		if(new_brush_index == -1 ):
-			placeBrush(self.brush_offsets[self.old_brush_index])
 			self.old_brush_index = new_brush_index
 			return
 
-		
-		new_brush_index = new_brush_index % len(self.brush_offsets)
-
-
-		# get new brush pos
+		# get new brush 
 		pickBrush(self.brush_offsets[new_brush_index])
 
 		print "Old index ", self.old_brush_index
@@ -224,13 +223,3 @@ class paint_orders():
 			put_brush_down  = True
 			if(MAX_DIST-paint_distance < MAX_DIST_END):
 				paint_distance = MAX_DIST
-
-		
-
-
-
-
-
-
-
-

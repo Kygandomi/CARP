@@ -55,7 +55,8 @@ desiredImg = readImage("star_flower.png", type_flag=1)
 ##################################################################
 print "Decomposition"
 
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 6,[], color_pallete.white)
+pallete = color_pallete.build('white black red')
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 3, pallete ,color_pallete.white)
 
 display(desiredImg)
 display(segmented_image)

@@ -4,6 +4,8 @@
 
 import serial
 from struct import pack,unpack
+import threading
+from time import sleep
 
 '''This class handles serial communication with pcb'''
 class serial_comms():
@@ -14,6 +16,12 @@ class serial_comms():
 		self.port = port
 		self.baud = baud
 		self.ser = ''
+		self.clearThread = threading.Thread(target=self.clearBuffer)
+
+	def clearBuffer(self):
+		while True:
+			self.ser.flushInput()
+			sleep(30)
 
 	'Connects to Arduino over serial'
 	def connect(self):
@@ -23,6 +31,7 @@ class serial_comms():
 			self.ser = serial.Serial(self.port, self.baud)
 			if self.ser.isOpen(): 
 				print(self.ser.name + ' is open...')
+				self.clearThread.start()
 				return True
 		except:
 			return False
@@ -35,24 +44,6 @@ class serial_comms():
 	def flush(self):
 		self.ser.flushInput()
 		self.ser.flushOutput()
-
-	'Write data to the Arduino'
-	def send_packet(self, m1_dir, m1_step, m1_step_time, 
-						  m2_dir, m2_step, m2_step_time,
-						  fergelli_pos):
-
-		length = 2
-		# Write Command to Arduino
-		self.ser.write(b'\xfe')
-		self.ser.write(chr(m1_dir))
-		self.ser.write(('%%0%dx' % (length << 1) % m1_step).decode('hex')[-length:])
-		self.ser.write(('%%0%dx' % (length << 1) % m1_step_time).decode('hex')[-length:])
-
-		self.ser.write(chr(m2_dir))
-		self.ser.write(('%%0%dx' % (length << 1) % m2_step).decode('hex')[-length:])
-		self.ser.write(('%%0%dx' % (length << 1) % m2_step_time).decode('hex')[-length:])
-		self.ser.write(('%%0%dx' % (length << 1) % fergelli_pos).decode('hex')[-length:])
-		self.ser.write(b'\xef')	
 
 	'Sends a "standard" packet to the robot'
 	def send_standard_packet(self, element):
@@ -71,16 +62,6 @@ class serial_comms():
 		mask = chr((z_abs_flag<<2)|(xy_abs_flag<<1)|go_flag)
 
 		self.ser.write(pack('c4h2c',b'\xfe',x,y,z,min_step_time,mask,b'\xef'))
-
-		# self.ser.write(b'\xfe')
-        #
-		# self.ser.write(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
-		# self.ser.write(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
-		# self.ser.write(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
-		# self.ser.write(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
-		# self.ser.write(mask)
-		#
-		# self.ser.write(b'\xef')
 
 	'Read data from the PCB'
 	def recieve_packet(self):

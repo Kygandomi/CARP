@@ -7,6 +7,7 @@ from paint_with_pmd import ethernet_communication as eth_comm
 
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from recomposition.skeleton.skeletonRecompose import *
+from recomposition.blendedRecompose import *
 
 from decomposition.decomp_color.decomp_color import *
 
@@ -24,20 +25,23 @@ def paint_imageset(segments, painter, cam, open_images = False):
 		print "Index ", index
 		img = segments[index]
 
-		if open_images: img = open_image(img)
-
-		display(img)
-
-		print "Fetching new brush"
-		painter.getBrush(index)
+		if open_images: img = open_image(img, kernel_radius = 5)
 
 		print "Recomposition"
-		recomposer = skeletonRecomposer(img, [])
+		
+		# recomposer = skeletonRecomposer(img, [])
+		# recomposer = iterativeErosionRecomposer(img, [1])
+		recomposer = blendedRecomposer(img, [1])
 		LLT = recomposer.recompose()
+		# print LLT
+		display(testLLT(LLT,1,img.shape))
 		LLT = cam.canvas_to_gantry(LLT)
 
 		# print "LLT to Paint as been saved to disc: ", LLT
 		# util.output(testLLT(LLT,3), "Drawn LLT")
+
+		print "Fetching new brush"
+		painter.getBrush(index) 
 
 		print "Painting LLT..."
 		painter.Paint(LLT)
@@ -65,7 +69,7 @@ def setup_communications():
 
 	# Comment back in when we have an actual serial port
 	if not could_connect :
-		raise Exception('Could not connect...')
+		raise Exception('Could not connect via Serial')
 
 	# Sleep to verify a solid connection
 	sleep(1)
@@ -82,7 +86,7 @@ def setup_communications_eth():
 	#while not connected:
 	connected = pmd_com.connect()
 	if not connected:
-		raise Exception('Could not connect...')
+		raise Exception('Could not connect via Ethernet')
 	# Sleep to verify a solid connection
 	sleep(1)
 	return pmd_com
@@ -91,47 +95,44 @@ def calculate_error_threshold():
 	return True
 
 ########################################################################################################################
-## SETUP COMMUNICATIONS
-########################################################################################################################
-print "Connecting to Controller..."
-com_obj = setup_communications()
-
-########################################################################################################################
 ## INITIALIZATION OF OBJECTS AND OTHER MISC SETUP REQUIREMENTS
 ########################################################################################################################
 print "Initialization" 
 # Create Paint object and obtain desired image
-paint_routine = PaintOrders.paint_orders(com_obj)
-palette = color_pallete.build("red yellow white")
+
 desiredImg = util.readImage("boat2.png", "resources/images/input/")
+palette = color_pallete.build("red black yellow white")
 
 # Initialize Camera Object
-cam = Camera(0)
+cam = Camera(1)
 
-# Remove any bad frames
-for i in range(0,4):
-	read_img = cam.read_camera()
+# TODO: If you can't connect to camera, assume canvas shape is 8.5x11 starting at 0,0
+if not cam.isOpened():
+	raise Exception('Could not connect to Camera')
 
-# Dewarp and Prepare image for Processing
-dewarp_img = cam.dewarp(read_img)
-a, w, h = dewarp_img.shape
+cam.generate_transform()
+img_to_show = cam.get_canvas()
 
-dewarp_img = cv2.resize(dewarp_img, (0,0),fx=2,fy=2)
-
-cam.generate_transform(dewarp_img)
-img_to_show = cam.get_canvas(dewarp_img)
 display(img_to_show)
 
 desiredImg = util.resize_with_buffer(desiredImg,img_to_show)
-display(desiredImg)
 
 # Initial Decomposition of image
 segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 4,[], color_pallete.white)
 
+print "colors: ", colors
+
 display(segmented_image)
 
+########################################################################################################################
+## SETUP COMMUNICATIONS
+########################################################################################################################
+print "Connecting to Controller..."
+com_obj = setup_communications_eth()
+paint_routine = PaintOrders.paint_orders(com_obj)
+
 # Inital Paint Sequence for Image
-paint_imageset(color_segments, paint_routine, cam)
+paint_imageset(color_segments, paint_routine, cam,True)
 
 ########################################################################################################################
 # FEEDBACK LOOP
@@ -139,14 +140,14 @@ paint_imageset(color_segments, paint_routine, cam)
 # While the error is too high
 while calculate_error_threshold():
 	print "Feedback Loop..."
-	# Get a new canvas image
+	# Get a new canvas image
 	painting = cam.get_canvas(cam.dewarp(cam.read_camera()))
 	util.save(painting, "PaintingFileAtStartOfFeedbackLoop")
 	rows, cols, _ = painting.shape
 
 	# TODO Remember to remove this when we move to PMD and/or fix the transform issue
-	M = np.float32([[1,0,12],[0,1,21]])
-	painting = cv2.warpAffine(painting,M,(cols,rows))
+	# M = np.float32([[1,0,12],[0,1,21]])
+	# painting = cv2.warpAffine(painting,M,(cols,rows))
 
 	# Decompose the desired and canvas image
 	segmented_image_act, [_,color_segments_src], [_,_] = decompose(desiredImg, 0,palette, color_pallete.white)
@@ -155,5 +156,5 @@ while calculate_error_threshold():
 	# Generate correction images
 	correction_segments, canvas_corrections = cam.correct_image(color_segments_src,color_segments_act)
 
-	# Paint Corrections
-	paint_imageset(correction_segments, paint_routine, cam ,open_images = True)
+	# Paint Correctionst
+	paint_imageset(correction_segments, paint_routine, cam ,open_images = True )

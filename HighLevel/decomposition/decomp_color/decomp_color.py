@@ -19,7 +19,7 @@ def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
 
     colors = np.concatenate((np.array([canvas_color]),np.array(paint_colors)))
 
-    image = util.open_image(util.close_image(image))
+    # image = util.open_image(util.close_image(image))
 
     pixel = np.reshape(image,(image.shape[0]*image.shape[1],3))
     qnt,_ = vq(pixel,colors)
@@ -54,7 +54,7 @@ def color_quantize(image, n_colors=2, size_to=300):
     pixel = np.reshape(small_img,(small_img.shape[0]*small_img.shape[1],3))
 
     # performing the clustering
-    centroids,_ = kmeans(np.float32(pixel),n_colors,iter=100)
+    centroids,_ = kmeans(np.float32(pixel),n_colors,iter=200)
 
     # out  = np.uint8(np.array([centroids]))
     # cv2.cvtColor(np.array([centroids]), cv2.COLOR_LAB2BGR,out)

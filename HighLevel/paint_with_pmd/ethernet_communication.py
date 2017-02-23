@@ -2,8 +2,9 @@
 # MQP -- CARP Project
 # Ethernet Class -- Handles Communication to PMD
 
+from time import sleep
 from struct import pack,unpack
-import socket   
+import socket
 
 '''This class handles TCP/IP communication with PMD'''
 class ethernet_comms():
@@ -15,6 +16,12 @@ class ethernet_comms():
 		self.port = port
 		self.eth = ''
 		self.buff_size = 1024
+		# self.clearThread = threading.Thread(target=self.clearBuffer)
+
+	# def clearBuffer(self):
+	# 	while True:
+	# 		self.eth.flushInput()
+	# 		sleep(30)
 
 	'Connects to PMD over Ethernet'
 	def connect(self):
@@ -26,6 +33,7 @@ class ethernet_comms():
 			self.eth.settimeout(1)
 			#(name, aliaslist, ipaddrlist) = socket.gethostbyaddr(self.ip )
 			#print(name + ' is open...')
+			# self.clearThread.start()
 			return True
 		except:
 		 	print "failed to connect"
@@ -57,16 +65,14 @@ class ethernet_comms():
 
 		self.eth.send(pack('c4h2c',b'\xfe',x,y,z,min_step_time,mask,b'\xef'))
 
-		# self.eth.send(b'\xfe')
+		parse_val = 1
 
-		# self.eth.send(('%%0%dx' % (length << 1) % x).decode('hex')[-length:])
-		# self.eth.send(('%%0%dx' % (length << 1) % y).decode('hex')[-length:])
-		# self.eth.send(('%%0%dx' % (length << 1) % z).decode('hex')[-length:])
-		# self.eth.send(('%%0%dx' % (length << 1) % min_step_time).decode('hex')[-length:])
+		while parse_val:
+			read_val = self.recieve_packet()
+			parse_val = self.parse_packet(read_val)
+			sleep(0.01)
+		print "Packet Sent and Motion Complete"
 
-		# self.eth.send(mask)
-		
-		# self.eth.send(b'\xef')
 
 	'Read data from the PCB'
 	def recieve_packet(self):
@@ -81,7 +87,6 @@ class ethernet_comms():
 		except:
 			print "err: timeout"
 			return []
-		
 
 	'Parse recieved data'
 	def parse_packet(self, response_data):
@@ -89,7 +94,7 @@ class ethernet_comms():
 			for i in range(len(response_data)):
 				if(response_data[i] == 239):
 					return response_data[i-1]
-		else :
+		else:
 			return -1
 
 

@@ -56,7 +56,7 @@ sleep(1)
 # element = [0, 0, 270, 800, 1, 1, 1]
 
 
-element = [80, 300, 800, 800, 1, 1, 1]
+element = [0, 0, 800, 800, 1, 1, 1]
 send_standard_packet(element)
 
 

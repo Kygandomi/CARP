@@ -104,7 +104,6 @@ def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,25
     top, bottom, left, right = buff
 
     img = cv2.copyMakeBorder(ideal, top, bottom, left, right, cv2.BORDER_CONSTANT,value=padding_color)
-
     return cv2.resize(img, (w_actual, h_actual))
 
 

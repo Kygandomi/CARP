@@ -1,24 +1,31 @@
 from recomposition.skeleton.skeletonRecompose import *
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from recomposition.erosion.erosionRecompose import *
+from recomposition.blendedRecompose import *
 from common.util import *
+from common import color_pallete
+from decomposition.decomp_color.decomp_color import *
 import cv2
 
-desiredImg = readImage("dog2.png")
+desiredImg = readImage("cube.png")
 
 display(desiredImg)
 
-desiredImg_grey = cv2.cvtColor(desiredImg, cv2.COLOR_BGR2GRAY)
-(thresh, binImg) = cv2.threshold(desiredImg_grey, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 2,[], color_pallete.white)
 
-display(binImg)
+display(segmented_image)
 
 # recomposer = skeletonRecomposer(binImg, [2])
-recomposer = iterativeErosionRecomposer(binImg, [2])
+# recomposer = iterativeErosionRecomposer(binImg, [2])
 # recomposer = erosionRecomposer(binImg, [2])
 
-LLT = recomposer.recompose()
+for binImg in color_segments:
+    recomposer = blendedRecomposer(binImg, [3])
 
-testLLT(LLT,scale=3,thickness=6)
+    LLT = recomposer.recompose()
+
+    LLT = mapLLT(LLT,binImg.shape)
+
+    display(testLLT(LLT,scale=3,thickness=2))
 
 print "Done"

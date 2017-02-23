@@ -18,7 +18,7 @@ connected = pmd_com.connect()
 if not connected: 
     exit()
 
-packet = [0, 0, 800, 800, 1, 1, 1]
+packet = [1114, 2080, 800, 800, 1, 1, 1]
 send_num = 1
 
 while(send_num > 0):
