@@ -215,7 +215,6 @@ def testLLT(LLT,scale = 2,paper_size = (8.5*25.4,11*25.4),thickness=2):
             pt_list.append(pt)
         lines.append(pt_list)
     drawnImg = drawLines(lines,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),thickness)
-    save(drawnImg, "Circle LLT")
     return drawnImg
 
 def loadLLT(fname = 'orders.txt'):

@@ -18,24 +18,23 @@ connected = pmd_com.connect()
 if not connected: 
     exit()
 
-packet = [1114, 2080, 800, 800, 1, 1, 1]
+packet = [500, 100, 600, 800, 1, 1, 1]
 send_num = 1
 
 while(send_num > 0):
-	pmd_com.send_standard_packet(packet)
-	send_num -= 1
-	print "sending"
+    print "sending"
+    pmd_com.send_standard_packet(packet)
+    send_num -= 1
 
 print "all sent"
 
 sleep(1)
 
-parse_val = 1
-
-# Interpret incoming signals
-while not parse_val==0:
-    read_val = pmd_com.recieve_packet()
-    # print "read val ", read_val
-    sleep(0.1)
-    parse_val = pmd_com.parse_packet(read_val)
-    print "parse val: ", parse_val
+# parse_val = 1
+# # Interpret incoming signals
+# while not parse_val==0:
+#     read_val = pmd_com.recieve_packet()
+#     print "read val ", read_val
+#     parse_val = pmd_com.parse_packet(read_val)
+#     print "parse val: ", parse_val
+#     sleep(0.05)

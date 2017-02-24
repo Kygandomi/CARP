@@ -7,11 +7,11 @@ from common import color_pallete
 from decomposition.decomp_color.decomp_color import *
 import cv2
 
-desiredImg = readImage("cube.png")
+desiredImg = readImage("abstract1.png")
 
 display(desiredImg)
 
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 2,[], color_pallete.white)
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 5,[], color_pallete.white)
 
 display(segmented_image)
 

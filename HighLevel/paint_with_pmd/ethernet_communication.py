@@ -48,7 +48,7 @@ class ethernet_comms():
 		pass
 
 	'Sends a "standard" packet to the robot'
-	def send_standard_packet(self, element):
+	def send_standard_packet(self, element,wait=True):
 		length = 2
 
 		x = element[0]
@@ -64,6 +64,9 @@ class ethernet_comms():
 		mask = chr((z_abs_flag<<2)|(xy_abs_flag<<1)|go_flag)
 
 		self.eth.send(pack('c4h2c',b'\xfe',x,y,z,min_step_time,mask,b'\xef'))
+
+		if not wait:
+			return
 
 		parse_val = 1
 
