@@ -178,17 +178,17 @@ def mapToCanvas(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch 
     return pt_new
 
 # TODO: Modify to accept updated LLT [[(x,y,W),...],...]
-def drawLines(pts,img,thickness=3,showSteps=False):
+def drawLines(pts,img,thickness=3,color=0,showSteps=False):
     """ Draws the given LLT of points to the given image.
         Includes options for setting thickness or displaying each stroke individually"""
     for i in range(len(pts)):
         if len(pts[i])==1:
-            cv2.circle(img,(int(pts[i][0][0]),int(pts[i][0][1])),0,thickness*3)
+            cv2.circle(img,(int(pts[i][0][0]),int(pts[i][0][1])),thickness,color,-1)
             if showSteps:
                 display(img)
         else:
             for c in range(len(pts[i])-1):
-                cv2.line(img,(int(pts[i][c][0]),int(pts[i][c][1])),(int(pts[i][c+1][0]),int(pts[i][c+1][1])),0,thickness)
+                cv2.line(img,(int(pts[i][c][0]),int(pts[i][c][1])),(int(pts[i][c+1][0]),int(pts[i][c+1][1])),color,thickness)
             if showSteps:
                 display(img)
     return img
@@ -203,18 +203,35 @@ def mapLLT(LLT,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = Fa
         out_pts.append(list_pts)
     return out_pts
 
-
-def testLLT(LLT,scale = 2,paper_size = (8.5*25.4,11*25.4),thickness=2):
-    """	Displays the expected output of the given orders text file"""
+def drawLLT(LLT,img,thickness=2,color=0):
+    """ Displays the expected output of the given orders text file"""
     lines = []
     for stroke in LLT:
         pt_list = []
         for command_i in range(len(stroke)):
             command = stroke[command_i]
-            pt = (scale*command[0],scale*command[1])
+            pt = (command[1],command[0])
             pt_list.append(pt)
         lines.append(pt_list)
-    drawnImg = drawLines(lines,np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8'),thickness)
+    drawnImg = drawLines(lines,img,thickness,color)
+    return drawnImg
+
+def testLLT(LLT,scale = 2,paper_size = (8.5*25.4,11*25.4),thickness=2,color=0):
+    """	Displays the expected output of the given orders text file"""
+    if not isinstance(color,(list,tuple)):
+        img = np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8')
+    else:
+        img = np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale),len(color))),dtype='uint8')
+
+    lines = []
+    for stroke in LLT:
+        pt_list = []
+        for command_i in range(len(stroke)):
+            command = stroke[command_i]
+            pt = (scale*command[1],scale*command[0])
+            pt_list.append(pt)
+        lines.append(pt_list)
+    drawnImg = drawLines(lines,img,thickness,color)
     return drawnImg
 
 def loadLLT(fname = 'orders.txt'):

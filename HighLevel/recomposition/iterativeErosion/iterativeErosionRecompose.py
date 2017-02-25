@@ -40,6 +40,7 @@ class iterativeErosionRecomposer(object):
 
         return orders
 
+    # TODO: use numpy to speed up?
     def hasColor(self, img, color):
         x = 0
         while x < img.shape[0]:
