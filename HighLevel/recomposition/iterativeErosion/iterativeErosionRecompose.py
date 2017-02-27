@@ -1,4 +1,3 @@
-import numpy as np
 import cv2
 import common.util as util
 
@@ -32,7 +31,7 @@ class iterativeErosionRecomposer(object):
 
             contourImg, contours, hierarchy = cv2.findContours(255-binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 
-            # Build a set of instructions based on the contour determined by the dillation. 
+            # Build a set of instructions based on the contour determined by the dillation.
             for cnt_i in range(len(contours)):
                 cnt = contours[cnt_i]
                 stroke=[]
