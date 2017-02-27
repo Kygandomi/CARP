@@ -46,6 +46,7 @@ class Camera(object):
                     return True
             return False
 
+
     # TODO: Move this out of Camera object??
     @staticmethod
     def correct_image(src_imset, painted_imset):
