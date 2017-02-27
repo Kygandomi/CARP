@@ -5,4 +5,3 @@ desiredImg = cv2.imread('../../resources/images/input/cube.png', cv2.IMREAD_UNCH
 
 recomposer = erosionRecomposer(desiredImg, [1])
 print recomposer.recompose()
-
