@@ -68,13 +68,14 @@ class ethernet_comms():
 		if not wait:
 			return
 
-		parse_val = 1
+		parse_val = -1
 
-		while parse_val:
+		while not (parse_val==0 or parse_val==1):
 			read_val = self.recieve_packet()
 			parse_val = self.parse_packet(read_val)
 			sleep(0.01)
 		print "Packet Sent and Motion Complete"
+		return parse_val
 
 
 	'Read data from the PCB'
@@ -88,7 +89,7 @@ class ethernet_comms():
 				return unpack(str(len(response_data))+'B',response_data)
 			return []
 		except:
-			print "err: timeout"
+			# print "err: timeout"
 			return []
 
 	'Parse recieved data'

@@ -18,13 +18,22 @@ connected = pmd_com.connect()
 if not connected: 
     exit()
 
-packet = [500, 100, 600, 800, 1, 1, 1]
-send_num = 1
+packet_list=[];
 
-while(send_num > 0):
+# 3840, 90, 550
+# packet_list.append([0,0, 800, 800, 1, 1, 1])
+
+n_iter = 3;
+for i in range(n_iter):
+    packet_list.append([400, 0, 600, 800, 1, 1, 0])
+    packet_list.append([400, 400, 600, 800, 1, 1, 0])
+    packet_list.append([0, 400, 600, 800, 1, 1, 0])
+    packet_list.append([0, 0, 600, 800, 1, 1, 0])
+packet_list.append([0, 0, 800, 800, 1, 1, 1])
+
+for packet in packet_list:
     print "sending"
     pmd_com.send_standard_packet(packet)
-    send_num -= 1
 
 print "all sent"
 

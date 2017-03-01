@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 
-
 def display(img, name="img"):
     cv2.imshow(name, img)
     cv2.waitKey(0)
@@ -255,6 +254,38 @@ def saveLLT(LLT,fname = 'orders.txt'):
                 pt=path[pt_i]
                 f.write(str(pt[0]) + ' '+ str(pt[1]) + ' ' + str(pt[2]) + ' \n')
             f.write('\n')
+
+def arrangeLLT(LLT):
+    oldLLT=list(LLT)
+    newLLT=[]
+
+    newLLT.append(oldLLT.pop(0))
+    last_pt = newLLT[len(newLLT)-1][len(newLLT[0])-1][:2]
+
+    while len(oldLLT)>0:
+        reverse = False
+        min_i = 0
+        min_dist = -1
+        for i in range(len(oldLLT)):
+            dist = np.linalg.norm(np.array(last_pt)-np.array(oldLLT[i][0][:2]))
+            if (min_dist == -1) or dist<min_dist:
+                min_dist=dist
+                min_i=i
+                reverse=False
+
+            dist = np.linalg.norm(np.array(last_pt)-np.array(oldLLT[i][len(oldLLT[i])-1][:2]))
+            if dist<min_dist:
+                min_dist=dist
+                min_i=i
+                reverse=True
+
+        last_stroke = oldLLT.pop(min_i)
+        if reverse:
+            last_stroke.reverse()
+        newLLT.append(last_stroke)
+        last_pt = last_stroke[len(last_stroke)-1][:2]
+
+    return newLLT
 
 def testOrders(path='orders.txt',scale = 2,paper_size = (8.5*25.4,11*25.4)):
     """	Displays the expected output of the given orders text file"""

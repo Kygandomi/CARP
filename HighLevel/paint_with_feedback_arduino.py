@@ -31,9 +31,11 @@ def paint_imageset(segments, painter, cam, open_images = False):
 		
 		# recomposer = skeletonRecomposer(img, [])
 		# recomposer = iterativeErosionRecomposer(img, [1])
-		recomposer = blendedRecomposer(img, [1])
+		recomposer = blendedRecomposer(img, [3])
 		LLT = recomposer.recompose()
+		LLT = util.arrangeLLT(LLT)
 		# print LLT
+		display(img)
 		display(testLLT(LLT,1,img.shape))
 		LLT = cam.canvas_to_gantry(LLT)
 
@@ -101,15 +103,17 @@ print "Initialization"
 # Create Paint object and obtain desired image
 
 desiredImg = util.readImage("boat2.png", "resources/images/input/")
-palette = color_pallete.build("red black yellow white")
+n_colors = 4
+palette = color_pallete.build("black white")
 
 # Initialize Camera Object
-cam = Camera(1)
+cam = Camera([1,0])
 
 # TODO: If you can't connect to camera, assume canvas shape is 8.5x11 starting at 0,0
 if not cam.isOpened():
 	raise Exception('Could not connect to Camera')
 
+display(cam.get_dewarped())
 cam.generate_transform()
 img_to_show = cam.get_canvas()
 
@@ -118,7 +122,7 @@ display(img_to_show)
 desiredImg = util.resize_with_buffer(desiredImg,img_to_show)
 
 # Initial Decomposition of image
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 4,[], color_pallete.white)
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, n_colors,[], color_pallete.white)
 
 print "colors: ", colors
 
@@ -141,7 +145,7 @@ paint_imageset(color_segments, paint_routine, cam,True)
 while calculate_error_threshold():
 	print "Feedback Loop..."
 	# Get a new canvas image
-	painting = cam.get_canvas(cam.dewarp(cam.read_camera()))
+	painting = cam.get_canvas()
 	util.save(painting, "PaintingFileAtStartOfFeedbackLoop")
 	rows, cols, _ = painting.shape
 
@@ -153,8 +157,15 @@ while calculate_error_threshold():
 	segmented_image_act, [_,color_segments_src], [_,_] = decompose(desiredImg, 0,palette, color_pallete.white)
 	_, [_,color_segments_act], [_,_] = decompose(painting, 0,palette, color_pallete.white)
 
+	display(painting,"Canvas Image")
+	for frame in color_segments_act:
+		display(frame,"actual bin_img")
+
 	# Generate correction images
 	correction_segments, canvas_corrections = cam.correct_image(color_segments_src,color_segments_act)
+
+	for frame in correction_segments:
+		display(frame,"corrections")
 
 	# Paint Correctionst
 	paint_imageset(correction_segments, paint_routine, cam ,open_images = True )

@@ -17,10 +17,8 @@ class blendedRecomposer(object):
         skel_img = 255-cv2.bitwise_xor(skel_img,erode_img)
 
         recomposer = skeletonRecomposer(skel_img, [self.brush_thickness])
-        print "Running skeleton"
         skel_LLT = recomposer.recompose()
         recomposer = iterativeErosionRecomposer(self.desiredImage, [self.brush_thickness])
-        print "Running iterative erosion"
         erode_LLT = recomposer.recompose()
 
         LLT = []

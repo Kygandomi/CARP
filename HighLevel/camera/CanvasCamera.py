@@ -13,9 +13,19 @@ class Camera(object):
         self.canvas_transformation_data = None
         self.canvas_to_dewarp_PT = None
 
-        pts_gantry = np.float32([[400,400],[1000,2000],[2500,1000]])
+        # # ARDUINO BEFORE FORCE PLATE
+        # pts_gantry = np.float32([[400,400],[1000,2000],[2500,1000]])
         # pts_img = np.float32([[463,138],[563,401],[811,236]])
-        pts_img = np.float32([[463*2,138*2],[563*2,401*2],[811*2,236*2]])
+        # pts_img = np.float32([[463*2,138*2],[563*2,401*2],[811*2,236*2]])
+        
+        # ARDUINO AFTER FORCE PLATE
+        # pts_gantry = np.float32([[400,400],[400,1900],[2400,400]])
+        # pts_img = np.float32([[904,260],[903,789-5],[1616,261]])
+
+        # # PMD AFTER FORCE PLATE
+        pts_gantry = np.float32([[400,400],[400,1900],[2400,400]])
+        pts_img = np.float32([[893,268],[893,795],[1606,268]])
+
         self.img_to_gantryAT = cv2.getAffineTransform(pts_img,pts_gantry)
 
         self.camera_capture = None
@@ -27,7 +37,6 @@ class Camera(object):
         return self.camera_capture.isOpened()
 
     def open(self, port):
-        print port
         if not isinstance(port,(list,tuple)):
             if not self.camera_capture is None:
                 self.camera_capture.release()
@@ -115,7 +124,9 @@ class Camera(object):
         Reads in the image from the camera of the port specified in the camera object.
         :return: returns the image read in from the camera as an opencv image
         """
-
+        
+        for i in range(3):
+            self.camera_capture.read()
         s, img = self.camera_capture.read() # Attempt a read
         if s:    # frame captured without any errors
             # cv2.imwrite("camera_image.jpg",img) #save image
@@ -178,7 +189,7 @@ class Camera(object):
         # return the warped image
         return warped
 
-    def genenerate_transform(self, image=None, debug = False):
+    def generate_transform(self, image=None, debug = False):
 
         if image is None:
             image = self.get_dewarped()
