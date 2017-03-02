@@ -25,7 +25,6 @@ def output(img,name="output"):
     save(img,name)
     display(img,name)
 
-#img2 = cv2.resize(img,(destination.Width,destination.Height), interpolation = cv2.INTER_CUBIC)
 
 def resize(img,max_dim=1000):
     rows, cols, _ = img.shape
@@ -113,12 +112,12 @@ def circleKernel(radius,thickness = -1):
 
 def getPoints(img,color=255):
     """ Return a list of points in a grayscale image which are of the given value. Default 255 (black)"""
-    pts = np.array(np.where(img == 255))
-    # print pts
+    # filter the image to a numpy array that contains all pixels of the color "color"
+    pts = np.array(np.where(img == color))
     real_pts = []
+
     for j in range(len(pts[0])):
         real_pts.append((pts[0][j],pts[1][j]))
-    # print real_pts
     return real_pts
 
 def getNeighborPoints(pt,kernel = np.ones((3,3)),excludeSelf = True, sort = True):
@@ -214,6 +213,7 @@ def drawLLT(LLT,img,thickness=2,color=0):
         lines.append(pt_list)
     drawnImg = drawLines(lines,img,thickness,color)
     return drawnImg
+
 
 def testLLT(LLT,scale = 1,paper_size = (8.5*25.4,11*25.4),thickness=2,color=0):
     """	Displays the expected output of the given orders text file"""
