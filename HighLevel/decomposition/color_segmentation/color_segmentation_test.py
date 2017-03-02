@@ -16,8 +16,6 @@ image = util.getFileByName("boat.png","../../resources/images/input/")
 
 colors, color_segments, segmented_image = color_segment(image, [yellow, red, blue, white])
 
-# util.save(segmented_image[0], "ball_colored")
-
 for image in color_segments:
     util.display(util.open_image(image), "opened")
     # util.save(util.open_image(image), "image")

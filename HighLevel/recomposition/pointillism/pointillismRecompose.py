@@ -63,7 +63,7 @@ class pointillismRecomposer(object):
             possible_canvases = []
             strokeCoordinates = []
 
-            bestError = 9999999999 # @TODO: Make this not stupid
+            bestError = 9999999999 # uh
             numBestError = 0
 
             for i in range(0, self.childrenPerGeneration):
@@ -77,7 +77,8 @@ class pointillismRecomposer(object):
                 x = random.randint(0,limit_x)
                 y = random.randint(0,limit_y)
                 self.makeStroke(canvas_to_paint_randomly, self.strokeImg, (x, y))
-                strokeCoordinates.append((((y*1.0)*(8.5*25.4/1000)), ((x*1.0)*(11*25.4/1000)), self.width ))
+                # TODO Refactor this to make it less shitty.
+                strokeCoordinates.append((((y*1.0)*(8.5*25.4/1000)), ((x*1.0)*(11*25.4/1000)), self.width))
                 i+=1
 
             for i in range(0, self.childrenPerGeneration):
@@ -85,13 +86,9 @@ class pointillismRecomposer(object):
                 if mse < bestError:
                     bestError = mse
                     numBestError = i
-            print "Best one was number ", numBestError
             currentBestCanvas = possible_canvases[numBestError]
-            print strokeCoordinates[numBestError]
             orders.append([strokeCoordinates[numBestError], strokeCoordinates[numBestError]])
-            print "Strokes left: ", self.strokesToMake - strokes -1
             strokes += 1
 
         util.save(currentBestCanvas)
         return orders
-

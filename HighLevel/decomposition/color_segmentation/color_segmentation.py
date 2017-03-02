@@ -6,12 +6,9 @@ from scipy.cluster.vq import vq
 # BLUE, GREEN, RED is the order for OpenCV pixel color values.
 
 def classify_px(px, colors):
-    # color_norm = []
-    # for color in range(0, len(colors)):
-    #     color_norm.append(np.linalg.norm(px-colors[color]))
-
-    # # Return the index value of the color that has the smallest error compared to the pixel
-    # return color_norm.index(min(color_norm))
+    """
+    Classifies a pixel to the closest color given in colors.
+    """
 
     best_color = colors[0]
     best_norm = np.linalg.norm(px-colors[0])
@@ -24,7 +21,12 @@ def classify_px(px, colors):
             best_color = color
     return best_color
 
+
 def classify_hsv(h,hues):
+    """
+    HSV-space pixel classification based on gues and hue similarity.
+    """
+
     best_hue = 0
     best_diff = abs(h-hues[0])
 
@@ -35,31 +37,12 @@ def classify_hsv(h,hues):
             best_hue = index
     return best_hue
 
-# TODO: Make this do the thing Nick said with canvas colors not beoing output
+# TODO: Make this do the thing Nick said with canvas colors not being output
 def color_segment(image, paint_colors,canvas_color = [255,255,255]):
 
     rows, cols, _ = image.shape
 
     colors = np.concatenate((np.array([canvas_color]),np.array(paint_colors)))
-
-    # @TODO, this should use image.item and image.itemset as per below link, to speed things up.
-    # http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_core/py_basic_ops/py_basic_ops.html
-    # For each pixel line in the image
-    # for pixel_line in range(0, len(image)):
-    #     #For each pixel in the line of pixels
-    #     for pixel in range(0, len(image[pixel_line])):
-    #         # Classify the pixel and recolor the pixel to the closest color
-    #         color_val = classify_px((image[pixel_line])[pixel], colors)
-    #         new_px = colors[color_val]
-    #         (image[pixel_line])[pixel] = new_px
-
-    # for i in range(rows):
-    #     for j in range(cols):
-    #         image[i,j]=classify_px(image[i,j], colors)
-    #         # color = classify_px(np.array([image.item(i,j,0),image.item(i,j,1),image.item(i,j,2)]), colors)
-    #         # image.itemset((i,j,0),color[0])
-    #         # image.itemset((i,j,1),color[1])
-    #         # image.itemset((i,j,2),color[2])
 
     pixel = np.reshape(image,(image.shape[0]*image.shape[1],3))
     qnt,_ = vq(pixel,colors)
@@ -72,6 +55,7 @@ def color_segment(image, paint_colors,canvas_color = [255,255,255]):
     util.output(util.open_image(util.close_image(image)))
     bin_images = [] # The 1-color images.
 
+    # Generate the binary images that represent different colors.
     for index in range(0, len(colors)):
         # Create a deep copy of the image
         bin_image = 255-np.zeros((rows,cols,1), np.uint8)
@@ -107,7 +91,6 @@ def color_segment_hsv(image, paint_colors, canvas_color = [255,255,255]):
     bin_images = [] # The 1-color images.
 
     for index in range(0, len(paint_colors)):
-        # Create a deep copy of the image
         bin_image = 255-np.zeros((rows,cols,1), np.uint8)
         bin_image[np.where((image == paint_colors[index]).all(axis = 2))] = [0]
 

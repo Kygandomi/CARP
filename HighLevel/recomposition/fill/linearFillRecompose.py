@@ -16,6 +16,10 @@ class verticalRecompose(object):
         self.brush_size = args[0]
 
     def recompose(self):
+        """
+        Recomposes the image using a linear fill method.
+        :return:
+        """
         #dilate the image the radius of the brush
         kernel = np.ones((self.brush_size,self.brush_size), np.uint8)
         dilateImg = cv2.dilate(self.desiredImage,kernel,iterations = 1)
