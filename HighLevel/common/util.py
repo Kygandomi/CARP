@@ -215,7 +215,7 @@ def drawLLT(LLT,img,thickness=2,color=0):
     drawnImg = drawLines(lines,img,thickness,color)
     return drawnImg
 
-def testLLT(LLT,scale = 2,paper_size = (8.5*25.4,11*25.4),thickness=2,color=0):
+def testLLT(LLT,scale = 1,paper_size = (8.5*25.4,11*25.4),thickness=2,color=0):
     """	Displays the expected output of the given orders text file"""
     if not isinstance(color,(list,tuple)):
         img = np.array(255*np.ones((int(paper_size[0]*scale),int(paper_size[1]*scale))),dtype='uint8')

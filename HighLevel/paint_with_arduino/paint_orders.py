@@ -127,7 +127,7 @@ class paint_orders():
 		print "Getting Paint ..."
 
 		# Fergelli Height Values
-		down_val = 270
+		down_val = 260
 		up_val = 800
 
 		offX=self.well_offsets[self.well_index][0]
@@ -169,7 +169,7 @@ class paint_orders():
 		scale_val = 1
 
 		# Record Fergelli Height Values
-		down_val = 270
+		down_val = 265
 		up_val = 400
 		final_up_val = 800
 
