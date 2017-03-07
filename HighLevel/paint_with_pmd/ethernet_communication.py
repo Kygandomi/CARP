@@ -48,7 +48,7 @@ class ethernet_comms():
 		pass
 
 	'Sends a "standard" packet to the robot'
-	def send_standard_packet(self, element):
+	def send_standard_packet(self, element,wait=True):
 		length = 2
 
 		x = element[0]

@@ -23,8 +23,12 @@ class Camera(object):
         # pts_img = np.float32([[904,260],[903,789-5],[1616,261]])
 
         # # PMD AFTER FORCE PLATE
-        pts_gantry = np.float32([[400,400],[400,1900],[2400,400]])
-        pts_img = np.float32([[893,268],[893,795],[1606,268]])
+        # pts_gantry = np.float32([[400,400],[400,1900],[2400,400]])
+        # pts_img = np.float32([[893,268],[893,795],[1606,268]])
+
+        # better PMD after force plate?
+        pts_gantry = np.float32([[100,100],[3400,100],[100,2400]])
+        pts_img = np.float32([[797,153],[1963,158],[802,954]])
 
         self.img_to_gantryAT = cv2.getAffineTransform(pts_img,pts_gantry)
 

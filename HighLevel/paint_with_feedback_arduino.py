@@ -102,8 +102,8 @@ def calculate_error_threshold():
 print "Initialization" 
 # Create Paint object and obtain desired image
 
-desiredImg = util.readImage("boat2.png", "resources/images/input/")
-n_colors = 4
+desiredImg = util.readImage("circle.png", "resources/images/input/")
+n_colors = 2
 palette = color_pallete.build("black white")
 
 # Initialize Camera Object
