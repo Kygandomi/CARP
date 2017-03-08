@@ -41,7 +41,6 @@ def paint_imageset(segments, painter, cam, open_images = False):
 
 		# print "LLT to Paint as been saved to disc: ", LLT
 		# util.output(testLLT(LLT,3), "Drawn LLT")
-
 		print "Fetching new brush"
 		painter.getBrush(index) 
 

@@ -11,6 +11,9 @@
 #define MAX_ACC		179
 #define MAX_VEL		1174405
 
+#define HOMING_VEL 	117440
+#define HOMING_ACC	7
+
 #define FIRGELLI_POT_VOLTAGE 5
 #define FIRGELLI_DELAY 1.0
 
@@ -51,6 +54,7 @@ USER_CODE_VERSION(MAJOR_VERSION,MINOR_VERSION);
 
 #define FIRGELLI(Z) (Z*32768*FIRGELLI_POT_VOLTAGE)/(10000)
 
+void RunHoming(PMDAxisHandle* hAxis);
 void startMotion(PMDAxisHandle* hAxis);
 void stopMotion(PMDAxisHandle* hAxis);
 PMDuint32 writeBuffers(PMDAxisHandle* hAxis,int fill);
@@ -135,7 +139,7 @@ USER_CODE_TASK( pmd_control )
 	PMDuint8 data[BUFSIZE]; 
 	PMDuint32 bytesReceived;
 	PMDresult result = 0;
-	PMDuint16 status;
+	//PMDuint16 status;
 	PMDint32 prev_command_index=COMMAND_INDEX;
 	int open = 0;
 	int done = 0;
@@ -165,23 +169,24 @@ USER_CODE_TASK( pmd_control )
 	while(!done){
 		done = RunController(&hAxis[2],200,&hPeriphIO,PMDMachineIO_AICh1);
 	}
+	
 	//Run Homing
+	RunHoming(hAxis);
 	
 	setupUPM(hAxis);
-	
 	
 	PMDint32 ACTUAL_INV;
 	PMDint32 ACTUAL_M1;
 	PMDint32 STOP_VAL;
 	
 	while(1){
-		PMDGetEventStatus(&hAxis[0], &status);
-		
 		PMDGetTraceValue(&hAxis[0], PMDTraceActiveRateScalar, &ACTUAL_RATE);
+		PMDGetRuntimeError(&hAxis[0], &error);
+		
+		//PMDGetEventStatus(&hAxis[0], &status);
 		PMDGetTraceValue(&hAxis[0], PMDTraceDataStreamValue, &ACTUAL_INV);
 		PMDGetTraceValue(&hAxis[0], PMDTraceContourOutput, &ACTUAL_M1);
 		PMDGetProfileParameter(&hAxis[0], PMDProfileParameterStopValue, &STOP_VAL);
-		PMDGetRuntimeError(&hAxis[0], &error);
 		
 		if(ACTUAL_RATE!=0){
 			PMDGetTraceValue(&hAxis[0], PMDTraceDataStreamIndex, &COMMAND_INDEX);
@@ -290,6 +295,89 @@ USER_CODE_TASK( pmd_control )
 //*********************************************************************//
 //*********************************************************************//
 //*********************************************************************//
+void RunHoming(PMDAxisHandle* hAxis){
+	PMDint32 error1, error2;
+	int not_complete = 1;
+	PMDint32 thresh = 100;
+	PMDuint16 hold_current;
+	
+	PMDGetHoldingCurrent(&hAxis[0],0, &hold_current);
+	PMDSetHoldingCurrent(&hAxis[0],0,0);
+	
+	// Zero Actual Positions and errors
+	PMDSetActualPosition(&hAxis[0],0);
+	PMDClearPositionError(&hAxis[0]);
+	PMDSetActualPosition(&hAxis[1],0);
+	PMDClearPositionError(&hAxis[1]);
+	
+	PMDMultiUpdate(&hAxis[0], 0x03);
+	
+	////Set Profile Mode and start Motion
+	//PMDResetEventStatus(&hAxis[0],0xA000);
+	//PMDResetEventStatus(&hAxis[0],0xEFFF);
+	//PMDRestoreOperatingMode(&hAxis[0]);
+	//PMDSetProfileMode(&hAxis[0], PMDVelocityContouringProfile);
+	//PMDSetVelocity(&hAxis[0], HOMING_VEL);
+	//PMDSetAcceleration(&hAxis[0], HOMING_ACC);
+	//PMDSetDeceleration(&hAxis[0], 0);
+	
+	PMDResetEventStatus(&hAxis[1],0xA000);
+	PMDResetEventStatus(&hAxis[1],0xEFFF);
+	PMDRestoreOperatingMode(&hAxis[1]);
+	PMDSetProfileMode(&hAxis[1], PMDVelocityContouringProfile);
+	PMDSetVelocity(&hAxis[1],  -HOMING_VEL);
+	PMDSetAcceleration(&hAxis[1], HOMING_ACC);
+	PMDSetDeceleration(&hAxis[1], 0);
+	
+	PMDMultiUpdate(&hAxis[0], 0x03);
+	
+	//Move in X until hard stop
+	while(not_complete){
+		PMDGetPositionError(&hAxis[0],&error1);
+		PMDGetPositionError(&hAxis[1],&error2);
+		
+		if(error1<0) error1*=-1;
+		if(error2<0) error2*=-1;
+		if(error2>thresh){
+			PMDSetStopMode(&hAxis[0],PMDAbruptStopMode);
+			PMDSetStopMode(&hAxis[1],PMDAbruptStopMode);
+			PMDMultiUpdate(&hAxis[0], 0x03);
+			//PMDprintf("X-homing complete\n");
+			not_complete=0;
+		}
+	}
+	not_complete=1;
+	
+	PMDTaskWait(100);
+	
+	PMDSetHoldingCurrent(&hAxis[0],0,hold_current);
+	PMDMultiUpdate(&hAxis[0], 0x03);
+	
+	PMDTaskWait(100);
+	
+	// Zero Actual Positions and errors
+	PMDSetActualPosition(&hAxis[0],0);
+	PMDClearPositionError(&hAxis[0]);
+	PMDSetActualPosition(&hAxis[1],0);
+	PMDClearPositionError(&hAxis[1]);
+	
+	PMDMultiUpdate(&hAxis[0], 0x03);
+	
+	//PMDResetEventStatus(&hAxis[0],0xA000);
+	//PMDResetEventStatus(&hAxis[0],0xEFFF);
+	//PMDRestoreOperatingMode(&hAxis[0]);
+	PMDResetEventStatus(&hAxis[1],0xA000);
+	PMDResetEventStatus(&hAxis[1],0xEFFF);
+	PMDRestoreOperatingMode(&hAxis[1]);
+	
+	PMDSetHoldingCurrent(&hAxis[0],0,hold_current);
+	
+	PMDMultiUpdate(&hAxis[0], 0x03);
+	
+	PMDTaskWait(100);
+	
+	PMDprintf("Homing Complete\n");
+}
 
 void setupUPM(PMDAxisHandle* hAxis){
 	int i;
@@ -477,7 +565,7 @@ void addPoint(PMDint32 a1_pos,PMDint32 a2_pos,PMDint32 a3_pos){
 	//writeBuffers(hAxis);
 
 	//Ensure next value in buffers is valid. Ensures no Error when Stop occurs
-	inv[RECEIVE_INDEX] = inv[RECEIVE_INDEX-1]+1000;
+	inv[RECEIVE_INDEX] = inv[RECEIVE_INDEX-1]+500;
 	m1v[RECEIVE_INDEX] = m1v[RECEIVE_INDEX-1];
 	m2v[RECEIVE_INDEX] = m2v[RECEIVE_INDEX-1];
 	m3v[RECEIVE_INDEX] = m3v[RECEIVE_INDEX-1];
@@ -485,8 +573,8 @@ void addPoint(PMDint32 a1_pos,PMDint32 a2_pos,PMDint32 a3_pos){
 
 void startMotion(PMDAxisHandle* hAxis){
 
-	PMDSetProfileParameter(&hAxis[0], PMDProfileParameterStopValue, inv[RECEIVE_INDEX-1]);
-	PMDSetProfileParameter(&hAxis[1], PMDProfileParameterStopValue, inv[RECEIVE_INDEX-1]);
+	//PMDSetProfileParameter(&hAxis[0], PMDProfileParameterStopValue, inv[RECEIVE_INDEX-1]);
+	//PMDSetProfileParameter(&hAxis[1], PMDProfileParameterStopValue, inv[RECEIVE_INDEX-1]);
 	
 	PMDGetTraceValue(&hAxis[0], PMDTraceActiveRateScalar, &ACTUAL_RATE);
 	if(ACTUAL_RATE==0){
@@ -509,8 +597,10 @@ void startMotion(PMDAxisHandle* hAxis){
 	//PMDUpdate(hAxis[1]);
 	//PMDMultiUpdate(&hAxis[0], 0x03);
 	
-	PMDSetProfileParameter(&hAxis[0], PMDProfileParameterRateScalar, MAX_RATE);
-	PMDSetProfileParameter(&hAxis[1], PMDProfileParameterRateScalar, MAX_RATE);
+	if(COMMAND_INDEX!=STOP_INDEX){
+		PMDSetProfileParameter(&hAxis[0], PMDProfileParameterRateScalar, MAX_RATE);
+		PMDSetProfileParameter(&hAxis[1], PMDProfileParameterRateScalar, MAX_RATE);
+	}
 	
 	PMDSetPosition(&hAxis[2],m3v[COMMAND_INDEX+1]);
 	
@@ -525,7 +615,6 @@ void stopMotion(PMDAxisHandle* hAxis){
 	PMDSetProfileParameter(&hAxis[0], PMDProfileParameterRateScalar, 0);
 	PMDSetProfileParameter(&hAxis[1], PMDProfileParameterRateScalar, 0);
 	PMDMultiUpdate(&hAxis[0], 0x03);
-	
 	
 	PMDprintf("Stopping. Reset Index to: %d\n",COMMAND_INDEX);
 	
@@ -553,7 +642,7 @@ PMDuint32 writeBuffers(PMDAxisHandle* hAxis,int fill){
 			remaining = ((PMDint32)STOP_INDEX-(PMDint32)WRITE_INDEX+1);
 			if(remaining < 0){remaining = MAXPTS+remaining;}
 			
-			//PMDprintf("Writing: %d = %d, %d, %d | %d\n",WRITE_INDEX,inv[WRITE_INDEX],m1v[WRITE_INDEX]-M1_OFFSET,m2v[WRITE_INDEX]-M2_OFFSET,m3v[WRITE_INDEX]);
+			PMDprintf("Writing: %d = %d, %d, %d | %d\n",WRITE_INDEX,inv[WRITE_INDEX],m1v[WRITE_INDEX]-M1_OFFSET,m2v[WRITE_INDEX]-M2_OFFSET,m3v[WRITE_INDEX]);
 			
 			PMDWriteBuffer(&hAxis[0], BUF_INPUT, inv[WRITE_INDEX]);
 			PMDWriteBuffer(&hAxis[0], BUF_M1, m1v[WRITE_INDEX]-M1_OFFSET);
@@ -564,7 +653,7 @@ PMDuint32 writeBuffers(PMDAxisHandle* hAxis,int fill){
 		return WRITE_INDEX;
 	}
 	else{
-		//PMDprintf("Writing: %d = %d, %d, %d | %d\n",WRITE_INDEX,inv[WRITE_INDEX],m1v[WRITE_INDEX]-M1_OFFSET,m2v[WRITE_INDEX]-M2_OFFSET,m3v[WRITE_INDEX]);
+		PMDprintf("Writing: %d = %d, %d, %d | %d\n",WRITE_INDEX,inv[WRITE_INDEX],m1v[WRITE_INDEX]-M1_OFFSET,m2v[WRITE_INDEX]-M2_OFFSET,m3v[WRITE_INDEX]);
 		
 		PMDWriteBuffer(&hAxis[0], BUF_INPUT, inv[WRITE_INDEX]);
 		PMDWriteBuffer(&hAxis[0], BUF_M1, m1v[WRITE_INDEX]-M1_OFFSET);

@@ -25,14 +25,14 @@ packet_list=[]
 
 offset = 0
 size = 2400
-n_iter = 1
+n_iter = 0
 for i in range(n_iter):
     packet_list.append([size+offset*i, offset*i, 600, 800, 1, 1, 0])
     packet_list.append([size+offset*i, size+offset*i, 600, 800, 1, 1, 0])
     packet_list.append([offset*i, size+offset*i, 600, 800, 1, 1, 0])
     packet_list.append([offset*i, offset*i, 600, 800, 1, 1, 0])
     
-packet_list.append([0, 0, 800, 800, 1, 1, 1])
+packet_list.append([100, 100, 800, 800, 1, 1, 1])
 
 for packet in packet_list:
     print "sending"
