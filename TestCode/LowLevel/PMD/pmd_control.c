@@ -7,7 +7,7 @@
 #include "Pro-MotionExport.c"
 
 #define BUFSIZE   	256
-#define MAX_ACC		250
+#define MAX_ACC		240
 #define MAX_VEL		1174405
 
 #define HOMING_VEL 117441
@@ -110,7 +110,6 @@ USER_CODE_TASK( pmd_control )
 		
 		
 		if(open){
-
 			result = PMDPeriphReceive(&hPeriph, &data, &bytesReceived, BUFSIZE, 5);
 			switch (result) {
 				default:
@@ -163,7 +162,6 @@ USER_CODE_TASK( pmd_control )
 				ready_sent=0;
 			}
 		}
-		
 	}
 }
 //*********************************************************************//
@@ -328,6 +326,8 @@ void linear_move(PMDAxisHandle* hAxis,PMDint32 a1_pos, PMDint32 a2_pos, PMDint32
 	PMDint32 delta_1 = a1_pos-curr_m1;
 	PMDint32 delta_2 = a2_pos-curr_m2;
 	
+	PMDint32 vel,acc;
+	
 	if(delta_1<0) delta_1 *=-1;
 	if(delta_2<0) delta_2 *=-1;
 	
@@ -370,6 +370,7 @@ void linear_move(PMDAxisHandle* hAxis,PMDint32 a1_pos, PMDint32 a2_pos, PMDint32
 	PMDSetPosition(&hAxis[2],a3_pos);
 	
 	PMDMultiUpdate(&hAxis[0], 0x07);
+	//PMDTaskWait(10);
 }
 
 void parsePacket(PMDuint8* buffer, PMDAxisHandle* hAxis, int start_index, PMDint32* a1_pos, PMDint32* a2_pos, PMDint32* a3_pos){
@@ -446,8 +447,8 @@ void startMotion(PMDAxisHandle* hAxis){
 void inverseKinematics(long delta_x, long delta_y, long* m1_steps_local, long* m2_steps_local)
 {
 	// 1.09 mm per 1 step. 32 microsteps per step
-    float s2 = (delta_x+delta_y)*1.0*32;
-    float s1 = (delta_y-delta_x)*1.0*32;
+    float s2 = (delta_x+delta_y)*1.05*32;
+    float s1 = (delta_y-delta_x)*1.05*32;
 
     *m1_steps_local = (long)s1;
     *m2_steps_local = (long)s2;
@@ -467,14 +468,13 @@ PMDint16 filterAnalog(PMDPeriphHandle* phPeriphIO, PMDuint32 AnalogChannel){
 	//Weighted Average
 	static PMDint16 average = 0;
 	PMDint16 actposition;
-	float sigma = .70;	//Higher -> better value but slower to change
+	float sigma = .75;	//Higher -> better value but slower to change
 	PMDresult result;
 	
 	PMD_ABORTONERROR(PMDPeriphRead(phPeriphIO, &actposition, AnalogChannel, 1));
 	
 	average = average*(sigma)+actposition*(1-sigma);
 	return average;
-	
 }
 
 PMDresult RunController(PMDAxisHandle* pAxis,int tolerance, PMDPeriphHandle* phPeriphIO, PMDuint32 AnalogChannel)
@@ -484,6 +484,7 @@ PMDresult RunController(PMDAxisHandle* pAxis,int tolerance, PMDPeriphHandle* phP
 	int error,Kp,done,command;
 	PMDresult result;
 	
+	done = 0;
 	Kp=40;
 	PMDGetPosition(pAxis,&destination);
 	
@@ -502,7 +503,7 @@ PMDresult RunController(PMDAxisHandle* pAxis,int tolerance, PMDPeriphHandle* phP
 	{
 		PMDSetMotorCommand(pAxis,0);
 		PMDUpdate(pAxis);
-		done=0;
+		done=1;
 	}	
 	else
     {	
@@ -513,7 +514,7 @@ PMDresult RunController(PMDAxisHandle* pAxis,int tolerance, PMDPeriphHandle* phP
 	}
 	
 	// PMDprintf("mtrcmd= %d\n",command);
-	return 0;
+	return done;
 }
 
 PMDresult StopController(PMDAxisHandle* pAxis){

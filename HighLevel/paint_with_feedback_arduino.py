@@ -29,9 +29,9 @@ def paint_imageset(segments, painter, cam, open_images = False):
 
 		print "Recomposition"
 		
-		# recomposer = skeletonRecomposer(img, [])
+		recomposer = skeletonRecomposer(img, [])
 		# recomposer = iterativeErosionRecomposer(img, [1])
-		recomposer = blendedRecomposer(img, [3])
+		# recomposer = blendedRecomposer(img, [3])
 		LLT = recomposer.recompose()
 		LLT = util.arrangeLLT(LLT)
 		# print LLT

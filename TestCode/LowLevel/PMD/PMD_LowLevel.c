@@ -12,6 +12,7 @@
 #define MAX_VEL		1174405
 
 #define FIRGELLI_POT_VOLTAGE 5
+#define FIRGELLI_DELAY 1.0
 
 #define MAJOR_VERSION 1
 #define MINOR_VERSION 0
@@ -27,6 +28,7 @@
 #define MAXPTS (RAM_CONTOUR_SIZE/2)
 
 #define MAX_RATE (0x10000)
+#define BUFF_SAFETY 20
 
 // Contour value buffers, these will be written to RAM on the MC58113 devices.
 PMDint32 inv[MAXPTS];
@@ -138,8 +140,10 @@ USER_CODE_TASK( pmd_control )
 	int open = 0;
 	int done = 0;
 	int ready_sent = 0;
+	int done_sent = 0;
 	PMDuint16 error = 0;
-	PMDuint8 readyMessage[3] = { 0xFE, 0x00, 0xEF };
+	PMDuint8 readyMessage[3] = { 0xFE, 0x01, 0xEF };
+	PMDuint8 doneMessage[3] = { 0xFE, 0x00, 0xEF };
 
 	PMD_ABORTONERROR(PMDAxisOpen(&hAxis[0], phDevice, PMDAxis1 )); 
 	PMD_ABORTONERROR(PMDAxisOpen(&hAxis[1], phDevice, PMDAxis2 ));
@@ -172,12 +176,16 @@ USER_CODE_TASK( pmd_control )
 	
 	while(1){
 		PMDGetEventStatus(&hAxis[0], &status);
-		PMDGetTraceValue(&hAxis[0], PMDTraceDataStreamIndex, &COMMAND_INDEX);
+		
 		PMDGetTraceValue(&hAxis[0], PMDTraceActiveRateScalar, &ACTUAL_RATE);
 		PMDGetTraceValue(&hAxis[0], PMDTraceDataStreamValue, &ACTUAL_INV);
 		PMDGetTraceValue(&hAxis[0], PMDTraceContourOutput, &ACTUAL_M1);
 		PMDGetProfileParameter(&hAxis[0], PMDProfileParameterStopValue, &STOP_VAL);
 		PMDGetRuntimeError(&hAxis[0], &error);
+		
+		if(ACTUAL_RATE!=0){
+			PMDGetTraceValue(&hAxis[0], PMDTraceDataStreamIndex, &COMMAND_INDEX);
+		}
 		
 		if(error){
 			PMDprintf("error: %x \n",error);
@@ -198,7 +206,10 @@ USER_CODE_TASK( pmd_control )
 			BUFF_REMAINING =((PMDint32)RECEIVE_INDEX-(PMDint32)COMMAND_INDEX);
 			BUFF_REMAINING = BUFF_REMAINING<0 ? -1*BUFF_REMAINING : MAXPTS-BUFF_REMAINING;
 			
+			done_sent = 0;
+			
 			PMDprintf("i = %d | stop = %d | recv = %d \n",COMMAND_INDEX,STOP_INDEX,RECEIVE_INDEX);
+			PMDprintf("Remaining: %d\n",BUFF_REMAINING);
 		}
 		done = RunController(&hAxis[2],300,&hPeriphIO,PMDMachineIO_AICh1);
 		
@@ -221,15 +232,28 @@ USER_CODE_TASK( pmd_control )
 					BUFF_REMAINING =((PMDint32)RECEIVE_INDEX-(PMDint32)COMMAND_INDEX);
 					BUFF_REMAINING = BUFF_REMAINING<0 ? -1*BUFF_REMAINING : MAXPTS-BUFF_REMAINING;
 					
+					PMDprintf("i = %d | stop = %d | recv = %d \n",COMMAND_INDEX,STOP_INDEX,RECEIVE_INDEX);
+					PMDprintf("Remaining: %d\n",BUFF_REMAINING);
 					ready_sent=0;
 				break;
 			}
 			// Send Ready message if buffer can receive more data
-			if(open && !ready_sent && BUFF_REMAINING>20){//MAXPTS*3.0/4.0)){ 
+			if(open && !ready_sent && BUFF_REMAINING>BUFF_SAFETY){//MAXPTS*3.0/4.0)){ 
 				PMDprintf("Send Ready: ");
 				result = PMDPeriphSend(&hPeriph, readyMessage, 3, 5);
 				if(!result){
 					ready_sent=1;
+					PMDprintf(" success\n");
+				}
+				else{
+					PMDprintf(" failed\n");
+				}
+			}
+			if(open && ready_sent && !done_sent && COMMAND_INDEX==(RECEIVE_INDEX-1)){
+				PMDprintf("Send Done: ");
+				result = PMDPeriphSend(&hPeriph, doneMessage, 3, 5);
+				if(!result){
+					done_sent=1;
 					PMDprintf(" success\n");
 				}
 				else{
@@ -391,7 +415,7 @@ void parsePacket(PMDuint8* buffer, PMDAxisHandle* hAxis, int start_index, PMDint
 	//PMDSetBreakpoint(&hAxis[0], 1, PMDAxis1,
 	//		PMDBreakpointNoAction, PMDBreakpointGreaterOrEqualIndex);
 	
-	if(go_flag){
+	if(go_flag || (ACTUAL_RATE!=0 && BUFF_REMAINING<(BUFF_SAFETY+10))){
 		startMotion(hAxis);
 	}
 }
@@ -400,13 +424,17 @@ void addPoint(PMDint32 a1_pos,PMDint32 a2_pos,PMDint32 a3_pos){
 
 	PMDint32 curr_m1 = m1v[RECEIVE_INDEX-1];
 	PMDint32 curr_m2 = m2v[RECEIVE_INDEX-1];
-	//PMDint32 curr_z = m3v[RECEIVE_INDEX-1];
+	PMDint32 curr_z = m3v[RECEIVE_INDEX-1];
 	PMDint32 curr_inv = inv[RECEIVE_INDEX-1];
 	
 	float diff_m1 = a1_pos - curr_m1;
 	float diff_m2 = a2_pos - curr_m2;
-	//float diff_z = a3_pos - curr_z;
-	float diff_inv = (PMDint32)(sqrt(diff_m1*diff_m1+diff_m2*diff_m2))/8;
+	float diff_z = a3_pos - curr_z;
+	float diff_inv_xy = (PMDint32)(sqrt(diff_m1*diff_m1+diff_m2*diff_m2))/8;
+	float diff_inv_z = (PMDint32)(diff_z*FIRGELLI_DELAY);
+	if(diff_inv_z<0) {diff_inv_z*=-1;}
+	
+	float diff_inv = (diff_inv_xy>diff_inv_z) ? diff_inv_xy : diff_inv_z;
 	
 	float n1 = diff_m1/65000;
 	if(n1<0) {n1*=-1;}
@@ -521,12 +549,12 @@ PMDuint32 writeBuffers(PMDAxisHandle* hAxis,int fill){
 		if(remaining < 0){remaining = MAXPTS+remaining;}
 		
 		while(remaining > 0){
-		
 			PMDGetBufferWriteIndex(&hAxis[0],  BUF_INPUT,  &WRITE_INDEX);
 			remaining = ((PMDint32)STOP_INDEX-(PMDint32)WRITE_INDEX+1);
 			if(remaining < 0){remaining = MAXPTS+remaining;}
 			
-			PMDprintf("Writing: %d = %d, %d, %d | %d\n",WRITE_INDEX,inv[WRITE_INDEX],m1v[WRITE_INDEX]-M1_OFFSET,m2v[WRITE_INDEX]-M2_OFFSET,m3v[WRITE_INDEX]);
+			//PMDprintf("Writing: %d = %d, %d, %d | %d\n",WRITE_INDEX,inv[WRITE_INDEX],m1v[WRITE_INDEX]-M1_OFFSET,m2v[WRITE_INDEX]-M2_OFFSET,m3v[WRITE_INDEX]);
+			
 			PMDWriteBuffer(&hAxis[0], BUF_INPUT, inv[WRITE_INDEX]);
 			PMDWriteBuffer(&hAxis[0], BUF_M1, m1v[WRITE_INDEX]-M1_OFFSET);
 			//PMDWriteBuffer(&hAxis[1], BUF_INPUT, inv[WRITE_INDEX]);
@@ -536,7 +564,8 @@ PMDuint32 writeBuffers(PMDAxisHandle* hAxis,int fill){
 		return WRITE_INDEX;
 	}
 	else{
-		PMDprintf("Writing: %d = %d, %d, %d | %d\n",WRITE_INDEX,inv[WRITE_INDEX],m1v[WRITE_INDEX]-M1_OFFSET,m2v[WRITE_INDEX]-M2_OFFSET,m3v[WRITE_INDEX]);
+		//PMDprintf("Writing: %d = %d, %d, %d | %d\n",WRITE_INDEX,inv[WRITE_INDEX],m1v[WRITE_INDEX]-M1_OFFSET,m2v[WRITE_INDEX]-M2_OFFSET,m3v[WRITE_INDEX]);
+		
 		PMDWriteBuffer(&hAxis[0], BUF_INPUT, inv[WRITE_INDEX]);
 		PMDWriteBuffer(&hAxis[0], BUF_M1, m1v[WRITE_INDEX]-M1_OFFSET);
 		//PMDWriteBuffer(&hAxis[1], BUF_INPUT, inv[WRITE_INDEX]);
