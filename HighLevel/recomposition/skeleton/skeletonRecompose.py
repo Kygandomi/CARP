@@ -2,6 +2,7 @@ from common.util import *
 import sys
 import graph
 import cv2
+import math
 
 class skeletonRecomposer(object):
 
@@ -32,7 +33,7 @@ class skeletonRecomposer(object):
 
         #display(self.createNodeImg(pathImg,g))
 
-        paths = self.reducePaths(paths,1000)
+        paths = reduceLLT(paths,2.9)
 
         # paths = mapLLT(paths,self.binImg.shape)
 
@@ -78,20 +79,20 @@ class skeletonRecomposer(object):
                 nodeImg[node.point[0],node.point[1]] = (255,0,0)
         return nodeImg
 
-    def reducePaths(self, paths,desired_n_points):
-        step = 1+int(sum(len(path) for path in paths)/desired_n_points)
+    # def reducePaths(self, paths,desired_n_points):
+    #     step = 1+int(sum(len(path) for path in paths)/desired_n_points)
 
-        out_pts = []
-        for path_i in range(len(paths)):
-            path = paths[path_i]
-            list_pts=[]
-            for pt_i in range(0,len(path),step):
-                pt=path[pt_i]
-                list_pts.append(pt)
-            out_pts.append(list_pts)
+    #     out_pts = []
+    #     for path_i in range(len(paths)):
+    #         path = paths[path_i]
+    #         list_pts=[]
+    #         for pt_i in range(0,len(path),step):
+    #             pt=path[pt_i]
+    #             list_pts.append(pt)
+    #         out_pts.append(list_pts)
             
-        # paper_size = (11*25.4,8.5*25.4)
-        # drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
+    #     # paper_size = (11*25.4,8.5*25.4)
+    #     # drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
 
-        # save(drawnImg, 'test_image')
-        return out_pts
+    #     # save(drawnImg, 'test_image')
+    #     return out_pts

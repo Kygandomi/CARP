@@ -287,6 +287,29 @@ def arrangeLLT(LLT):
 
     return newLLT
 
+
+def reduceLLT(LLT,min_dist):
+    prev_pt = [-10000,-10000]
+
+    out_pts = []
+    for path_i in range(len(LLT)):
+        path = LLT[path_i]
+        list_pts=[]
+        for pt_i in range(0,len(path)-1,1):
+            pt=path[pt_i]
+            if(np.linalg.norm(np.array(prev_pt[:2])-np.array(pt[:2]))>min_dist):
+                prev_pt = pt
+                list_pts.append(pt)
+        list_pts.append(path[len(path)-1])
+        out_pts.append(list_pts)
+
+    # paper_size = (11*25.4,8.5*25.4)
+    # drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
+
+    # save(drawnImg, 'test_image')
+
+    return out_pts
+
 def testOrders(path='orders.txt',scale = 2,paper_size = (8.5*25.4,11*25.4)):
     """	Displays the expected output of the given orders text file"""
     testLLT(loadLLT(path),scale,paper_size)
