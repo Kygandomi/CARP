@@ -1,5 +1,8 @@
 .DS_Store
 
+*.mat
+# Large file needs to be ignored.
+
 #PyCharm project config files
 .idea
 
