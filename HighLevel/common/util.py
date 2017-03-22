@@ -2,6 +2,9 @@ import numpy as np
 import cv2
 
 def display(img, name="img"):
+    """
+    Desplays img in a new window, waits until space is pressed.
+    """
     cv2.imshow(name, img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -19,14 +22,24 @@ def displayarray(imgs, name="imageset_image"):
         cv2.destroyAllWindows()
 
 def save(img, name="test_image"):
+    """
+    Saves an image. A directory can be specified in name, eg: where/pictures/go/picture1
+    Don't give it a filetype in name.
+    """
     cv2.imwrite(name+".png", img)
 
 def output(img,name="output"):
+    """
+    Saves and displays an image.
+    """
     save(img,name)
     display(img,name)
 
 
 def resize(img,max_dim=1000):
+    """
+    Given an image, this function will resize the image such that it's greatest dimension is max_dim.
+    """
     rows, cols, _ = img.shape
 
     if rows == max_dim or cols==max_dim:
@@ -41,23 +54,31 @@ def resize(img,max_dim=1000):
     else:
         return cv2.resize(img,(max_dim*cols/rows,max_dim),interpolation = method)
 
+
 def rotate_image(mat, angle, padding_color = (255,255,255)):
-  height, width = mat.shape[:2]
-  image_center = (width/2, height/2)
+    """
+    Returns a rotated image, rotated by the given angle.
+    :param mat: The image to rotate
+    :param angle: The angle (in degrees) to rotate
+    :param padding_color:
+    :return:
+    """
+    height, width = mat.shape[:2]
+    image_center = (width/2, height/2)
 
-  rotation_mat = cv2.getRotationMatrix2D(image_center, -angle, 1.)
+    rotation_mat = cv2.getRotationMatrix2D(image_center, -angle, 1.)
 
-  abs_cos = abs(rotation_mat[0,0])
-  abs_sin = abs(rotation_mat[0,1])
+    abs_cos = abs(rotation_mat[0,0])
+    abs_sin = abs(rotation_mat[0,1])
 
-  bound_w = int(height * abs_sin + width * abs_cos)
-  bound_h = int(height * abs_cos + width * abs_sin)
+    bound_w = int(height * abs_sin + width * abs_cos)
+    bound_h = int(height * abs_cos + width * abs_sin)
 
-  rotation_mat[0, 2] += bound_w/2 - image_center[0]
-  rotation_mat[1, 2] += bound_h/2 - image_center[1]
+    rotation_mat[0, 2] += bound_w/2 - image_center[0]
+    rotation_mat[1, 2] += bound_h/2 - image_center[1]
 
-  rotated_mat = cv2.warpAffine(mat, rotation_mat, (bound_w, bound_h), borderValue=padding_color)
-  return rotated_mat
+    rotated_mat = cv2.warpAffine(mat, rotation_mat, (bound_w, bound_h), borderValue=padding_color)
+    return rotated_mat
 
 
 def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,255,255]):
