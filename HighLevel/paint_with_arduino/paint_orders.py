@@ -22,8 +22,12 @@ class paint_orders():
 		# self.well_offsets = [[3420, 90],[3420,590],[3420,1090]]
 
 		# # PMD
-		self.brush_offsets = [[3440, 90],[3440,590],[3440,1090]]
-		self.well_offsets = [[3440, 90],[3440,590],[3440,1090]]
+		# self.brush_offsets = [[3840, 70],[3840,560],[3840,1055],[3840,1560],[3840,2050],[3840,2545]]
+		# self.well_offsets = [[3340, 70],[3340,560],[3340,1055],[3340,1560],[3340,2050],[3340,2545]]
+
+		self.brush_offsets = [[3840,560],[3840,1055],[3840,1560],[3840,2050],[3840,2545]]
+		self.well_offsets = [[3340,560],[3340,1055],[3340,1560],[3340,2050],[3340,2545]]
+
 
 	'Routine for sending a standard packet via Serial' 
 	def send_standard_packet(self, packet, wait=False):
@@ -71,34 +75,34 @@ class paint_orders():
 		print "Switching Brushes ..."
 
 		firgelli_extract_height = 550 # 550
-		firgelli_insert_height = 550 # 630 
-		firgelli_lift_out_height = 900 # 950 
-		x_depth = 400
+		firgelli_insert_height = 530 # 630 
+		firgelli_lift_out_height = 800 # 950 
+		x_depth = 200
 
 		def pickBrush(offset_point):
 			offX=offset_point[0]
 			offY=offset_point[1]
 
+			self.send_standard_packet([offX-x_depth,offY,firgelli_lift_out_height,800,1,1,1])
+			sleep(1)
 			self.send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
 			sleep(1)
-			self.send_standard_packet([offX+x_depth,offY,firgelli_lift_out_height,800,1,1,1])
-			sleep(1)
-			self.send_standard_packet([offX+x_depth,offY,firgelli_extract_height,800,1,1,1])
-			sleep(1)
 			self.send_standard_packet([offX,offY,firgelli_extract_height,800,1,1,1])
+			sleep(1)
+			self.send_standard_packet([offX-x_depth,offY,firgelli_extract_height,800,1,1,1])
 			sleep(1)
 
 		def placeBrush(offset_point):
 			offX=offset_point[0]
 			offY=offset_point[1]
 
+			self.send_standard_packet([offX-x_depth,offY,firgelli_insert_height,800,1,1,1])
+			sleep(1)
 			self.send_standard_packet([offX,offY,firgelli_insert_height,800,1,1,1])
 			sleep(1)
-			self.send_standard_packet([offX+x_depth,offY,firgelli_insert_height,800,1,1,1])
-			sleep(1)
-			self.send_standard_packet([offX+x_depth,offY,firgelli_lift_out_height,800,1,1,1])
-			sleep(1)
 			self.send_standard_packet([offX,offY,firgelli_lift_out_height,800,1,1,1])
+			sleep(1)
+			self.send_standard_packet([offX-x_depth,offY,firgelli_lift_out_height,800,1,1,1])
 			sleep(1)
 
 		# put current brush back
@@ -127,7 +131,7 @@ class paint_orders():
 		print "Getting Paint ..."
 
 		# Fergelli Height Values
-		down_val = 260
+		down_val = 390
 		up_val = 800
 
 		offX=self.well_offsets[self.well_index][0]
@@ -169,8 +173,8 @@ class paint_orders():
 		scale_val = 1
 
 		# Record Fergelli Height Values
-		down_val = 265
-		up_val = 400
+		down_val = 390
+		up_val = 480
 		final_up_val = 800
 
 		# Record how far we've gone (0.1 mm)

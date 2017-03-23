@@ -106,7 +106,7 @@ n_colors = 2
 palette = color_pallete.build("black white")
 
 # Initialize Camera Object
-cam = Camera([0])
+cam = Camera([1,0])
 
 # TODO: If you can't connect to camera, assume canvas shape is 8.5x11 starting at 0,0
 if not cam.isOpened():

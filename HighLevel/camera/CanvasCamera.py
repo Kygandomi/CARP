@@ -23,13 +23,15 @@ class Camera(object):
         #pts_gantry = np.float32([[100,100],[3400,100],[100,2400]])
         #pts_img = np.float32([[797,153],[1963,158],[802,954]])
 
-        #self.img_to_gantryAT = cv2.getAffineTransform(pts_img,pts_gantry)
+        # pts_gantry = np.float32([[200,200], [200, 2100],[2600,200]]) # [1280,600],[600,1280],[1800,1500]
+        # pts_img = np.float32([[849,188],[854,831], [1671,181]]) # [1219,322],[984,556],[1396,629]
 
+        # self.img_to_gantryAT = cv2.getAffineTransform(pts_img,pts_gantry)
 
         ### ####################### ### Using a four point perspective transform
 
-        pts_gantry = np.float32([[200,200], [200, 2100], [2600,200], [2600, 2100]])
-        pts_img = np.float32([[849,188],[1671, 181],[854,831],[1670,827]])
+        pts_gantry = np.float32([[200,200], [200, 2100],[2600, 2100],[2600,200]]) # [1280,600],[600,1280],[1800,1500]
+        pts_img = np.float32([[849,188],[854,831],[1670,827],[1671, 181]]) # [1219,322],[984,556],[1396,629]
 
         # tl = 200,200 # gantry
         tl = 849,188 # px
@@ -47,7 +49,6 @@ class Camera(object):
         # If this doesn't work, use the below:
 
         # rect = (tl, tr, br, bl)
-
         # # compute the width of the new image, which will be the
         # # maximum distance between bottom-right and bottom-left
         # # x-coordiates or the top-right and top-left x-coordinates
@@ -72,7 +73,6 @@ class Camera(object):
         # self.img_to_gantryPT = cv2.getPerspectiveTransform(rect, dst)
 
         self.img_to_gantryPT = cv2.getPerspectiveTransform(pts_img, pts_gantry)
-
 
 
         self.camera_capture = None
@@ -206,7 +206,10 @@ class Camera(object):
         return rect
 
     def dewarp_to_gantry(self,pt):
-        return np.dot(self.img_to_gantryAT,[pt[0],pt[1],1])
+        # return np.dot(self.img_to_gantryAT,[pt[0],pt[1],1])
+        out = np.dot(self.img_to_gantryPT,[pt[0],pt[1],1])
+        out = out/out[2]
+        return [out[0],out[1]]
 
     def canvas_to_dewarp(self,pt):
         out = np.dot(self.canvas_to_dewarp_PT,[pt[0],pt[1],1])
