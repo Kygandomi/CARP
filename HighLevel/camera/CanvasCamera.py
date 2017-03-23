@@ -13,24 +13,67 @@ class Camera(object):
         self.canvas_transformation_data = None
         self.canvas_to_dewarp_PT = None
 
-        # # ARDUINO BEFORE FORCE PLATE
-        # pts_gantry = np.float32([[400,400],[1000,2000],[2500,1000]])
-        # pts_img = np.float32([[463,138],[563,401],[811,236]])
-        # pts_img = np.float32([[463*2,138*2],[563*2,401*2],[811*2,236*2]])
-        
-        # ARDUINO AFTER FORCE PLATE
-        # pts_gantry = np.float32([[400,400],[400,1900],[2400,400]])
-        # pts_img = np.float32([[904,260],[903,789-5],[1616,261]])
-
         # # PMD AFTER FORCE PLATE
         # pts_gantry = np.float32([[400,400],[400,1900],[2400,400]])
         # pts_img = np.float32([[893,268],[893,795],[1606,268]])
 
-        # better PMD after force plate?
-        pts_gantry = np.float32([[100,100],[3400,100],[100,2400]])
-        pts_img = np.float32([[797,153],[1963,158],[802,954]])
 
-        self.img_to_gantryAT = cv2.getAffineTransform(pts_img,pts_gantry)
+        ### ####################### ### Using a three point affine transform
+
+        #pts_gantry = np.float32([[100,100],[3400,100],[100,2400]])
+        #pts_img = np.float32([[797,153],[1963,158],[802,954]])
+
+        #self.img_to_gantryAT = cv2.getAffineTransform(pts_img,pts_gantry)
+
+
+        ### ####################### ### Using a four point perspective transform
+
+        pts_gantry = np.float32([[200,200], [200, 2100], [2600,200], [2600, 2100]])
+        pts_img = np.float32([[849,188],[1671, 181],[854,831],[1670,827]])
+
+        # tl = 200,200 # gantry
+        tl = 849,188 # px
+        #
+        # bl = 200, 2100 # gantry
+        bl = 854,831 # px
+        #
+        # tr = 2600, 200 # g
+        tr = 1671, 181 # px
+        #
+        # br = 2600, 2100 # gantry
+        br = 1670,827 # px
+
+
+        # If this doesn't work, use the below:
+
+        # rect = (tl, tr, br, bl)
+
+        # # compute the width of the new image, which will be the
+        # # maximum distance between bottom-right and bottom-left
+        # # x-coordiates or the top-right and top-left x-coordinates
+        # widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
+        # widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
+        # maxWidth = max(int(widthA), int(widthB))
+        #
+        # # compute the height of the new image, which will be the
+        # # maximum distance between the top-right and bottom-right
+        # # y-coordinates or the top-left and bottom-left y-coordinates
+        # heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
+        # heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
+        # maxHeight = max(int(heightA), int(heightB))
+        #
+        # dst = np.array([
+        #     [0, 0],
+        #     [maxWidth - 1, 0],
+        #     [maxWidth - 1, maxHeight - 1],
+        #     [0, maxHeight - 1]],
+        #     dtype = "float32")
+
+        # self.img_to_gantryPT = cv2.getPerspectiveTransform(rect, dst)
+
+        self.img_to_gantryPT = cv2.getPerspectiveTransform(pts_img, pts_gantry)
+
+
 
         self.camera_capture = None
         self.open(port)
