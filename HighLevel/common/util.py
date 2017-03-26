@@ -131,6 +131,12 @@ def circleKernel(radius,thickness = -1):
     brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,thickness).astype('uint8')
     return brush
 
+def overlay(back,front,backcolor=127,frontcolor=0):
+    img = back.copy()
+    img[np.where(back==0)]=backcolor
+    img[np.where(front==0)]=frontcolor
+    return img
+
 def getPoints(img,color=255):
     """ Return a list of points in a grayscale image which are of the given value. Default 255 (black)"""
     # filter the image to a numpy array that contains all pixels of the color "color"

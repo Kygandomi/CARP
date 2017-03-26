@@ -1,4 +1,5 @@
 from recomposition.skeleton.skeletonRecompose import *
+from recomposition.skeleton.medialAxisRecompose import *
 from recomposition.skeleton.iterativeSkeletonRecompose import *
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from recomposition.erosion.erosionRecompose import *
@@ -10,8 +11,7 @@ import cv2
 
 desiredImg = readImage("cube.png")
 
-
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 4, [], color_pallete.white)
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 2, [], color_pallete.white)
 
 # recomposer = skeletonRecomposer(binImg, [2])
 # recomposer = iterativeErosionRecomposer(binImg, [2])
@@ -21,12 +21,11 @@ segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(d
 out=255*np.ones(segmented_image.shape,dtype='uint8')
 for i in range(len(color_segments)):
     binImg = color_segments[i]
-    recomposer = iterativeSkeletonRecomposer(binImg, [2])
-
+    recomposer = blendedRecomposer(binImg, [2])
 
     LLT = recomposer.recompose()
 
-    LLT = mapLLT(LLT,binImg.shape)
+    #LLT = mapLLT(LLT,binImg.shape)
 
     # display(testLLT(LLT,scale=3,thickness=2))
     out = drawLLT(LLT,out,thickness=3,color = colors[i])

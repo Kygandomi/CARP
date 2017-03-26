@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import common.util as util
-from recomposition.skeleton.skeletonRecompose import *
+from recomposition.skeleton.medialAxisRecompose import *
 
 class iterativeSkeletonRecomposer(object):
     def __init__(self, image, args = []):
@@ -14,7 +14,7 @@ class iterativeSkeletonRecomposer(object):
         current_img = self.desiredImage.copy()
         # display(current_img)
         while self.hasColor(current_img,0):
-            recomposer = skeletonRecomposer(current_img, [self.brush_thickness])
+            recomposer = medialAxisRecomposer(current_img, [self.brush_thickness])
             skel_LLT = recomposer.recompose()
 
             if(skel_LLT==[]):

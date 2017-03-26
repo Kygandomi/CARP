@@ -3,7 +3,7 @@ import cv2
 import common.util as util
 
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
-from recomposition.skeleton.skeletonRecompose import *
+from recomposition.skeleton.medialAxisRecompose import *
 
 class blendedRecomposer(object):
     def __init__(self, image, args = []):
@@ -20,7 +20,7 @@ class blendedRecomposer(object):
         # display(erode_img,"eroded")
         # display(skel_img,"skeleton")
 
-        recomposer = skeletonRecomposer(skel_img, [self.brush_thickness])
+        recomposer = medialAxisRecomposer(skel_img, [self.brush_thickness])
         skel_LLT = recomposer.recompose()
         recomposer = iterativeErosionRecomposer(self.desiredImage, [self.brush_thickness])
         erode_LLT = recomposer.recompose()
