@@ -17,63 +17,24 @@ class Camera(object):
         # pts_gantry = np.float32([[400,400],[400,1900],[2400,400]])
         # pts_img = np.float32([[893,268],[893,795],[1606,268]])
 
-
-        ### ####################### ### Using a three point affine transform
-
-        #pts_gantry = np.float32([[100,100],[3400,100],[100,2400]])
-        #pts_img = np.float32([[797,153],[1963,158],[802,954]])
-
-        # pts_gantry = np.float32([[200,200], [200, 2100],[2600,200]]) # [1280,600],[600,1280],[1800,1500]
-        # pts_img = np.float32([[849,188],[854,831], [1671,181]]) # [1219,322],[984,556],[1396,629]
-
-        # self.img_to_gantryAT = cv2.getAffineTransform(pts_img,pts_gantry)
-
-        ### ####################### ### Using a four point perspective transform
+        # Using a four point perspective transform
 
         pts_gantry = np.float32([[200,200], [200, 2100],[2600, 2100],[2600,200]]) # [1280,600],[600,1280],[1800,1500]
         pts_img = np.float32([[849,188],[854,831],[1670,827],[1671, 181]]) # [1219,322],[984,556],[1396,629]
 
-        # tl = 200,200 # gantry
-        tl = 849,188 # px
-        #
-        # bl = 200, 2100 # gantry
-        bl = 854,831 # px
-        #
-        # tr = 2600, 200 # g
-        tr = 1671, 181 # px
-        #
-        # br = 2600, 2100 # gantry
-        br = 1670,827 # px
-
-
-        # If this doesn't work, use the below:
-
-        # rect = (tl, tr, br, bl)
-        # # compute the width of the new image, which will be the
-        # # maximum distance between bottom-right and bottom-left
-        # # x-coordiates or the top-right and top-left x-coordinates
-        # widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
-        # widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
-        # maxWidth = max(int(widthA), int(widthB))
-        #
-        # # compute the height of the new image, which will be the
-        # # maximum distance between the top-right and bottom-right
-        # # y-coordinates or the top-left and bottom-left y-coordinates
-        # heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
-        # heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
-        # maxHeight = max(int(heightA), int(heightB))
-        #
-        # dst = np.array([
-        #     [0, 0],
-        #     [maxWidth - 1, 0],
-        #     [maxWidth - 1, maxHeight - 1],
-        #     [0, maxHeight - 1]],
-        #     dtype = "float32")
-
-        # self.img_to_gantryPT = cv2.getPerspectiveTransform(rect, dst)
+        # # 200,200 # gantry
+        # tl = 849,188 # px
+        # #
+        # # 200, 2100 # gantry
+        # bl = 854,831 # px
+        # #
+        # # 2600, 200 # g
+        # tr = 1671, 181 # px
+        # #
+        # # 2600, 2100 # gantry
+        # br = 1670,827 # px
 
         self.img_to_gantryPT = cv2.getPerspectiveTransform(pts_img, pts_gantry)
-
 
         self.camera_capture = None
         self.open(port)
@@ -103,7 +64,7 @@ class Camera(object):
             return False
 
 
-    # TODO: Move this out of Camera object??
+    # TODO: Move this out of Camera object and into a utility area somewhere and pass camera object
     @staticmethod
     def correct_image(src_imset, painted_imset):
         """
@@ -139,15 +100,12 @@ class Camera(object):
 
     @staticmethod
     def dewarp(image):
-        # OLD BUT WORKS ON ODELLS
-        # mtx = np.array([[  4.93988251e+03 ,  0.00000000e+00 ,  6.67427894e+02],
-        # [  0.00000000e+00 ,  5.29553206e+03  , 4.49712265e+02],
-        # [  0.00000000e+00 ,  0.00000000e+00 , 1.00000000e+00]])
-
-        # dist = np.array([[ -1.10157126e+01 ,  1.27727231e+02 , -1.25121362e-02  ,-4.19927722e-03,
-        # -1.67823487e+02]])
-
-        # NEW: Should work on any computer if 1280x720 is explicitly set as resolution
+        """
+        This function applies a preset dewarping transform based on the physical properites of the camera
+        :param image: The image that is to be undistorted
+        :return: the image that has been dewarped (and slightly cropped)
+        """
+        # Should work on any computer if 1280x720 is explicitly set as resolution
         mtx =np.array([[  1.10631110e+03,   0.00000000e+00,   6.76280470e+02],
         [  0.00000000e+00,   1.10214590e+03,   2.61620659e+02],
         [  0.00000000e+00,   0.00000000e+00,   1.00000000e+00]])
@@ -206,17 +164,26 @@ class Camera(object):
         return rect
 
     def dewarp_to_gantry(self,pt):
+        """
+        For a specific point, applies the transform go go from a dewarped px to the gantry position
+        """
         # return np.dot(self.img_to_gantryAT,[pt[0],pt[1],1])
         out = np.dot(self.img_to_gantryPT,[pt[0],pt[1],1])
         out = out/out[2]
         return [out[0],out[1]]
 
     def canvas_to_dewarp(self,pt):
+        """
+        Transforms a point from the canvas to the dewarped perspective transform
+        """
         out = np.dot(self.canvas_to_dewarp_PT,[pt[0],pt[1],1])
         out = out/out[2]
         return [out[0],out[1]]
 
     def canvas_to_gantry(self, LLT):
+        """
+        For an LLT, converts the whole LLT from canvas space to gantry space
+        """
         def canvas_to_gantry_pt(pt):
             return self.dewarp_to_gantry(self.canvas_to_dewarp(pt))
 
@@ -231,7 +198,7 @@ class Camera(object):
 
     def four_point_transform(self, image):
         """
-        Applies a stored, pre-generated 4-point transformation
+        Applies a stored, pre-generated 4-point transformation on an image
         """
         transform_matrix, maxWidth, maxHeight = self.canvas_transformation_data
 
@@ -241,7 +208,12 @@ class Camera(object):
         return warped
 
     def generate_transform(self, image=None, debug = False):
-
+        """
+        Generates the transform that must be used for this image.
+        :param image: The image to use, will use camera capture if no image given
+        :param debug: Verbose mode. Good for debugging any issues with this transform generator.
+        :return: Returns nothing, stores transform data within this camera object.
+        """
         if image is None:
             image = self.get_dewarped()
 
@@ -348,6 +320,11 @@ class Camera(object):
         self.canvas_to_dewarp_PT = inv_M
 
     def get_dewarped(self, image=None):
+        """
+        Dewarps an image.
+        :param image: Will dewarp this image if it's an image, otherwise it will read from camera.
+        :return: Dewarped image, either from the camera or from the given image
+        """
         if image is None:
             return self.dewarp(self.read_camera()) # Attempts to make a new read from the camera.
         else:

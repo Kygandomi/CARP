@@ -1,4 +1,3 @@
-import numpy as np
 import cv2
 import common.util as util
 
@@ -6,6 +5,15 @@ from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from recomposition.skeleton.medialAxisRecompose import *
 
 class blendedRecomposer(object):
+    """
+    This recomposer uses the iterative erostion and medial axis recomposers.
+
+    The image to be eroded is first dillated, while the copy of the image for medial axis recomp
+    is inverted.
+
+    These images are then processed using the related recomposers and then an LLT is generated
+    that takes inputs from both.
+    """
     def __init__(self, image, args = []):
         self.brush_thickness = args[0]
         self.desiredImage = util.open_image(image,kernel_radius=self.brush_thickness)

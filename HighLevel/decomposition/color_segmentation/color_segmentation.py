@@ -24,7 +24,7 @@ def classify_px(px, colors):
 
 def classify_hsv(h,hues):
     """
-    HSV-space pixel classification based on gues and hue similarity.
+    HSV-space pixel classification based on hues and hue similarity.
     """
 
     best_hue = 0
@@ -39,6 +39,13 @@ def classify_hsv(h,hues):
 
 # TODO: Make this do the thing Nick said with canvas colors not being output
 def color_segment(image, paint_colors,canvas_color = [255,255,255]):
+    """
+    Segment an image based on the RBG color.
+    :param image: The image to be segmented
+    :param paint_colors: The available colors to segment into
+    :param canvas_color: The color of the canvas
+    :return: [Classified image, [binary images for each color], canvas binary image]
+    """
 
     rows, cols, _ = image.shape
 
@@ -68,8 +75,17 @@ def color_segment(image, paint_colors,canvas_color = [255,255,255]):
     return [image, bin_images, bin_image]
 
 def color_segment_hsv(image, paint_colors, canvas_color = [255,255,255]):
+    """
+    Segments colors based on HSV space, rather than RGB values.
+    :param image: The image to be segmented
+    :param paint_colors: The available colors to segment into
+    :param canvas_color: The color of the canvas
+    :return: [Classified image, [binary images for each color], canvas binary image]
+    """
+
     rows, cols, _ = image.shape
 
+    # Convert images to their HSV-space representations
     hsv_image = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
     hsv_paints = cv2.cvtColor(np.uint8([paint_colors]),cv2.COLOR_BGR2HSV)[0].tolist()
     hsv_canvas = cv2.cvtColor(np.uint8([[canvas_color]]),cv2.COLOR_BGR2HSV)[0][0].tolist()
@@ -83,13 +99,14 @@ def color_segment_hsv(image, paint_colors, canvas_color = [255,255,255]):
     h,s,v = cv2.split(np.uint8([hsv_colors]))
     h=h[0]
 
+    # Using the HSV classifier, classify each px
     for i in range(rows):
         for j in range(cols):
             image[i,j]=colors[classify_hsv(hsv_image.item(i,j,0), h)]
 
-    print "generating images"
     bin_images = [] # The 1-color images.
 
+    # Generate the binary images that represent each color
     for index in range(0, len(paint_colors)):
         bin_image = 255-np.zeros((rows,cols,1), np.uint8)
         bin_image[np.where((image == paint_colors[index]).all(axis = 2))] = [0]
