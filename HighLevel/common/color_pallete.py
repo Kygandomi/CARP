@@ -1,13 +1,3 @@
-blue = [255,0,0]
-green = [0,255,0]
-yellow = [0,233,255]
-red = [0,0,255]
-white = [255,255,255]
-black = [0,0,0]
-
-flask_green = [49, 190, 124]
-flask_blue = [167, 86, 17]
-
 colorMap = {
     "blue" : [255,0,0],
     "green" : [0,255,0],

@@ -1,9 +1,7 @@
 from common import util
 import numpy as np
-import cv2
 from scipy.cluster.vq import kmeans,vq
 
-#################################################################################
 
 def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
     sz = len(pallete)
@@ -43,28 +41,18 @@ def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
     bin_image = bin_images.pop(0)
     return [image, [np.delete(colors,0,axis=0),bin_images], [canvas_color,bin_image]]
 
-#################################################################################
 
 def color_quantize(image, n_colors=2, size_to=300):
     if size_to>0:
         small_img = util.resize(image,size_to)
-
-    # small_img = cv2.cvtColor(np.float32(small_img)*1./255, cv2.COLOR_BGR2LAB)
+    else:
+        raise ValueError
 
     pixel = np.reshape(small_img,(small_img.shape[0]*small_img.shape[1],3))
 
     # performing the clustering
     centroids,_ = kmeans(np.float32(pixel),n_colors,iter=200)
 
-    # out  = np.uint8(np.array([centroids]))
-    # cv2.cvtColor(np.array([centroids]), cv2.COLOR_LAB2BGR,out)
-    # centroids = out[0]
-
-    # L = centroids[:,:,0]*100/255
-    # a = centroids[:,:,1]+128
-    # b = centroids[:,:,2]+128
-
-    # centroids = np.uint8(cv2.merge((L,a,b)))
 
     return np.uint8(centroids)
 
@@ -72,13 +60,8 @@ def classify(img_colors, paint_colors):
     # Map old img_colors to their closest color in paint_colors
     
     colors = np.array(paint_colors)
-
-    # img_colors = cv2.cvtColor(np.array([img_colors],np.uint8), cv2.COLOR_BGR2LAB)[0]
-    # paint_colors = cv2.cvtColor(np.array([paint_colors],np.uint8), cv2.COLOR_BGR2LAB)[0]
-
     qnt,_ = vq(img_colors,paint_colors)
 
-    # return list of new paint colors plus canvas color
     return colors[qnt]
 
 def remove_canvas(img_colors,canvas_color = [255,255,255]):

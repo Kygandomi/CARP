@@ -18,4 +18,3 @@ colors, color_segments, segmented_image = color_segment(image, [yellow, red, blu
 
 for image in color_segments:
     util.display(util.open_image(image), "opened")
-    # util.save(util.open_image(image), "image")

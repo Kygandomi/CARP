@@ -7,12 +7,13 @@ class iterativeErosionRecomposer(object):
         self.desiredImage = image
         self.brush_thickness = args[0]
 
+
     def hasColor(self, img, color):
         x = 0
         while x < img.shape[0]:
             y = 0
             while y < img.shape[1]:
-                if img[x][y] == (color):
+                if img[x][y] == color:
                     return True
                 y += 1
             x += 1

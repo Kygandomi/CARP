@@ -40,11 +40,20 @@ class Camera(object):
         self.open(port)
 
     def isOpened(self):
+        """
+        :return: Boolean if camera is properly connected to Python object or not.
+        """
         if self.camera_capture is None:
             return False
         return self.camera_capture.isOpened()
 
     def open(self, port):
+        """
+        Attempts to create a connection to the camera. If it can't attach to port, it will look for other ports.
+        Also specifies a frame height and width.
+        :param port:
+        :return:
+        """
         if not isinstance(port,(list,tuple)):
             if not self.camera_capture is None:
                 self.camera_capture.release()
@@ -64,7 +73,6 @@ class Camera(object):
             return False
 
 
-    # TODO: Move this out of Camera object and into a utility area somewhere and pass camera object
     @staticmethod
     def correct_image(src_imset, painted_imset):
         """

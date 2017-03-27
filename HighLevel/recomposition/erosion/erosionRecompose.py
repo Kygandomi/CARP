@@ -2,12 +2,10 @@ import numpy as np
 import cv2
 from common import util
 
-
 class erosionRecomposer(object):
 
     def __init__(self, image, args):
         """
-
         :param image: The source image to recompose
         :param args: [brush_thickness]
         :return:

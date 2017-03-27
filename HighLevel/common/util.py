@@ -87,7 +87,9 @@ def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,25
 
     :param ideal: The ideal image that needs to be reshaped
     :param actual: The actual image.
-    :return:
+    :param: allowRotation: Whether or not we're going to allow it to rotate to preserve detail.
+    :param: padding_color: The color that is going to fill in the area created when resizing.
+    :return: The new image, resized and with buffer and rotation if neccecary and selected
     """
     h_perf, w_perf, _ = ideal.shape
     h_actual, w_actual, _ = actual.shape
@@ -149,7 +151,7 @@ def getPoints(img,color=255):
 
 def getNeighborPoints(pt,kernel = np.ones((3,3)),excludeSelf = True, sort = True):
     """ Returns a list of points which are neighbors of the given point.
-        Neighbors are depicted as '1' in the given kernel (Default 8-connected)"""
+    Neighbors are depicted as '1' in the given kernel (Default 8-connected)"""
     shape = kernel.shape
     anchor = (int(shape[0]/2),int(shape[1]/2))
     points = []
@@ -171,8 +173,8 @@ def getNeighborPoints(pt,kernel = np.ones((3,3)),excludeSelf = True, sort = True
 #TODO?: Modify to accept numpy array of points, thereby allowing the function to solve multiple points at once
 def mapToCanvas(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False):
     """ Maps the given point in one image shape to its corresponding point in another shape.
-        Options to automatically stretch and/or rotate the image in order to fill the destination shape
-        Also returns scale and offset (in the case of no stretching) or scaleX and scaleY"""
+    Options to automatically stretch and/or rotate the image in order to fill the destination shape
+    Also returns scale and offset (in the case of no stretching) or scaleX and scaleY"""
     src_rows, src_cols = src_shape
     dst_rows, dst_cols = dst_shape
 
@@ -205,7 +207,7 @@ def mapToCanvas(pt,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch 
 # TODO: Modify to accept updated LLT [[(x,y,W),...],...]
 def drawLines(pts,img,thickness=3,color=0,showSteps=False):
     """ Draws the given LLT of points to the given image.
-        Includes options for setting thickness or displaying each stroke individually"""
+    Includes options for setting thickness or displaying each stroke individually"""
     for i in range(len(pts)):
         if len(pts[i])==1:
             cv2.circle(img,(int(pts[i][0][0]),int(pts[i][0][1])),thickness,color,-1)
@@ -219,6 +221,11 @@ def drawLines(pts,img,thickness=3,color=0,showSteps=False):
     return img
 
 def mapLLT(LLT,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = False):
+    """
+    Maps an LLT from a source shape onto a destination shape
+    (So, from one source that generated the LLT such as an image, onto a canvas for example)
+    :return:
+    """
     out_pts = []
     for stroke in LLT:
         list_pts=[]
@@ -229,7 +236,7 @@ def mapLLT(LLT,src_shape,dst_shape = (8.5*25.4,11*25.4),orient=True,stretch = Fa
     return out_pts
 
 def drawLLT(LLT,img,thickness=2,color=0):
-    """ Displays the expected output of the given orders text file"""
+    """ Returns the expected output of the given set of orders"""
     lines = []
     for stroke in LLT:
         pt_list = []
@@ -261,6 +268,9 @@ def testLLT(LLT,scale = 1,paper_size = (8.5*25.4,11*25.4),thickness=2,color=0):
     return drawnImg
 
 def loadLLT(fname = 'orders.txt'):
+    """
+    Load in an LLT from a text file.
+    """
     LLT=[]
     with open(fname) as f:
         stroke = []
@@ -274,6 +284,9 @@ def loadLLT(fname = 'orders.txt'):
     return LLT
 
 def saveLLT(LLT,fname = 'orders.txt'):
+    """
+    Save the LLT directly to the specified text file.
+    """
     with open(fname,'w') as f:
         for path_i in range(len(LLT)):
             path = LLT[path_i]
@@ -283,6 +296,9 @@ def saveLLT(LLT,fname = 'orders.txt'):
             f.write('\n')
 
 def arrangeLLT(LLT):
+    """
+    Arrange an LLT so that when using naive painters, they will be better arranged for fast painting.
+    """
     oldLLT=list(LLT)
     newLLT=[]
 
@@ -316,6 +332,9 @@ def arrangeLLT(LLT):
 
 
 def reduceLLT(LLT,min_dist):
+    """
+    Reduces a set of indtructions to remove datapoints that are too close to have notable effects on the end result.
+    """
     prev_pt = [-10000,-10000]
 
     out_pts = []
@@ -324,22 +343,19 @@ def reduceLLT(LLT,min_dist):
         list_pts=[]
         for pt_i in range(0,len(path)-1,1):
             pt=path[pt_i]
-            if(np.linalg.norm(np.array(prev_pt[:2])-np.array(pt[:2]))>min_dist):
+            if np.linalg.norm(np.array(prev_pt[:2])-np.array(pt[:2]))>min_dist:
                 prev_pt = pt
                 list_pts.append(pt)
         list_pts.append(path[len(path)-1])
         out_pts.append(list_pts)
 
-    # paper_size = (11*25.4,8.5*25.4)
-    # drawnImg = draw(out_pts,np.array(255*np.ones((int(paper_size[0]),int(paper_size[1]))),dtype='uint8'),2)
-
-    # save(drawnImg, 'test_image')
-
     return out_pts
+
 
 def testOrders(path='orders.txt',scale = 2,paper_size = (8.5*25.4,11*25.4)):
     """	Displays the expected output of the given orders text file"""
     testLLT(loadLLT(path),scale,paper_size)
+
 
 def draw(pts,img,thickness=3):
     """this is what this does"""
@@ -349,8 +365,8 @@ def draw(pts,img,thickness=3):
         else:
             for c in range(len(pts[i])-1):
                 cv2.line(img,(int(pts[i][c][0]),int(pts[i][c][1])),(int(pts[i][c+1][0]),int(pts[i][c+1][1])),0,thickness)
-
     return img
+
 
 def readImage(fileName,path="resources/images/input/",type_flag = cv2.IMREAD_COLOR,size = 1000):
     read_file =  cv2.imread(path + fileName, type_flag)
@@ -360,12 +376,14 @@ def readImage(fileName,path="resources/images/input/",type_flag = cv2.IMREAD_COL
         return read_file
     return resize(read_file,size)
 
+
 #TODO: Make this smarter, just give higher directory and recursive search
 def getFileByName(fileName,path="resources/images/input/"):
     read_file =  cv2.imread(path + fileName, cv2.IMREAD_UNCHANGED)
     if read_file is None:
         raise ValueError('Error in attempt to read file. Are you sure the file is there?')
     return read_file
+
 
 #TODO: Make this smarter, just give higher directory and recursive search
 def getFileByNameNoAlpha(fileName,path="resources/images/input/"):
@@ -374,11 +392,13 @@ def getFileByNameNoAlpha(fileName,path="resources/images/input/"):
         raise ValueError('Error in attempt to read file. Are you sure the file is there?')
     return read_file
 
+
 def getFileByName_8UC1(fileName,path="resources/images/input/"):
     read_file =  cv2.imread(path + fileName, cv2.CV_8UC1)
     if read_file is None:
         raise ValueError('Error in attempt to read file. Are you sure the file is there?')
     return read_file
+
 
 # TODO Rename this so it's not misleading, also teach Odell how to properly do life
 def open_image(img, kernel_radius = 5, itera = 1):
