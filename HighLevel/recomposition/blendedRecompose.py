@@ -21,7 +21,9 @@ class blendedRecomposer(object):
     def recompose(self):
         skel_img = self.desiredImage.copy()
         erode_img = self.desiredImage.copy()
-        erode_img = cv2.dilate(erode_img, util.circleKernel(3), iterations = int(self.brush_thickness))
+        kernel = util.circleKernel(3)
+        print "Kernel type: ", type(kernel[0])
+        erode_img = cv2.dilate(erode_img, kernel, iterations = int(self.brush_thickness))
         skel_img = 255-cv2.bitwise_xor(skel_img,erode_img)
 
         # display(self.desiredImage,"original")
