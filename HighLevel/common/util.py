@@ -130,7 +130,8 @@ def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,25
 
 def circleKernel(radius,thickness = -1):
     """ Return a kernal representing a circle with the given radius and thickness (in pixels)"""
-    brush = cv2.circle(np.zeros((radius*2+1,radius*2+1)),(radius,radius),radius,1,thickness).astype('uint8')
+    brush = np.zeros((radius*2+1,radius*2+1))
+    cv2.circle(brush,(radius,radius),radius,1,thickness)
     return brush
 
 def overlay(back,front,backcolor=127,frontcolor=0):
