@@ -9,9 +9,9 @@ from common import color_pallete
 from decomposition.decomp_color.decomp_color import *
 import cv2
 
-desiredImg = readImage("cube.png")
+desiredImg = readImage("boat2.png")
 
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 2, [], color_pallete.white)
+segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 4, [], color_pallete.colorMap["white"])
 
 # recomposer = skeletonRecomposer(binImg, [2])
 # recomposer = iterativeErosionRecomposer(binImg, [2])
@@ -21,6 +21,8 @@ segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(d
 out=255*np.ones(segmented_image.shape,dtype='uint8')
 for i in range(len(color_segments)):
     binImg = color_segments[i]
+    binImg = 255*np.ones(binImg.shape, dtype='uint8')
+
     recomposer = blendedRecomposer(binImg, [2])
 
     LLT = recomposer.recompose()

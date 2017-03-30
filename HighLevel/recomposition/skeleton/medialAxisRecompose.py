@@ -43,9 +43,12 @@ def ptsInContours(contours,hierarchy,shape):
 
 def rawPolyDist(binImg):
     contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
-    hierarchy = hierarchy[0]
-
     rawPolyImg = np.array(-1.0*np.ones(binImg.shape),dtype='float32')
+
+    if hierarchy == None :
+        return rawPolyImg, contours, hierarchy, [] 
+
+    hierarchy = hierarchy[0]
 
     cntr_pts = ptsInContours(contours,hierarchy,binImg.shape)
     i_parents = parents(hierarchy)
@@ -129,6 +132,10 @@ class medialAxisRecomposer(object):
 
         rawPolyImg,contours,hierarchy,cntr_pts = rawPolyDist(255-self.binImg)
         # display(visualPolyDist(rawPolyImg))
+
+        if contours == None or hierarchy == None :
+            return []
+
         polyImg = scaledPolyDist(rawPolyImg)
         # display(polyImg)
 

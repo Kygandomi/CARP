@@ -25,8 +25,8 @@ class paint_orders():
 		# self.brush_offsets = [[3840, 70],[3840,560],[3840,1055],[3840,1560],[3840,2050],[3840,2545]]
 		# self.well_offsets = [[3340, 70],[3340,560],[3340,1055],[3340,1560],[3340,2050],[3340,2545]]
 
-		self.brush_offsets = [[3840,560],[3840,1055],[3840,1560],[3840,2050],[3840,2545]]
-		self.well_offsets = [[3340,560],[3340,1055],[3340,1560],[3340,2050],[3340,2545]]
+		self.brush_offsets = [[3830,75],[3840, 565],[3840,1060],[3830,1555],[3840,2050],[3840,2545]]
+		self.well_offsets = [[3340,75],[3340, 565],[3340,1060],[3830,1555],[3340,2050],[3340,2545]]
 
 
 	'Routine for sending a standard packet via Serial' 
@@ -96,6 +96,8 @@ class paint_orders():
 			offX=offset_point[0]
 			offY=offset_point[1]
 
+			self.send_standard_packet([offX-x_depth,offY,firgelli_lift_out_height,800,1,1,1])
+			sleep(1)
 			self.send_standard_packet([offX-x_depth,offY,firgelli_insert_height,800,1,1,1])
 			sleep(1)
 			self.send_standard_packet([offX,offY,firgelli_insert_height,800,1,1,1])
@@ -145,14 +147,27 @@ class paint_orders():
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
 		
-		element = [min(random.randint(offX,offX+80), 4220), min(random.randint(offY,offY+5), 2440), 0, 800, 1, 0, 0]
+		element = [min(random.randint(offX,offX+80), 4000), min(random.randint(offY,offY+5), 2440), 0, 800, 1, 0, 0]
 		self.send_standard_packet(element)
 
 		firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_down)
 
+		self.spiral(offX,offY)
+
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
+
+	def spiral(self,startX,startY,loops=2.0,max_r=70.0,n_pts=50):
+		for i in range(n_pts):
+			theta = loops*2*math.pi*(float(i)/n_pts)
+			r = max_r*(float(i)/n_pts)
+			x = math.cos(theta)*r
+			y = math.sin(theta)*r
+
+			element = [min(startX+x, 4220), min(startY+y, 2440), 0, 800, 1, 0, 0]
+			self.send_standard_packet(element)
+
 
 	def returnToStart(self):
 		print "Returning brush"
