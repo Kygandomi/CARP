@@ -9,9 +9,17 @@ from common import color_pallete
 from decomposition.decomp_color.decomp_color import *
 import cv2
 
-desiredImg = readImage("boat2.png")
+desiredImg = readImage("abstract1.png")
 
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, 4, [], color_pallete.colorMap["white"])
+pallete = [[0,0,0], [25,255,255], [255,255,255], [0,0,255]]
+segmented_image, [colors,color_segments,indeces], [canvas,canvas_segment,canvas_index]  = decompose(desiredImg, 4, pallete, color_pallete.colorMap["white"])
+
+display(segmented_image)
+
+print "Pallete: ", pallete
+print "Kmeans: ", colors
+print "resulting indeces", indeces
+
 
 # recomposer = skeletonRecomposer(binImg, [2])
 # recomposer = iterativeErosionRecomposer(binImg, [2])
@@ -21,7 +29,9 @@ segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(d
 out=255*np.ones(segmented_image.shape,dtype='uint8')
 for i in range(len(color_segments)):
     binImg = color_segments[i]
-    binImg = 255*np.ones(binImg.shape, dtype='uint8')
+    # binImg = 255*np.ones(binImg.shape, dtype='uint8')
+
+    display(binImg)
 
     recomposer = blendedRecomposer(binImg, [2])
 
@@ -30,7 +40,7 @@ for i in range(len(color_segments)):
     #LLT = mapLLT(LLT,binImg.shape)
 
     # display(testLLT(LLT,scale=3,thickness=2))
-    out = drawLLT(LLT,out,thickness=3,color = colors[i])
+    out = drawLLT(LLT,out,thickness=3,color = pallete[indeces[i]])
 display(out)
 
 print "Done"

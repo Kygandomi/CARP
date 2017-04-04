@@ -121,9 +121,12 @@ display(img_to_show)
 desiredImg = util.resize_with_buffer(desiredImg,img_to_show)
 
 # Initial Decomposition of image
-segmented_image, [colors,color_segments], [canvas,canvas_segment]  = decompose(desiredImg, n_colors,[], color_pallete.colorMap["white"])
+pallete = [[0,0,0], [25,255,255], [255,255,255], [0,0,255]]
+segmented_image, [colors,color_segments,indeces], [canvas,canvas_segment,canvas_index]  = decompose(desiredImg, n_colors, pallete, color_pallete.colorMap["white"])
 
-print "colors: ", colors
+print "outputted colors: ", colors
+print "outputted indeces: ", indeces
+# Todo: Use indeces to send robot to proper paint well
 
 display(segmented_image)
 
