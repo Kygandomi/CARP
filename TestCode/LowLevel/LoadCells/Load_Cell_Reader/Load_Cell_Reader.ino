@@ -57,25 +57,25 @@ void loop() {
   load3 = scale3.get_units();
   total = load1 + load2 + load3;
   
-  Serial.print("Load1: ");
-  Serial.print(load1, 2);
-  Serial.print(" lbs");
-  Serial.println();
-  
-  Serial.print("Load2: ");
-  Serial.print(load2, 2);
-  Serial.print(" lbs");
-  Serial.println();
-
-  Serial.print("Load3: ");
-  Serial.print(load3, 2);
-  Serial.print(" lbs");
-  Serial.println();
-
-  Serial.print("Total: ");
-  Serial.print(total, 2);
-  Serial.print(" lbs");
-  Serial.println();
+//  Serial.print("Load1: ");
+//  Serial.print(load1, 2);
+//  Serial.print(" lbs");
+//  Serial.println();
+//  
+//  Serial.print("Load2: ");
+//  Serial.print(load2, 2);
+//  Serial.print(" lbs");
+//  Serial.println();
+//
+//  Serial.print("Load3: ");
+//  Serial.print(load3, 2);
+//  Serial.print(" lbs");
+//  Serial.println();
+//
+//  Serial.print("Total: ");
+//  Serial.print(total, 2);
+//  Serial.print(" lbs");
+//  Serial.println();
 
 
   if(total > MAX){
@@ -83,9 +83,9 @@ void loop() {
   }
   out = total/MAX*15;
   
-  Serial.print("out: ");
-  Serial.print(out);
-  Serial.println();
+//  Serial.print("out: ");
+//  Serial.print(out);
+//  Serial.println();
 
   out0 = 0;
   out1 = 0;
@@ -109,13 +109,13 @@ void loop() {
     out0 = 1;
   }
 
-  Serial.print("THE OUTS: ");
-  Serial.print(out3);
-  Serial.print(out2);
-  Serial.print(out1);
-  Serial.print(out0);
-  Serial.println();
-  Serial.println();
+//  Serial.print("THE OUTS: ");
+//  Serial.print(out3);
+//  Serial.print(out2);
+//  Serial.print(out1);
+//  Serial.print(out0);
+//  Serial.println();
+//  Serial.println();
 
   digitalWrite(OUTPIN3, out3);
   digitalWrite(OUTPIN2, out2);
