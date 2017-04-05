@@ -20,7 +20,7 @@ from common import color_pallete
 from time import sleep
 import cv2
 
-def paint_imageset(segments, painter, cam, open_images = False):
+def paint_imageset(segments, painter, cam, color_indeces, open_images = False):
 	for index in range(len(segments)):
 		print "Index ", index
 		img = segments[index]
@@ -157,11 +157,12 @@ while calculate_error_threshold():
 
 	# Decompose the desired and canvas image
 	# Todo: Tie colors in actual paint wells to colors outputted by Kmeans
-	_, [_ ,color_segments_src], [_,_] = decompose(desiredImg, 0,palette, color_pallete.colorMap["white"])
-	_, [paint_colors, color_segments_act], [_,_] = decompose(painting, 0,palette, color_pallete.colorMap["white"])
+	# _, [_ ,color_segments_src], [_,_] = decompose(desiredImg, n_colors,palette, color_pallete.colorMap["white"])
+	_, [paint_colors, color_segments_act, pallete_indeces], [_,_] = decompose(painting, 0, palette, color_pallete.colorMap["white"])
 
 	print "***************************************"
 	print "Paint colors: ", paint_colors 
+	print "Pallete Indeces: ", pallete_indeces
 
 	# display(painting,"Canvas Image")
 	# for frame in color_segments_act:
@@ -174,4 +175,4 @@ while calculate_error_threshold():
 	# 	display(frame,"corrections")
 
 	# Paint Correctionst
-	paint_imageset(correction_segments, paint_routine, cam ,open_images = True )
+	paint_imageset(correction_segments, paint_routine, cam, open_images = True )

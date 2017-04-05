@@ -59,7 +59,6 @@ def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
     canvas_index = indeces.pop(0)
     return [image, [np.delete(colors,0,axis=0),bin_images,indeces], [canvas_color,bin_image, canvas_index]]
 
-
 def color_quantize(image, n_colors=2, size_to=300):
     if size_to>0:
         small_img = util.resize(image,size_to)
@@ -159,46 +158,6 @@ def classify(img_colors, paint_colors):
             min_combo= combo
 
     return np.array(paint_colors), np.array(min_combo)
-
-    
-    # closest_match = []
-    # for img_color in img_colors:
-    #     smallest_i = -1
-    #     smallest_deltaE = 9999999999
-    #     # print "******"
-    #     # print "For img_color: ", img_color
-
-    #     for pos in range(len(paint_colors)):
-    #         paint_color = paint_colors[pos]
-    #         delta_e = delta_e_cie1994(img_color, paint_color)
-    #         # print "diff: ", delta_e 
-    #         # print "paint_color ", paint_color
-
-    #         if delta_e < smallest_deltaE: 
-    #             smallest_deltaE = delta_e
-    #             smallest_i = pos
-
-    #     closest_match.append(smallest_i)
-    # print "closest_match", closest_match
-    # return paint_colors, closest_match
-
-# def elementsOf(some_list,elements):
-#     out = []
-#     for i in elements:
-#         out.append(some_list[i])
-#     return out;
-
-# def mergeCombos(base,other):
-#     out = []
-#     if len(base)==0:
-#         return other
-#     if len(other)==0:
-#         return base
-
-#     for e1 in base:
-#         for e2 in other:
-#             out.append(e1.extend(e2))
-#     return out
 
 def classify2(img_colors, paint_colors):
     # Map old img_colors to their closest color in paint_colors
