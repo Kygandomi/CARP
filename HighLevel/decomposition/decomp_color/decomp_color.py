@@ -2,12 +2,13 @@ from common import util
 import numpy as np
 from scipy.cluster.vq import kmeans,vq
 import math
+import cv2
 from colormath.color_objects import sRGBColor, LabColor 
 from colormath.color_conversions import convert_color
-from colormath.color_diff import delta_e_cie1994
+from colormath.color_diff import delta_e_cie2000
 from itertools import permutations, combinations, combinations_with_replacement
 
-def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
+def decomposeOLD(image,n_points,pallete = [], canvas_color = [255,255,255]):
     sz = len(pallete)
     paint_colors=[]
     indeces = []
@@ -59,7 +60,48 @@ def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
     canvas_index = indeces.pop(0)
     return [image, [np.delete(colors,0,axis=0),bin_images,indeces], [canvas_color,bin_image, canvas_index]]
 
-def color_quantize(image, n_colors=2, size_to=300):
+def decompose(image,pallete,n_colors=0,canvas_color = None):
+
+    print "pallete: ",pallete
+
+    if not (canvas_color is None):
+        pallete.append(canvas_color)
+        n_colors+=1
+
+    print "pallete: ",pallete
+
+    if(n_colors>0):
+        #TODO: change image to be composed of pallete colors instead of kmeans colors
+        image,bin_images,colors = decompose_kMeans(image,n_colors)
+        colors , indeces = mapColors(colors, pallete)
+        img_list = []
+        for i in range(len(indeces)):
+            img_list.append((indeces[i],bin_images[i],colors[i]))
+        img_list.sort()
+        bin_images=[]
+        colors=[]
+        indeces=[]
+        for t in img_list:
+            indeces.append(t[0])
+            bin_images.append(t[1])
+            colors.append(t[2])
+    else:
+        image,bin_images,colors,indeces = decompose_simple(image,pallete)
+
+    print "indeces: ", indeces
+    print "colors: ", colors
+    if not (canvas_color is None):
+        if(len(pallete)-1) in indeces:
+            canvas_index = indeces.index(len(pallete)-1);
+            bin_images.pop(canvas_index)
+            colors.pop(canvas_index)
+            indeces.pop(canvas_index)
+     print "indeces: ", indeces
+    print "colors: ", colors
+
+    return image , bin_images, colors , indeces
+
+def color_quantize(image, n_colors=2, size_to=500):
     if size_to>0:
         small_img = util.resize(image,size_to)
     else:
@@ -71,6 +113,71 @@ def color_quantize(image, n_colors=2, size_to=300):
     centroids,_ = kmeans(np.float32(pixel),n_colors,iter=200)
 
     return np.uint8(centroids)
+
+def decompose_simple(image, colors):
+    # colors_lab = []
+    # for color in colors:
+    #     color_lab = rgb2lab(color)
+    #     # colors_lab.append(color_lab)
+    #     colors_lab.append([color_lab.lab_l,color_lab.lab_a,color_lab.lab_b])
+
+    image_lab = image.astype('float32') * 1./255
+    image_lab = cv2.cvtColor(image_lab,cv2.COLOR_BGR2LAB)
+
+    colors_lab = np.array(colors).astype('float32') * 1./255
+    colors_lab = cv2.cvtColor(np.array([colors_lab]),cv2.COLOR_BGR2LAB)[0]
+
+    pixel = np.reshape(image_lab,(image.shape[0]*image.shape[1],3))
+    qnt,_ = vq(pixel,colors_lab)
+
+    # qnt=[]
+    # for p in pixel:
+    #     p_lab = rgb2lab(p)
+    #     min_error =999999
+    #     min_index = -1
+    #     c_index=0
+    #     for c_lab in colors_lab:
+    #         err = delta_e_cie2000(p_lab, c_lab)
+    #         if(err<min_error):
+    #             min_error=err
+    #             min_index = c_index
+    #         c_index+=1
+    #     qnt.append(min_index);
+    centers_idx = np.reshape(qnt,(image.shape[0],image.shape[1]))
+
+    colors=np.array(colors)
+    image = colors[centers_idx]
+    image = np.uint8(image)
+
+    bin_images = [] # The 1-color images.
+
+    for index in range(0, len(colors)):
+        # Create empty image
+        bin_image = 255-np.zeros((image.shape[0],image.shape[1],1), np.uint8)
+        bin_image[np.where((centers_idx == index))] = [0]
+        bin_images.append(bin_image) # Add to the list of color specific images.
+
+    return image , bin_images , colors, range(len(colors))
+
+def decompose_kMeans(image, n_colors):
+    colors = color_quantize(image,n_colors)
+
+    pixel = np.reshape(image,(image.shape[0]*image.shape[1],3))
+    qnt,_ = vq(pixel,colors)
+    centers_idx = np.reshape(qnt,(image.shape[0],image.shape[1]))
+
+    image = colors[centers_idx]
+    image = np.uint8(image)
+
+    bin_images = [] # The 1-color images.
+
+    for index in range(0, len(colors)):
+        # Create empty image
+        bin_image = 255-np.zeros((image.shape[0],image.shape[1],1), np.uint8)
+        bin_image[np.where((centers_idx == index))] = [0]
+        bin_images.append(bin_image) # Add to the list of color specific images.
+
+    return image , bin_images , colors
 
 def rgb2lab ( inputColor ) :
     color_rgb = sRGBColor(inputColor[2], inputColor[1], inputColor[0])
@@ -91,28 +198,28 @@ def convert(rgb_img, rgb_paint):
 
     return img_lab, paint_lab
 
-def find_max_error(img_colors, paint_colors):
-    max_error = 0
-    for index in range(len(img_colors)):
-        delta_e = delta_e_cie1994(img_colors[index], paint_colors[index])
-        if delta_e > max_error:
-            max_error = delta_e
+# def find_max_error(img_colors, paint_colors):
+#     max_error = 0
+#     for index in range(len(img_colors)):
+#         delta_e = delta_e_cie2000(img_colors[index], paint_colors[index])
+#         if delta_e > max_error:
+#             max_error = delta_e
 
-    return max_error
+#     return max_error
 
-def find_avg_error(img_colors, paint_colors):
-    avg = 0
-    for index in range(len(img_colors)):
-        delta_e = delta_e_cie1994(img_colors[index], paint_colors[index])
-        avg += float(delta_e)/len(img_colors)
+# def find_avg_error(img_colors, paint_colors):
+#     avg = 0
+#     for index in range(len(img_colors)):
+#         delta_e = delta_e_cie2000(img_colors[index], paint_colors[index])
+#         avg += float(delta_e)/len(img_colors)
 
-    return avg
+#     return avg
 
 def find_error(img_colors, paint_colors):
     max_error = 0
     avg = 0
     for index in range(len(img_colors)):
-        delta_e = delta_e_cie1994(img_colors[index], paint_colors[index])
+        delta_e = delta_e_cie2000(img_colors[index], paint_colors[index])
         print delta_e
         avg += float(delta_e)/len(img_colors)
         if delta_e > max_error:
@@ -120,7 +227,11 @@ def find_error(img_colors, paint_colors):
 
     return avg
 
-def classify(img_colors, paint_colors):
+def mapColors(img_colors, paint_colors):
+    '''Return an array of img_colors containing only colors within paint colors. 
+    Also returns an array conatining the ideces in paint_colors from which new colors were found'''
+
+    colors_lab, pallete_lab = convert(img_colors, paint_colors)
 
     # Get the number of paint colors and kmeans colors
     num_colors_pallete = len(paint_colors) # N 
@@ -144,20 +255,23 @@ def classify(img_colors, paint_colors):
 
     unique_permutations = list(unique_permutations)
 
-    print "n permutation: ", len(unique_permutations)
-
     min_combo = []
-    paint_colors = np.array(paint_colors)
-    min_error = find_max_error(img_colors, paint_colors[np.array(unique_permutations[0])])
+    pallete_lab = np.array(pallete_lab)
+    min_error = find_error(colors_lab, pallete_lab[np.array(unique_permutations[0])])
     for combo in unique_permutations:
         # print "paint combo", temp_paint_combo
-        err = find_error(img_colors , paint_colors[np.array(combo)])
-        print "err: ",err, " | ",combo
+        err = find_error(colors_lab , pallete_lab[np.array(combo)])
         if err < min_error:
             min_error = err
             min_combo= combo
 
-    return np.array(paint_colors), np.array(min_combo)
+    print min_combo
+    print paint_colors
+
+    paint_colors = np.array(paint_colors)
+    colors = paint_colors[np.array(min_combo)]
+
+    return np.array(colors), np.array(min_combo)
 
 def classify2(img_colors, paint_colors):
     # Map old img_colors to their closest color in paint_colors

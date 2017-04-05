@@ -33,48 +33,27 @@ def paint_imageset(segments, painter, cam, color_indeces, open_images = False):
 		# recomposer = iterativeErosionRecomposer(img, [1])
 		recomposer = blendedRecomposer(img, [3]) 
 		LLT = recomposer.recompose()
-		LLT = util.arrangeLLT(LLT)
-		# print LLT
-		# display(img)
-		# display(testLLT(LLT,1,img.shape))
-		LLT = cam.canvas_to_gantry(LLT)
+		if len(LLT>0):
+			LLT = util.arrangeLLT(LLT)
+			# print LLT
+			# display(img)
+			display(testLLT(LLT,1,img.shape))
+			LLT = cam.canvas_to_gantry(LLT)
 
-		# print "LLT to Paint as been saved to disc: ", LLT
-		# util.output(testLLT(LLT,3), "Drawn LLT")
-		print "Fetching new brush"
-		painter.getBrush(index) 
+			# print "LLT to Paint as been saved to disc: ", LLT
+			# util.output(testLLT(LLT,3), "Drawn LLT")
+			print color_indeces
+			print "Fetching new brush"
+			painter.getBrush(color_indeces[index])
 
-		print "Painting LLT..."
-		painter.Paint(LLT)
+			print "Painting LLT..."
+			painter.Paint(LLT)
 
-		print "LLT Completed."
+			print "LLT Completed."
 
 	painter.returnToStart()
 	sleep(5)
 	print "First pass has been completed."
-
-def setup_communications():
-	# Establish Serial Connection with the Arduino
-	baud = 115200
-	ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9', '/dev/cu.usbmodem1421']
-	could_connect = False
-
-	# Seek arduino connection
-	for i in range(len(ports_list)):
-		port = ports_list[i]
-		ser_obj = ser_comm.serial_comms(port, baud)
-		if ser_obj.connect():
-			print "Serial Comm Connected"
-			could_connect = True
-			break
-
-	# Comment back in when we have an actual serial port
-	if not could_connect :
-		raise Exception('Could not connect via Serial')
-
-	# Sleep to verify a solid connection
-	sleep(1)
-	return ser_obj
 
 def setup_communications_eth():
 	# Establish Serial Connection with the Arduino
@@ -103,7 +82,8 @@ print "Initialization"
 
 desiredImg = util.readImage("boat2.png", "resources/images/input/")
 n_colors = 4
-palette = color_pallete.build("black white red yellow")
+canvas_color = color_pallete.colorMap["white"]
+pallete = color_pallete.build("black red yellow")
 
 # Initialize Camera Object
 cam = Camera([1,0])
@@ -121,14 +101,13 @@ display(img_to_show)
 desiredImg = util.resize_with_buffer(desiredImg,img_to_show)
 
 # Initial Decomposition of image
-pallete = [[0,0,0], [25,255,255], [255,255,255], [0,0,255]]
-segmented_image, [colors,color_segments,indeces], [canvas,canvas_segment,canvas_index]  = decompose(desiredImg, n_colors, pallete, color_pallete.colorMap["white"])
+segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,n_colors,canvas_color=canvas_color)
 
 print "outputted colors: ", colors
 print "outputted indeces: ", indeces
 # Todo: Use indeces to send robot to proper paint well
 
-display(segmented_image)
+display(segmented_image, "Segmented Image")
 
 ########################################################################################################################
 ## SETUP COMMUNICATIONS
@@ -137,8 +116,8 @@ print "Connecting to Controller..."
 com_obj = setup_communications_eth()
 paint_routine = PaintOrders.paint_orders(com_obj)
 
-# Inital Paint Sequence for Image
-paint_imageset(color_segments, paint_routine, cam,True)
+# # Inital Paint Sequence for Image
+# paint_imageset(color_segments, paint_routine, cam,indeces,True)
 
 ########################################################################################################################
 # FEEDBACK LOOP
@@ -148,17 +127,8 @@ while calculate_error_threshold():
 	print "Feedback Loop..."
 	# Get a new canvas image
 	painting = cam.get_canvas()
-	# util.save(painting, "PaintingFileAtStartOfFeedbackLoop")
-	rows, cols, _ = painting.shape
 
-	# TODO Remember to remove this when we move to PMD and/or fix the transform issue
-	# M = np.float32([[1,0,12],[0,1,21]])
-	# painting = cv2.warpAffine(painting,M,(cols,rows))
-
-	# Decompose the desired and canvas image
-	# Todo: Tie colors in actual paint wells to colors outputted by Kmeans
-	# _, [_ ,color_segments_src], [_,_] = decompose(desiredImg, n_colors,palette, color_pallete.colorMap["white"])
-	_, [paint_colors, color_segments_act, pallete_indeces], [_,_] = decompose(painting, 0, palette, color_pallete.colorMap["white"])
+	segmented_image_act, color_segments_act, paint_colors, pallete_indeces = decompose(painting, pallete,0,canvas_color=canvas_color)
 
 	print "***************************************"
 	print "Paint colors: ", paint_colors 
@@ -169,10 +139,14 @@ while calculate_error_threshold():
 	# 	display(frame,"actual bin_img")
 
 	# Generate correction images
-	correction_segments, canvas_corrections = cam.correct_image(color_segments_src,color_segments_act)
+	correction_segments, canvas_corrections = cam.correct_image(color_segments,color_segments_act)
+
+	display(segmented_image_act,"Segmented Canvas")
+	for index in range(len(correction_segments)):
+		display(correction_segments[index],str(paint_colors[index])+" at "+str(pallete_indeces[index]))
 
 	# for frame in correction_segments:
 	# 	display(frame,"corrections")
 
 	# Paint Correctionst
-	paint_imageset(correction_segments, paint_routine, cam, open_images = True )
+	paint_imageset(correction_segments, paint_routine, cam, indeces,open_images = True )

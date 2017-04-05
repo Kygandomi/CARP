@@ -9,25 +9,25 @@ from common import color_pallete
 from decomposition.decomp_color.decomp_color import *
 import cv2
 
-color1 = np.array(color_pallete.colorMap["green"])
-color_rgb1 = sRGBColor(color1[2], color1[1], color1[0])
-color_lab1 = convert_color(color_rgb1, LabColor)
+# color1 = np.array(color_pallete.colorMap["green"])
+# color_rgb1 = sRGBColor(color1[2], color1[1], color1[0])
+# color_lab1 = convert_color(color_rgb1, LabColor)
 
-color2 = [54,191,127]
-color_rgb2 = sRGBColor(color2[2], color2[1], color2[0])
-color_lab2 = convert_color(color_rgb2, LabColor)
-err = delta_e_cie1994(color_lab1, color_lab2)
+# color2 = [54,191,127]
+# color_rgb2 = sRGBColor(color2[2], color2[1], color2[0])
+# color_lab2 = convert_color(color_rgb2, LabColor)
+# err = delta_e_cie1994(color_lab1, color_lab2)
 
-print "err: ", err, " | ",color1, " - ", color2
+# print "err: ", err, " | ",color1, " - ", color2
 
-desiredImg = readImage("flask.png")
+desiredImg = readImage("boat2.png")
 
 pallete = [[0,0,0], [0,255,255], [255,255,255], [0,0,255]]
-pallete = color_pallete.build("black red yellow white green blue")
-segmented_image, [colors,color_segments,indeces], [canvas,canvas_segment,canvas_index] = decompose(desiredImg, 3, [], color_pallete.colorMap["white"])
+pallete = color_pallete.build("black red yellow white")
+segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,0)
 
-display(desiredImg)
-display(segmented_image)
+display(desiredImg,"desired")
+display(segmented_image,"segmented")
 
 print "Pallete: ", pallete
 print "Kmeans: ", colors
