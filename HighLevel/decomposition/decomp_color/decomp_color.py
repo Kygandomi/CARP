@@ -10,14 +10,19 @@ from itertools import permutations, combinations, combinations_with_replacement
 def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
     sz = len(pallete)
     paint_colors=[]
+    indeces = []
+    canvas_index = -1;
     # Just use pallete
     if n_points < 1:
         paint_colors.extend(pallete)
         if canvas_color in paint_colors:
-            paint_colors.remove(canvas_color)
+            paint_colors,canvas_index = remove_canvas(paint_colors,canvas_color)
+            indeces = range(sz)
+            indeces.pop(canvas_index)
+            indeces.insert(0,canvas_index)
     else:
         paint_colors = color_quantize(image,n_points)
-        paint_colors = remove_canvas(paint_colors,canvas_color)
+        paint_colors,_ = remove_canvas(paint_colors,canvas_color)
 
     colors = np.concatenate((np.array([canvas_color]),np.array(paint_colors)))
 
@@ -25,12 +30,18 @@ def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
     pixel = np.reshape(image,(image.shape[0]*image.shape[1],3))
     qnt,_ = vq(pixel,colors)
     centers_idx = np.reshape(qnt,(image.shape[0],image.shape[1]))
-    indeces = []
 
     if (sz > 0) and n_points>0:
         colors_lab, pallete_lab = convert(colors, pallete)
         colors_x, indeces = classify(colors_lab, pallete_lab)
-        # colors = pallete
+        pallete = np.array(pallete)
+        colors = pallete[indeces]
+        
+        # colors = np.array(elementsOf(pallete,indeces));
+    elif sz>0:
+        indeces = range(sz)
+    else:
+        indeces = range(n_points)
 
     image = colors[centers_idx]
     image = np.uint8(image)
@@ -38,9 +49,8 @@ def decompose(image,n_points,pallete = [], canvas_color = [255,255,255]):
     bin_images = [] # The 1-color images.
 
     for index in range(0, len(colors)):
-        # Create a deep copy of the image
+        # Create empty image
         bin_image = 255-np.zeros((image.shape[0],image.shape[1],1), np.uint8)
-        #bin_image[np.where((image == paint_colors[index]).all(axis = 2))] = [0]
         bin_image[np.where((centers_idx == index))] = [0]
         bin_images.append(bin_image) # Add to the list of color specific images.
     
@@ -61,11 +71,10 @@ def color_quantize(image, n_colors=2, size_to=300):
     # performing the clustering
     centroids,_ = kmeans(np.float32(pixel),n_colors,iter=200)
 
-
     return np.uint8(centroids)
 
 def rgb2lab ( inputColor ) :
-    color_rgb = sRGBColor(inputColor[0], inputColor[1], inputColor[2])
+    color_rgb = sRGBColor(inputColor[2], inputColor[1], inputColor[0])
     color_lab = convert_color(color_rgb, LabColor)
     return color_lab
 
@@ -92,35 +101,64 @@ def find_max_error(img_colors, paint_colors):
 
     return max_error
 
+def find_avg_error(img_colors, paint_colors):
+    avg = 0
+    for index in range(len(img_colors)):
+        delta_e = delta_e_cie1994(img_colors[index], paint_colors[index])
+        avg += float(delta_e)/len(img_colors)
+
+    return avg
+
+def find_error(img_colors, paint_colors):
+    max_error = 0
+    avg = 0
+    for index in range(len(img_colors)):
+        delta_e = delta_e_cie1994(img_colors[index], paint_colors[index])
+        print delta_e
+        avg += float(delta_e)/len(img_colors)
+        if delta_e > max_error:
+            max_error = delta_e
+
+    return avg
+
 def classify(img_colors, paint_colors):
 
     # Get the number of paint colors and kmeans colors
     num_colors_pallete = len(paint_colors) # N 
     num_colors_kmeans = len(img_colors) # R
 
+    min_uses = (num_colors_kmeans)/(num_colors_pallete)
+    color_options = []
+    for i in range(min_uses):
+        color_options.extend(range(num_colors_pallete))
+
     # Get all possible combinations
-    sorted_combinations = combinations(range(num_colors_pallete), num_colors_kmeans)
+    sorted_combinations = combinations(range(num_colors_pallete), num_colors_kmeans%num_colors_pallete)
+
     unique_permutations = set()
     
     for combo in sorted_combinations:
-        for p in permutations(combo): 
+        combo = list(combo)
+        combo.extend(color_options)
+        for p in permutations(combo):
             unique_permutations.add(p)
 
+    unique_permutations = list(unique_permutations)
+
+    print "n permutation: ", len(unique_permutations)
+
     min_combo = []
-    min_error = find_max_error(img_colors, paint_colors)
+    paint_colors = np.array(paint_colors)
+    min_error = find_max_error(img_colors, paint_colors[np.array(unique_permutations[0])])
     for combo in unique_permutations:
-        temp_paint_combo = []
-        for i in range(len(combo)):
-            temp_paint_combo.append(paint_colors[combo[i]])
-
         # print "paint combo", temp_paint_combo
-        err = find_max_error(img_colors , temp_paint_combo)
-
+        err = find_error(img_colors , paint_colors[np.array(combo)])
+        print "err: ",err, " | ",combo
         if err < min_error:
             min_error = err
             min_combo= combo
 
-    return paint_colors, min_combo
+    return np.array(paint_colors), np.array(min_combo)
 
     
     # closest_match = []
@@ -144,6 +182,23 @@ def classify(img_colors, paint_colors):
     # print "closest_match", closest_match
     # return paint_colors, closest_match
 
+# def elementsOf(some_list,elements):
+#     out = []
+#     for i in elements:
+#         out.append(some_list[i])
+#     return out;
+
+# def mergeCombos(base,other):
+#     out = []
+#     if len(base)==0:
+#         return other
+#     if len(other)==0:
+#         return base
+
+#     for e1 in base:
+#         for e2 in other:
+#             out.append(e1.extend(e2))
+#     return out
 
 def classify2(img_colors, paint_colors):
     # Map old img_colors to their closest color in paint_colors
@@ -158,4 +213,4 @@ def remove_canvas(img_colors,canvas_color = [255,255,255]):
     # Remove that color from list of required paint colors
     img_colors=np.delete(img_colors,best_index,axis=0)
 
-    return img_colors
+    return img_colors, best_index

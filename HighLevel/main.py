@@ -9,11 +9,24 @@ from common import color_pallete
 from decomposition.decomp_color.decomp_color import *
 import cv2
 
-desiredImg = readImage("abstract1.png")
+color1 = np.array(color_pallete.colorMap["green"])
+color_rgb1 = sRGBColor(color1[2], color1[1], color1[0])
+color_lab1 = convert_color(color_rgb1, LabColor)
 
-pallete = [[0,0,0], [25,255,255], [255,255,255], [0,0,255]]
-segmented_image, [colors,color_segments,indeces], [canvas,canvas_segment,canvas_index]  = decompose(desiredImg, 4, pallete, color_pallete.colorMap["white"])
+color2 = [54,191,127]
+color_rgb2 = sRGBColor(color2[2], color2[1], color2[0])
+color_lab2 = convert_color(color_rgb2, LabColor)
+err = delta_e_cie1994(color_lab1, color_lab2)
 
+print "err: ", err, " | ",color1, " - ", color2
+
+desiredImg = readImage("flask.png")
+
+pallete = [[0,0,0], [0,255,255], [255,255,255], [0,0,255]]
+pallete = color_pallete.build("black red yellow white green blue")
+segmented_image, [colors,color_segments,indeces], [canvas,canvas_segment,canvas_index] = decompose(desiredImg, 3, [], color_pallete.colorMap["white"])
+
+display(desiredImg)
 display(segmented_image)
 
 print "Pallete: ", pallete
@@ -31,8 +44,6 @@ for i in range(len(color_segments)):
     binImg = color_segments[i]
     # binImg = 255*np.ones(binImg.shape, dtype='uint8')
 
-    display(binImg)
-
     recomposer = blendedRecomposer(binImg, [2])
 
     LLT = recomposer.recompose()
@@ -40,7 +51,7 @@ for i in range(len(color_segments)):
     #LLT = mapLLT(LLT,binImg.shape)
 
     # display(testLLT(LLT,scale=3,thickness=2))
-    out = drawLLT(LLT,out,thickness=3,color = pallete[indeces[i]])
+    out = drawLLT(LLT,out,thickness=3,color = colors[i])
 display(out)
 
 print "Done"

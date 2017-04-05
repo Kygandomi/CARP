@@ -402,12 +402,12 @@ def getFileByName_8UC1(fileName,path="resources/images/input/"):
 
 # TODO Rename this so it's not misleading, also teach Odell how to properly do life
 def open_image(img, kernel_radius = 5, itera = 1):
-    """Assumes image has black image on white background"""
+    """Assumes image has black image on white background. Emiminates small black regions"""
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kernel_radius,kernel_radius))
     return cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=itera)
 
 
 def close_image(img, kernel_radius = 5, itera = 1):
-    """Assumes image has black image on white background"""
+    """Assumes image has black image on white background. Eliminates small white regions"""
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kernel_radius,kernel_radius))
     return cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel, iterations=itera)

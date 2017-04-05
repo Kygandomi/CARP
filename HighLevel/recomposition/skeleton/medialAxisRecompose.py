@@ -123,7 +123,8 @@ def pathFilter(path):
 class medialAxisRecomposer(object):
 
     def __init__(self, image, args):
-        self.binImg = cv2.erode(image,circleKernel(1),iterations=1)
+        opened = open_image(image,5,1);
+        self.binImg = cv2.erode(opened,circleKernel(1),iterations=1)
 
     def recompose(self):
 
