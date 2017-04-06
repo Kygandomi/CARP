@@ -7,6 +7,7 @@ from colormath.color_objects import sRGBColor, LabColor
 from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie2000
 from itertools import permutations, combinations, combinations_with_replacement
+from copy import deepcopy
 
 def decomposeOLD(image,n_points,pallete = [], canvas_color = [255,255,255]):
     sz = len(pallete)
@@ -60,7 +61,9 @@ def decomposeOLD(image,n_points,pallete = [], canvas_color = [255,255,255]):
     canvas_index = indeces.pop(0)
     return [image, [np.delete(colors,0,axis=0),bin_images,indeces], [canvas_color,bin_image, canvas_index]]
 
-def decompose(image,pallete,n_colors=0,canvas_color = None):
+def decompose(image,input_pallete,n_colors=0,canvas_color = None):
+
+    pallete = deepcopy(input_pallete)
 
     print "pallete: ",pallete
 
@@ -69,14 +72,18 @@ def decompose(image,pallete,n_colors=0,canvas_color = None):
         n_colors+=1
 
     print "pallete: ",pallete
+    print "N_colors: ", n_colors
 
     if(n_colors>0):
         #TODO: change image to be composed of pallete colors instead of kmeans colors
+        print "KMEANS"
         image,bin_images,colors = decompose_kMeans(image,n_colors)
         colors , indeces = mapColors(colors, pallete)
         img_list = []
         for i in range(len(indeces)):
             img_list.append((indeces[i],bin_images[i],colors[i]))
+
+        # print "Img List", img_list 
         img_list.sort()
         bin_images=[]
         colors=[]
@@ -86,6 +93,7 @@ def decompose(image,pallete,n_colors=0,canvas_color = None):
             bin_images.append(t[1])
             colors.append(t[2])
     else:
+        print "SIMPLE"
         image,bin_images,colors,indeces = decompose_simple(image,pallete)
 
     print "indeces: ", indeces
@@ -94,9 +102,9 @@ def decompose(image,pallete,n_colors=0,canvas_color = None):
         if(len(pallete)-1) in indeces:
             canvas_index = indeces.index(len(pallete)-1);
             bin_images.pop(canvas_index)
-            colors.pop(canvas_index)
+            colors = colors[:-1]
             indeces.pop(canvas_index)
-     print "indeces: ", indeces
+    print "indeces: ", indeces
     print "colors: ", colors
 
     return image , bin_images, colors , indeces
@@ -220,7 +228,7 @@ def find_error(img_colors, paint_colors):
     avg = 0
     for index in range(len(img_colors)):
         delta_e = delta_e_cie2000(img_colors[index], paint_colors[index])
-        print delta_e
+        # print delta_e
         avg += float(delta_e)/len(img_colors)
         if delta_e > max_error:
             max_error = delta_e
@@ -265,8 +273,8 @@ def mapColors(img_colors, paint_colors):
             min_error = err
             min_combo= combo
 
-    print min_combo
-    print paint_colors
+    # print min_combo
+    # print paint_colors
 
     paint_colors = np.array(paint_colors)
     colors = paint_colors[np.array(min_combo)]
