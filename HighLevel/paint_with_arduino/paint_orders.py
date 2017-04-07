@@ -28,7 +28,7 @@ class paint_orders():
 		# self.brush_offsets = [[3830,75],[3840, 565],[3840,1060],[3830,1555],[3840,2050],[3840,2545]]
 		# self.well_offsets = [[3340,75],[3340, 565],[3340,1060],[3830,1555],[3340,2050],[3340,2545]]
 
-		self.brush_offsets = [[3862,75],[3862, 565],[3863,1052],[3830,1555],[3840,2050],[3840,2545]]
+		self.brush_offsets = [[3862,75],[3863, 565],[3845,1052],[3830,1555],[3840,2050],[3840,2545]]
 		self.well_offsets = [[3340,75],[3340, 565],[3340,1052],[3830,1555],[3340,2050],[3340,2545]]
 
 
@@ -191,7 +191,7 @@ class paint_orders():
 		scale_val = 1
 
 		# Record Fergelli Height Values
-		down_val = 390
+		down_val = 360
 		up_val = 480
 		final_up_val = 800
 
@@ -230,7 +230,7 @@ class paint_orders():
 				# The brush is currently down and paint is being applied, so increment paint distance
 				if not put_brush_down:
 					paint_distance += math.sqrt((dx-(brush_stroke[max(0,point_index-1)][0]*scale_val))**2 + (dy-(brush_stroke[max(0,point_index-1)][1]*scale_val))**2)
-					print "distance: ", paint_distance
+					# print "distance: ", paint_distance
 
 				# The brush needs to be put back down
 				if put_brush_down: 

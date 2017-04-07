@@ -74,7 +74,7 @@ class ethernet_comms():
 			read_val = self.recieve_packet()
 			parse_val = self.parse_packet(read_val)
 			sleep(0.01)
-		print "Packet Sent and Motion Complete"
+		# print "Packet Sent and Motion Complete"
 		return parse_val
 
 

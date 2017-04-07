@@ -9,6 +9,8 @@ from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from recomposition.skeleton.skeletonRecompose import *
 from recomposition.blendedRecompose import *
 
+from recomposition.skeleton.medialAxisRecompose import *
+
 from decomposition.decomp_color.decomp_color import *
 
 from camera.CanvasCamera import Camera
@@ -17,7 +19,7 @@ from camera.CameraException import *
 from common.util import *
 from common import color_pallete
 
-from time import sleep
+from time import *
 import cv2
 
 def paint_imageset(segments, painter, cam, color_indeces, open_images = False):
@@ -31,8 +33,16 @@ def paint_imageset(segments, painter, cam, color_indeces, open_images = False):
 		
 		# recomposer = skeletonRecomposer(img, [])
 		# recomposer = iterativeErosionRecomposer(img, [1])
+		# recomposer = medialAxisRecomposer(img, [1])
 		recomposer = blendedRecomposer(img, [3]) 
 		LLT = recomposer.recompose()
+
+		# for seg in segments:
+		# 	seg = open_image(seg, kernel_radius = 5)
+		# 	recomposer = medialAxisRecomposer(seg, [1])
+		# 	LLT = recomposer.recompose()
+		# 	display(testLLT(LLT,1,img.shape))
+
 		if len(LLT)>0:
 			LLT = util.arrangeLLT(LLT)
 			# display(img)
@@ -77,10 +87,10 @@ def calculate_error_threshold():
 ########################################################################################################################
 print "Initialization" 
 # Select Desired Image
-desiredImg = util.readImage("boat2.png", "resources/images/input/")
+desiredImg = util.readImage("odell1.jpg", "resources/images/input/")
 
 # Input Color Configurations
-n_colors = 4
+n_colors = 3
 canvas_color = color_pallete.colorMap["white"]
 pallete = color_pallete.build("black red yellow")
 
@@ -92,11 +102,14 @@ if not cam.isOpened():
 	raise Exception('Could not connect to Camera')
 
 # Perform Image Transformations to prepare canvas for painting
-display(cam.get_dewarped())
+output(cam.read_camera(), "original_warped_" + str(time()))
+# display(cam.get_dewarped())
+output(cam.get_dewarped(), "original_dewarped_" + str(time()))
 
 cam.generate_transform()
 img_to_show = cam.get_canvas()
-display(img_to_show)
+# output(cam.get_dewarped(), "canvas_" + str(time()))
+# display(img_to_show)
 
 desiredImg = util.resize_with_buffer(desiredImg,img_to_show)
 
@@ -124,6 +137,7 @@ while calculate_error_threshold():
 	
 	# Get a canvas image
 	painting = cam.get_canvas()
+	output(painting, "canvas_img" + str(time()))
 
 	# Segment the canvas image
 	segmented_image_act, color_segments_act, paint_colors, pallete_indeces = decompose(painting, pallete,-1,canvas_color=canvas_color)
@@ -138,7 +152,9 @@ while calculate_error_threshold():
 	# Display for debugging
 	display(segmented_image_act,"Segmented Canvas")
 	for index in range(len(correction_segments)):
-		display(correction_segments[index],str(paint_colors[index])+" at "+str(pallete_indeces[index]))
+		seg = open_image(correction_segments[index], kernel_radius = 5)
+		output(seg, str(paint_colors[index])+" at "+str(pallete_indeces[index]) + " at " + str(time()))
+		# display(seg,str(paint_colors[index])+" at "+str(pallete_indeces[index]))
 
 	# Paint Correctionst
 	paint_imageset(correction_segments, paint_routine, cam, indeces,open_images = True )
