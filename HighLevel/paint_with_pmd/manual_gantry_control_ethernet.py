@@ -32,8 +32,7 @@ packet_list=[]
 #     packet_list.append([offset*i, size+offset*i, 600, 800, 1, 1, 0])
 #     packet_list.append([offset*i, offset*i, 600, 800, 1, 1, 0])
 
-print "Curious"
-packet_list.append([3845, 1052, 650, 800, 1, 1, 1])
+packet_list.append([3835, 1540, 800, 800, 1, 1, 1])
 
 for packet in packet_list:
     print "sending"

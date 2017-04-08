@@ -40,7 +40,8 @@ def resize(img,max_dim=1000):
     """
     Given an image, this function will resize the image such that it's greatest dimension is max_dim.
     """
-    rows, cols, _ = img.shape
+    rows = img.shape[0]
+    cols = img.shape[1]
 
     if rows == max_dim or cols==max_dim:
         return img

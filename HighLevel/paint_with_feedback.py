@@ -34,7 +34,7 @@ def paint_imageset(segments, painter, cam, color_indeces, open_images = False):
 		# recomposer = skeletonRecomposer(img, [])
 		# recomposer = iterativeErosionRecomposer(img, [1])
 		# recomposer = medialAxisRecomposer(img, [1])
-		recomposer = blendedRecomposer(img, [3]) 
+		recomposer = blendedRecomposer(img, [4]) 
 		LLT = recomposer.recompose()
 
 		# for seg in segments:
@@ -87,12 +87,13 @@ def calculate_error_threshold():
 ########################################################################################################################
 print "Initialization" 
 # Select Desired Image
-desiredImg = util.readImage("odell1.jpg", "resources/images/input/")
+desiredImg = util.readImage("doggo.png", "resources/images/input/")
 
 # Input Color Configurations
-n_colors = 3
+n_colors = 4
 canvas_color = color_pallete.colorMap["white"]
-pallete = color_pallete.build("black red yellow")
+pallete = color_pallete.build("custom_yellow ligher_gray light_gray black_measured")
+# pallete = color_pallete.build("black_measured")
 
 # Initialize Camera Object
 cam = Camera([1,0])
@@ -128,6 +129,8 @@ print "Connecting to Controller..."
 com_obj = setup_communications_eth()
 paint_routine = PaintOrders.paint_orders(com_obj)
 
+paint_imageset(color_segments, paint_routine, cam, indeces,open_images = True )
+
 ########################################################################################################################
 # FEEDBACK LOOP
 ########################################################################################################################
@@ -140,7 +143,7 @@ while calculate_error_threshold():
 	output(painting, "canvas_img" + str(time()))
 
 	# Segment the canvas image
-	segmented_image_act, color_segments_act, paint_colors, pallete_indeces = decompose(painting, pallete,-1,canvas_color=canvas_color)
+	segmented_image_act, color_segments_act, paint_colors, pallete_indeces = decompose(painting, pallete,n_colors,canvas_color=canvas_color)
 
 	print "***************************************"
 	print "Paint colors: ", paint_colors 

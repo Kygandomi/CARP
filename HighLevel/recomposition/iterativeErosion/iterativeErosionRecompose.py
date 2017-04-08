@@ -4,33 +4,27 @@ import common.util as util
 class iterativeErosionRecomposer(object):
     def __init__(self, image, args = []):
 
-        self.desiredImage = image
+        self.binImg = image
         self.brush_thickness = args[0]
-
-
-    def hasColor(self, img, color):
-        x = 0
-        while x < img.shape[0]:
-            y = 0
-            while y < img.shape[1]:
-                if img[x][y] == color:
-                    return True
-                y += 1
-            x += 1
-        return False
 
     def recompose(self):
 
-        binImg = self.desiredImage
+        binImg = self.binImg
 
         orders = []
 
-        while self.hasColor(binImg,0):
+        n_iter=1
+
+        while 1:
 
             # Dillate the white in the image, causing the drawn sections of the image to be eroded.
-            binImg = cv2.dilate(binImg, util.circleKernel(3), iterations = self.brush_thickness)
+            binImg = cv2.dilate(binImg, util.circleKernel(self.brush_thickness), iterations = n_iter)
+            n_iter=2; # First erosion is by radius. Next are by diameter
 
             contourImg, contours, hierarchy = cv2.findContours(255-binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
+
+            if len(contours) == 0:
+                return orders
 
             # Build a set of instructions based on the contour determined by the dillation.
             for cnt_i in range(len(contours)):

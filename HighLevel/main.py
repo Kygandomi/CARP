@@ -24,7 +24,7 @@ desiredImg = readImage("boat2.png")
 
 pallete = [[0,0,0], [0,255,255], [255,255,255], [0,0,255]]
 pallete = color_pallete.build("black red yellow white")
-segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,0)
+segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,4)
 
 display(desiredImg,"desired")
 display(segmented_image,"segmented")
@@ -33,11 +33,9 @@ print "Pallete: ", pallete
 print "Kmeans: ", colors
 print "resulting indeces", indeces
 
-
 # recomposer = skeletonRecomposer(binImg, [2])
 # recomposer = iterativeErosionRecomposer(binImg, [2])
 # recomposer = erosionRecomposer(binImg, [2])
-
 
 out=255*np.ones(segmented_image.shape,dtype='uint8')
 for i in range(len(color_segments)):
@@ -51,6 +49,7 @@ for i in range(len(color_segments)):
     #LLT = mapLLT(LLT,binImg.shape)
 
     # display(testLLT(LLT,scale=3,thickness=2))
+    print "color: ",colors[i]
     out = drawLLT(LLT,out,thickness=3,color = colors[i])
 display(out)
 
