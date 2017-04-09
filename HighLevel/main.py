@@ -1,6 +1,7 @@
 from recomposition.skeleton.skeletonRecompose import *
 from recomposition.skeleton.medialAxisRecompose import *
 from recomposition.skeleton.iterativeSkeletonRecompose import *
+from recomposition.medialAxis.iterativeBlendedRecompose import *
 from recomposition.iterativeErosion.iterativeErosionRecompose import *
 from recomposition.erosion.erosionRecompose import *
 from recomposition.blendedRecompose import *
@@ -23,8 +24,8 @@ import cv2
 desiredImg = readImage("boat2.png")
 
 pallete = [[0,0,0], [0,255,255], [255,255,255], [0,0,255]]
-pallete = color_pallete.build("black red yellow white")
-segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,4)
+pallete = color_pallete.build("black red yellow")
+segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,3,color_pallete.colorMap["white"])
 
 display(desiredImg,"desired")
 display(segmented_image,"segmented")
@@ -42,7 +43,7 @@ for i in range(len(color_segments)):
     binImg = color_segments[i]
     # binImg = 255*np.ones(binImg.shape, dtype='uint8')
 
-    recomposer = blendedRecomposer(binImg, [2])
+    recomposer = iterativeBlendedRecomposer(binImg, [4])
 
     LLT = recomposer.recompose()
 

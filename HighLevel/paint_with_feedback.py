@@ -5,11 +5,11 @@ from paint_with_arduino import serial_communication as ser_comm
 from paint_with_arduino import paint_orders as PaintOrders
 from paint_with_pmd import ethernet_communication as eth_comm
 
-from recomposition.iterativeErosion.iterativeErosionRecompose import *
-from recomposition.skeleton.skeletonRecompose import *
-from recomposition.blendedRecompose import *
-
-from recomposition.skeleton.medialAxisRecompose import *
+# from recomposition.iterativeErosion.iterativeErosionRecompose import *
+# from recomposition.skeleton.skeletonRecompose import *
+# from recomposition.blendedRecompose import *
+# from recomposition.skeleton.medialAxisRecompose import *
+from recomposition.medialAxis.iterativeBlendedRecompose import *
 
 from decomposition.decomp_color.decomp_color import *
 
@@ -34,7 +34,8 @@ def paint_imageset(segments, painter, cam, color_indeces, open_images = False):
 		# recomposer = skeletonRecomposer(img, [])
 		# recomposer = iterativeErosionRecomposer(img, [1])
 		# recomposer = medialAxisRecomposer(img, [1])
-		recomposer = blendedRecomposer(img, [4]) 
+		# recomposer = blendedRecomposer(img, [4]) 
+		recomposer = iterativeBlendedRecomposer(img,[4])
 		LLT = recomposer.recompose()
 
 		# for seg in segments:

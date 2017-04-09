@@ -73,7 +73,8 @@ def rawPolyDist(binImg):
 def scaledPolyDist(rawPolyImg):
     mini,maxi = np.abs(cv2.minMaxLoc(rawPolyImg)[:2])          # Find minimum and maximum to adjust colors
     #print "Min: "+str(mini)+" | Max: "+str(maxi)
-    maxi = 1.0/maxi
+    if maxi != 0:
+        maxi = 1.0/maxi
 
     scaledPolyImg = np.array(-1*np.ones(rawPolyImg.shape),dtype='float32')
 
@@ -110,23 +111,28 @@ def visualPolyDist(rawPolyImg):
                 visualPolyImg.itemset((i,j,2),255)                            # If on the contour, white color.
     return visualPolyImg
 
-def pathFilter(path):
+def pathFilter(path,sigma = 0):
     # mini,maxi = cv2.minMaxLoc(path)[:2]
     # nonzero = path[path > 0]
     # mid = np.median(nonzero)
     # sigma = .5
+    # print mini, ", ",maxi
     # (thresh, pathImg) = cv2.threshold(path,sigma*maxi+(1-sigma)*mid, 255, cv2.THRESH_BINARY_INV)
-    # pathImg = cv2.adaptiveThreshold(path,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,55,10)
+    # pathImg = cv2.adaptiveThreshold(path,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,5,1)
     (thresh, pathImg) = cv2.threshold(path,127, 255, cv2.THRESH_OTSU)
+    (thresh, pathImg) = cv2.threshold(path,thresh+int((255-thresh)*sigma), 255, cv2.THRESH_BINARY)
     return pathImg
 
 class medialAxisRecomposer(object):
 
     def __init__(self, image, args):
-        opened = open_image(image,5,1);
-        self.binImg = cv2.erode(opened,circleKernel(1),iterations=1)
+        # opened = open_image(image,5,1);
+        self.binImg = cv2.erode(image,circleKernel(1),iterations=1)
+        # self.binImg = image
 
     def recompose(self):
+        if np.count_nonzero(255-self.binImg)==0:
+            return []
 
         # (thresh, binImg) = cv2.threshold(self.desiredImage, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
         # display(self.binImg)
@@ -145,6 +151,9 @@ class medialAxisRecomposer(object):
         sobely = cv2.Sobel(polyImg,cv2.CV_64F,0,1,ksize=-1)
         sobel = sobelx*sobelx+sobely*sobely
 
+        if np.count_nonzero(sobel)==0:
+            return []
+
         # Convert to int scale. 0-255
         mini,maxi = cv2.minMaxLoc(sobel)[:2]
         sobel = (sobel * (255/maxi)).astype('uint8')
@@ -159,12 +168,14 @@ class medialAxisRecomposer(object):
         # pathImg = self.neighborFilter(pathImg,3,-1,2,3)
         #display(pathImg)
 
-        g = graph.graph(getPoints(pathImg,0))
+        # display(overlay(self.binImg,pathImg,200),"skeleton")
+
+        g = graph.graph(getPoints(pathImg,0),pathImg)
         paths = graph.findPaths(g)
 
-        # display(self.createNodeImg(pathImg,g))
+        # output(graph.createNodeImg(pathImg,g),"nodes","images/output/")
 
-        paths = reduceLLT(paths,2.9)
+        paths = reduceLLT(paths,4.1)
         paths = self.addWidth(paths,rawPolyImg)
 
         # paths = mapLLT(paths,self.binImg.shape)
@@ -196,17 +207,4 @@ class medialAxisRecomposer(object):
                     if np.count_nonzero(img[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
                         img[point]=0
         return img
-
-    def createNodeImg(self, pathImg, g):
-        nodeImg = cv2.cvtColor(pathImg.copy(),cv2.COLOR_GRAY2BGR)
-        for node in g.node_list:
-            if node.status == graph.node.End:
-                nodeImg[node.point[0],node.point[1]] = (0,0,255)
-            elif node.status == graph.node.Path:
-                nodeImg[node.point[0],node.point[1]] = (0,255,255)
-            elif node.status == graph.node.Dead:
-                nodeImg[node.point[0],node.point[1]] = (128,128,128)
-            elif node.status == graph.node.Visited:
-                nodeImg[node.point[0],node.point[1]] = (255,0,0)
-        return nodeImg
 

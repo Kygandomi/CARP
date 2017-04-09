@@ -124,7 +124,7 @@ def color_quantize(image, n_colors=2, size_to=500):
     pixel = np.reshape(small_img,(small_img.shape[0]*small_img.shape[1],3))
 
     # performing the clustering
-    centroids,_ = kmeans(np.float32(pixel),n_colors,iter=200)
+    centroids,_ = kmeans(np.float32(pixel),n_colors,iter=300)
 
     return np.uint8(centroids)
 
