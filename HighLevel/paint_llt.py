@@ -16,39 +16,42 @@ from common import color_pallete
 from time import sleep
 import cv2
 
+def setup_communications_eth():
+	# Establish Serial Connection with the Arduino
+	ip = '192.168.178.7'
+	port = 1234
+	pmd_com = eth_comm.ethernet_comms(ip, port)
+
+	connected = False
+
+	#while not connected:
+	connected = pmd_com.connect()
+	if not connected:
+		raise Exception('Could not connect via Ethernet')
+	# Sleep to verify a solid connection
+	sleep(1)
+	return pmd_com
+
 ##################################################################
 ##########################  SETUP  ###############################
 ##################################################################
 print "Setup"
 
-# Establish Serial Connection with the Arduino
-baud = 115200
-ports_list = ['COM8','COM3','/dev/tty.usbmodem1411', '/dev/tty.usbserial-A902U9B9']
-could_connect = False
-for i in range(len(ports_list)):
-	port = ports_list[i]
-	arduino_ser = ser_comm.serial_comms(port, baud)
-	if(arduino_ser.connect()):
-		print "Serial Comm Connected"
-		could_connect = True
-		break
-
-# Comment back in when we have an actual serial port
-if not could_connect : 
-	raise Exception('Could not connect...')
-
-# Sleep to verify a solid connection
-sleep(1)
+print "Connecting to Controller..."
+com_obj = setup_communications_eth()
+paint_routine = PaintOrders.paint_orders(com_obj)
 
 ##################################################################
 ######################## PAINT ROUTINE ###########################
 ##################################################################
 # Gantry should start over paper's (0,0)
 # Get Orders to paint
-orders_to_paint = "./resources/orders/music_orders2.txt"
 
+orders_to_paint = "./resources/orders/latestLLT.txt"
 # Convert Orders to LLT
 LLT = loadLLT(orders_to_paint)
+if len(LLT)==0:
+	raise Exception('Error: File "'+orders_to_paint+'" is empty or missing')
 testLLT(LLT,3)
 
 # Lets Paint

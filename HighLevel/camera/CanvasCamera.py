@@ -200,7 +200,7 @@ class Camera(object):
             list_pts=[]
             for command in stroke:
                 pt=canvas_to_gantry_pt([command[1],command[0]])
-                list_pts.append([pt[0],pt[1]])
+                list_pts.append([pt[0],pt[1],command[2]])
             out_pts.append(list_pts)
         return out_pts
 

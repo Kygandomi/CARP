@@ -50,6 +50,8 @@ def paint_imageset(segments, painter, cam, color_indeces, open_images = False):
 			display(testLLT(LLT,1,img.shape))
 			LLT = cam.canvas_to_gantry(LLT)
 
+			saveLLT(LLT,'resources/orders/latestLLT.txt')
+
 			# print "LLT to Paint as been saved to disc: ", LLT
 			# util.output(testLLT(LLT,3), "Drawn LLT")
 			print "Fetching new brush"
@@ -104,9 +106,9 @@ if not cam.isOpened():
 	raise Exception('Could not connect to Camera')
 
 # Perform Image Transformations to prepare canvas for painting
-output(cam.read_camera(), "original_warped_" + str(time()))
+# output(cam.read_camera(), "original_warped_" + str(time()))
 # display(cam.get_dewarped())
-output(cam.get_dewarped(), "original_dewarped_" + str(time()))
+# output(cam.get_dewarped(), "original_dewarped_" + str(time()))
 
 cam.generate_transform()
 img_to_show = cam.get_canvas()

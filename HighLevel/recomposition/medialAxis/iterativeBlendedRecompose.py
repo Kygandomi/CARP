@@ -37,7 +37,6 @@ class iterativeBlendedRecomposer(object):
 
         self.recomp_thin.binImg = skel_img;
         skel_LLT = self.recomp_thin.recompose()
-
         # util.display(util.overlay(skel_img,util.testLLT(skel_LLT,scale=1,paper_size=skel_img.shape),200),"path")
 
         self.binImg = erode_img

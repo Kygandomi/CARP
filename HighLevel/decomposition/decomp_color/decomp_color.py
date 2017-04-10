@@ -269,18 +269,15 @@ def mapColors(img_colors, paint_colors):
 
     unique_permutations = list(unique_permutations)
 
-    min_combo = []
     pallete_lab = np.array(pallete_lab)
     min_error = find_error(colors_lab, pallete_lab[np.array(unique_permutations[0])])
+    min_combo = unique_permutations[0]
     for combo in unique_permutations:
         # print "paint combo", temp_paint_combo
         err = find_error(colors_lab , pallete_lab[np.array(combo)])
         if err < min_error:
             min_error = err
             min_combo= combo
-
-    # print min_combo
-    # print paint_colors
 
     paint_colors = np.array(paint_colors)
     colors = paint_colors[np.array(min_combo)]
