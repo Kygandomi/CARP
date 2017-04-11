@@ -4,7 +4,6 @@
 # Import dependencies
 import math
 import random
-import serial_communication as ser_comm
 from time import sleep
 
 '''This class handles painting routines with arduino low level'''
@@ -247,3 +246,12 @@ class paint_orders():
 			put_brush_down  = True
 			if(MAX_DIST-paint_distance < MAX_DIST_END):
 				paint_distance = MAX_DIST
+
+	def PaintMulti(self,LLT,indeces):
+		for index in range(len(LLT)):
+			LLT = listLLT[index]
+			if len(LLT)>0:
+				self.getBrush(indeces[index])
+				self.Paint(LLT)
+
+		self.returnToStart()

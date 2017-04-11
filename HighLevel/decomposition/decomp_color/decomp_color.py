@@ -62,8 +62,11 @@ def decomposeOLD(image,n_points,pallete = [], canvas_color = [255,255,255]):
     return [image, [np.delete(colors,0,axis=0),bin_images,indeces], [canvas_color,bin_image, canvas_index]]
 
 def decompose(image,input_pallete,n_colors=0,canvas_color = None):
-
-    pallete = deepcopy(input_pallete)
+    if input_pallete is None:
+        pallete = []
+    else:
+        pallete = deepcopy(input_pallete)
+        
     original_n_colors = n_colors
     print "pallete: ",pallete
 
@@ -78,7 +81,7 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
         #TODO: change image to be composed of pallete colors instead of kmeans colors
         print "KMEANS"
         image,bin_images,colors = decompose_kMeans(image,n_colors)
-        if pallete is None or len(pallete) == 0:
+        if len(pallete) == 0:
             indeces = range(len(colors))
         else:
             colors , indeces = mapColors(colors, pallete)

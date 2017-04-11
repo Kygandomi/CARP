@@ -94,8 +94,12 @@ desiredImg = util.readImage("doggo.png", "resources/images/input/")
 
 # Input Color Configurations
 n_colors = 4
+canvas_color = None 
+pallete = []
+
 canvas_color = color_pallete.colorMap["white"]
-pallete = color_pallete.build("custom_yellow ligher_gray light_gray black_measured")
+pallete = [[190,202,203], [127,148,158],[75,95,108],[29,36,42]] #doggo pallete
+# pallete = color_pallete.build("custom_yellow ligher_gray light_gray black_measured")
 # pallete = color_pallete.build("black_measured")
 
 # Initialize Camera Object
@@ -146,7 +150,7 @@ while calculate_error_threshold():
 	output(painting, "canvas_img" + str(time()))
 
 	# Segment the canvas image
-	segmented_image_act, color_segments_act, paint_colors, pallete_indeces = decompose(painting, pallete,n_colors,canvas_color=canvas_color)
+	segmented_image_act, color_segments_act, paint_colors, pallete_indeces = decompose(painting, colors,n_colors,canvas_color=canvas_color)
 
 	print "***************************************"
 	print "Paint colors: ", paint_colors 
