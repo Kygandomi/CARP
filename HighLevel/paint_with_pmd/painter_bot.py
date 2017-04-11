@@ -24,7 +24,7 @@ class painter_bot():
 		self.colors = []
 		self.indeces = []
 
-		self.lltImg =None
+		self.lltImg = None
 		self.lltListImg = []
 		self.lltListGantry = []
 
@@ -41,8 +41,11 @@ class painter_bot():
 		self.lltImg =None
 		self.lltList = []
 
-		if not self.camera is None:
-			self.desiredImg = util.resize_with_buffer(self.desiredImg,self.camera.get_canvas())
+		if self.camera is None:
+			self.desiredImg = self.inputImg
+		else:
+			self.desiredImg = util.resize_with_buffer(self.inputImg,self.camera.get_canvas())
+
 
 	def connect_camera(self,indeces):
 		cam = Camera(indeces)
@@ -52,6 +55,8 @@ class painter_bot():
 			# raise Exception('Could not connect to Camera')
 			return False
 		self.camera = cam
+		if not self.inputImg is None:
+			self.desiredImg = util.resize_with_buffer(self.inputImg,self.camera.get_canvas())
 		return True
 
 	def findCanvas():
@@ -83,7 +88,7 @@ class painter_bot():
 	def decompose(self,n_colors,pallete = [],canvas_color=[255,255,255]):
 		if self.desiredImg is None:
 			return
-		segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,n_colors,canvas_color=canvas_color)
+		segmented_image, color_segments, colors, indeces = decompose(self.desiredImg, pallete,n_colors,canvas_color=canvas_color)
 		self.segmentedImg = segmented_image
 		self.binImages = color_segments
 		self.colors = colors
@@ -98,6 +103,7 @@ class painter_bot():
 			return
 
 		self.lltListImg = self.recompose_helper(self.binImages,args,open_images)
+		print self.colors
 		self.lltImg = self.makeImgLLT(self.segmentedImg.shape,self.lltListImg,self.colors,args[0])
 		self.lltListGantry = []
 
@@ -153,5 +159,5 @@ class painter_bot():
 	def makeImgLLT(self,img_shape,lltListImg,colors,thickness = 1):
 		img = 255*np.ones(img_shape,dtype='uint8')
 		for i in range(len(colors)):
-			img = drawLLT(lltListImg[i],img,thickness=thickness,color = colors[i])
+			img = util.drawLLT(lltListImg[i],img,thickness=thickness,color = colors[i])
 		return img

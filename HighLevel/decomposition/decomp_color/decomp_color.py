@@ -71,14 +71,14 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
     print "pallete: ",pallete
 
     if not (canvas_color is None):
-        pallete.append(canvas_color)
+        if len(pallete)>0:
+            pallete.append(canvas_color)
         n_colors+=1
 
     print "pallete: ",pallete
     print "N_colors: ", n_colors
 
     if(original_n_colors>0):
-        #TODO: change image to be composed of pallete colors instead of kmeans colors
         print "KMEANS"
         image,bin_images,colors = decompose_kMeans(image,n_colors)
         if len(pallete) == 0:
@@ -108,15 +108,19 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
     print "indeces: ", indeces
     print "colors: ", colors
     if not (canvas_color is None):
-        if(len(pallete)-1) in indeces:
-            canvas_index = indeces.index(len(pallete)-1);
-            bin_images.pop(canvas_index)
-            colors = colors[:-1]
-            indeces.pop(canvas_index)
+        if len(pallete)>0:
+            if(len(pallete)-1) in indeces:
+                canvas_index = indeces.index(len(pallete)-1);
+        else:
+            _,idx = mapColors([canvas_color],colors)
+            canvas_index = idx[0]
+        bin_images.pop(canvas_index)
+        colors.pop(canvas_index)
+        indeces.pop(canvas_index)
     print "indeces: ", indeces
     print "colors: ", colors
 
-    return image , bin_images, colors , indeces
+    return image , bin_images, np.array(colors).astype('uint8').tolist() , indeces
 
 def color_quantize(image, n_colors=2, size_to=500):
     if size_to>0:
