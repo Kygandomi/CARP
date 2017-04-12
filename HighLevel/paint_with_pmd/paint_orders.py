@@ -247,8 +247,8 @@ class paint_orders():
 			if(MAX_DIST-paint_distance < MAX_DIST_END):
 				paint_distance = MAX_DIST
 
-	def PaintMulti(self,LLT,indeces):
-		for index in range(len(LLT)):
+	def PaintMulti(self,listLLT,indeces):
+		for index in range(len(listLLT)):
 			LLT = listLLT[index]
 			if len(LLT)>0:
 				self.getBrush(indeces[index])

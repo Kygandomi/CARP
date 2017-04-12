@@ -46,7 +46,6 @@ class painter_bot():
 		else:
 			self.desiredImg = util.resize_with_buffer(self.inputImg,self.camera.get_canvas())
 
-
 	def connect_camera(self,indeces):
 		cam = Camera(indeces)
 
@@ -109,7 +108,7 @@ class painter_bot():
 
 	def paint(self):
 		self.lltListGantry = self.mapToGantry(self.lltListImg,self.camera)
-		self.painter.paintMulti(self.lltListGantry,self.indeces)
+		self.painter.PaintMulti(self.lltListGantry,self.indeces)
 
 	def paint_with_feedback(self,args,open_images,max_iter = 4):
 		if self.segmentedImg is None or len(self.binImages)==0:
