@@ -68,22 +68,20 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
         pallete = deepcopy(input_pallete)
         
     original_n_colors = n_colors
-    print "pallete: ",pallete
 
     if not (canvas_color is None):
         if len(pallete)>0:
             pallete.append(canvas_color)
         n_colors+=1
 
-    print "pallete: ",pallete
-    print "N_colors: ", n_colors
 
     if(original_n_colors>0):
-        print "KMEANS"
+        print "CLASSIFY: KMEANS"
         image,bin_images,colors = decompose_kMeans(image,n_colors)
         if len(pallete) == 0:
             indeces = range(len(colors))
         else:
+            print "... mapping k-means to pallete"
             colors , indeces = mapColors(colors, pallete)
             for i in range(len(colors)):
                 pts = np.where(bin_images[i]==0)
@@ -102,11 +100,9 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
             bin_images.append(t[1])
             colors.append(t[2])
     else:
-        print "SIMPLE"
+        print "CLASSIFY: SIMPLE"
         image,bin_images,colors,indeces = decompose_simple(image,pallete)
 
-    print "indeces: ", indeces
-    print "colors: ", colors
     if not (canvas_color is None):
         if len(pallete)>0:
             if(len(pallete)-1) in indeces:
@@ -117,8 +113,7 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
         bin_images.pop(canvas_index)
         colors.pop(canvas_index)
         indeces.pop(canvas_index)
-    print "indeces: ", indeces
-    print "colors: ", colors
+
 
     return image , bin_images, np.array(colors).astype('uint8').tolist() , indeces
 

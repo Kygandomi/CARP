@@ -102,7 +102,6 @@ class painter_bot():
 			return
 
 		self.lltListImg = self.recompose_helper(self.binImages,args,open_images)
-		print self.colors
 		self.lltImg = self.makeImgLLT(self.segmentedImg.shape,self.lltListImg,self.colors,args[0])
 		self.lltListGantry = []
 

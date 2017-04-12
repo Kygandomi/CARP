@@ -5,7 +5,9 @@ from common.util import *
 
 bot = painter_bot()
 
-bot.connect_camera([1])
+if not bot.connect_camera([1]):
+	# raise Exception('Could not connect to Camera')
+	pass
 
 bot.selectImage("boat2.png", "resources/images/input/")
 
@@ -27,5 +29,5 @@ bot.recompose([4])
 display(bot.lltImg)
 
 bot.connect_eth(ip = '192.168.178.7',port = 1234)
-bot.paint()
-# bot.paint_with_feedback([4])
+# bot.paint()
+bot.paint_with_feedback([4])
