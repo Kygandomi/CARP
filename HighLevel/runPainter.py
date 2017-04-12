@@ -6,7 +6,7 @@ from common.util import *
 bot = painter_bot()
 
 if not bot.connect_camera([1]):
-	# raise Exception('Could not connect to Camera')
+	raise Exception('Could not connect to Camera')
 	pass
 
 bot.selectImage("boat2.png", "resources/images/input/")
@@ -20,13 +20,13 @@ canvas_color = color_pallete.colorMap["white"]
 pallete = color_pallete.build("red yellow black")
 # pallete = color_pallete.build("black_measured")
 
-display(bot.desiredImg)
+display(bot.desiredImg,"desired")
 print "DECOMPOSE"
 bot.decompose(n_colors,pallete,canvas_color)
-display(bot.segmentedImg)
+display(bot.segmentedImg,"segmented")
 print "RECOMPOSE"
 bot.recompose([4])
-display(bot.lltImg)
+display(bot.lltImg,"LLT simulation")
 
 bot.connect_eth(ip = '192.168.178.7',port = 1234)
 # bot.paint()

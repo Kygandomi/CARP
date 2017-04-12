@@ -8,6 +8,7 @@ import paint_orders as PaintOrders
 from camera.CanvasCamera import Camera
 from decomposition.decomp_color.decomp_color import *
 from recomposition.medialAxis.iterativeBlendedRecompose import *
+from recomposition.medialAxis.medialAxisRecompose import *
 
 from common import util
 
@@ -126,6 +127,10 @@ class painter_bot():
 			# Generate corrections for canvas image
 			correction_segments, canvas_corrections = cam.correct_image(self.binImages,color_segments_act)
 
+			for index in range(len(correction_segments)):
+				seg = open_image(correction_segments[index], kernel_radius = 5)
+				output(seg, str(paint_colors[index])+" at "+str(pallete_indeces[index]) + " at " + str(time()),"resources/images/output/")
+			
 			lltListImg = self.recompose_helper(correction_segments,args,open_images)
 			lltListGantry = self.mapToGantry(lltListImg)
 			self.painter.paintMulti(lltListGantry,self.indeces)
@@ -144,9 +149,10 @@ class painter_bot():
 			img = binImages[index]
 
 			if open_images: 
-				img = util.open_image(img, kernel_radius = 3)
+				img = util.open_image(img, kernel_radius = 5)
 
-			recomposer = iterativeBlendedRecomposer(img,args)
+			# recomposer = iterativeBlendedRecomposer(img,args)
+			recomposer = medialAxisRecomposer(img,args)
 			LLT = recomposer.recompose()
 
 			if len(LLT)>0:

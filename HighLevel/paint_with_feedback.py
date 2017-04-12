@@ -1,8 +1,7 @@
 #! /usr/bin/env python
 # MQP -- CARP Project
 
-from paint_with_arduino import serial_communication as ser_comm
-from paint_with_arduino import paint_orders as PaintOrders
+from paint_with_pmd import paint_orders as PaintOrders
 from paint_with_pmd import ethernet_communication as eth_comm
 
 # from recomposition.iterativeErosion.iterativeErosionRecompose import *
@@ -90,36 +89,35 @@ def calculate_error_threshold():
 ########################################################################################################################
 print "Initialization" 
 # Select Desired Image
-desiredImg = util.readImage("doggo.png", "resources/images/input/")
+desiredImg = util.readImage("boat2.png", "resources/images/input/")
 
 # Input Color Configurations
-n_colors = 4
+n_colors = 3
 canvas_color = None 
 pallete = []
 
 canvas_color = color_pallete.colorMap["white"]
-pallete = [[190,202,203], [127,148,158],[75,95,108],[29,36,42]] #doggo pallete
+# pallete = [[190,202,203], [127,148,158],[75,95,108],[29,36,42]] #doggo pallete
 # pallete = color_pallete.build("custom_yellow ligher_gray light_gray black_measured")
 # pallete = color_pallete.build("black_measured")
 
 # Initialize Camera Object
-cam = Camera([1,0])
+# cam = Camera([1,0])
 
-# TODO: If you can't connect to camera, assume canvas shape is 8.5x11 starting at 0,0
-if not cam.isOpened():
-	raise Exception('Could not connect to Camera')
+# # TODO: If you can't connect to camera, assume canvas shape is 8.5x11 starting at 0,0
+# if not cam.isOpened():
+# 	raise Exception('Could not connect to Camera')
 
-# Perform Image Transformations to prepare canvas for painting
-# output(cam.read_camera(), "original_warped_" + str(time()))
-# display(cam.get_dewarped())
-# output(cam.get_dewarped(), "original_dewarped_" + str(time()))
+# cam.generate_transform()
+# img_to_show = cam.get_canvas()
 
-cam.generate_transform()
-img_to_show = cam.get_canvas()
-# output(cam.get_dewarped(), "canvas_" + str(time()))
-# display(img_to_show)
+img_to_show = 255*np.ones((729,954,3))
+
+display(desiredImg)
 
 desiredImg = util.resize_with_buffer(desiredImg,img_to_show)
+
+display(desiredImg)
 
 # Initial Decomposition of the input Image
 segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,n_colors,canvas_color=canvas_color)

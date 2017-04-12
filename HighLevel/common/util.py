@@ -21,18 +21,18 @@ def displayarray(imgs, name="imageset_image"):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-def save(img, name="test_image"):
+def save(img, name="test_image",path = ""):
     """
     Saves an image. A directory can be specified in name, eg: where/pictures/go/picture1
     Don't give it a filetype in name.
     """
-    cv2.imwrite(name+".png", img)
+    cv2.imwrite(path+name+".png", img)
 
-def output(img,name="output"):
+def output(img,name="output",path = ""):
     """
     Saves and displays an image.
     """
-    save(img,name)
+    save(img,path+name)
     display(img,name)
 
 
@@ -81,7 +81,6 @@ def rotate_image(mat, angle, padding_color = (255,255,255)):
     rotated_mat = cv2.warpAffine(mat, rotation_mat, (bound_w, bound_h), borderValue=padding_color)
     return rotated_mat
 
-
 def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,255,255]):
     """
     Reshapes an ideal image to suit the dimensions of an actual image.
@@ -92,7 +91,7 @@ def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,25
     :param: padding_color: The color that is going to fill in the area created when resizing.
     :return: The new image, resized and with buffer and rotation if neccecary and selected
     """
-    h_perf = ideal.shape[0]
+    h_perf = ideal.shape[0] 
     w_perf = ideal.shape[1]
     h_actual = actual.shape[0]
     w_actual = actual.shape[1]
@@ -109,7 +108,8 @@ def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,25
             print "Rotating image in order to match portrait/landscapeness."
             ideal = rotate_image(ideal, 90, padding_color=padding_color)
 
-    # h_perf, w_perf, _ = ideal.shape
+    h_perf = ideal.shape[0]
+    w_perf = ideal.shape[1]
     perf_ratio = float(h_perf)/float(w_perf)
 
     if perf_ratio > actual_ratio:
