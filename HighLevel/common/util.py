@@ -92,8 +92,10 @@ def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,25
     :param: padding_color: The color that is going to fill in the area created when resizing.
     :return: The new image, resized and with buffer and rotation if neccecary and selected
     """
-    h_perf, w_perf, _ = ideal.shape
-    h_actual, w_actual, _ = actual.shape
+    h_perf = ideal.shape[0]
+    w_perf = ideal.shape[1]
+    h_actual = actual.shape[0]
+    w_actual = actual.shape[1]
 
     perf_ratio = float(h_perf)/float(w_perf)
     actual_ratio =float(h_actual)/float(w_actual)
@@ -107,7 +109,7 @@ def resize_with_buffer(ideal, actual, allowRotaton=True, padding_color = [255,25
             print "Rotating image in order to match portrait/landscapeness."
             ideal = rotate_image(ideal, 90, padding_color=padding_color)
 
-    h_perf, w_perf, _ = ideal.shape
+    # h_perf, w_perf, _ = ideal.shape
     perf_ratio = float(h_perf)/float(w_perf)
 
     if perf_ratio > actual_ratio:
