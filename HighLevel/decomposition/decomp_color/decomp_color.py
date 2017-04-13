@@ -103,6 +103,12 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
         print "CLASSIFY: SIMPLE"
         image,bin_images,colors,indeces = decompose_simple(image,pallete)
 
+        temp_colors = []
+        for c in colors:
+            temp_colors.append(c)
+
+        colors = temp_colors
+
     if not (canvas_color is None):
         if len(pallete)>0:
             if(len(pallete)-1) in indeces:

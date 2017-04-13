@@ -1,6 +1,6 @@
 # Import dependencies
 import math
-from time import sleep
+from time import sleep, time
 import cv2
 
 import ethernet_communication as eth_comm
@@ -23,6 +23,7 @@ class painter_bot():
 		self.segmentedImg = None
 		self.binImages = []
 		self.colors = []
+		self.canvas_color = []
 		self.indeces = []
 
 		self.lltImg = None
@@ -89,6 +90,7 @@ class painter_bot():
 		if self.desiredImg is None:
 			return
 		segmented_image, color_segments, colors, indeces = decompose(self.desiredImg, pallete,n_colors,canvas_color=canvas_color)
+		self.canvas_color = canvas_color
 		self.segmentedImg = segmented_image
 		self.binImages = color_segments
 		self.colors = colors
@@ -110,30 +112,30 @@ class painter_bot():
 		self.lltListGantry = self.mapToGantry(self.lltListImg,self.camera)
 		self.painter.PaintMulti(self.lltListGantry,self.indeces)
 
-	def paint_with_feedback(self,args,open_images,max_iter = 4):
+	def paint_with_feedback(self,args,open_images=True,max_iter = 400):
 		if self.segmentedImg is None or len(self.binImages)==0:
 			return
 
 		if len(self.binImages)==0:
 			self.recompose(args,open_images)
 
-		for i in range(len(max_iter)):
+		for i in range(max_iter):
 			# Get a canvas image
 			painting = self.camera.get_canvas()
 
 			# Segment the canvas image
-			segmented_image_act, color_segments_act, paint_colors, pallete_indeces = decompose(painting, self.colors,self.n_colors,canvas_color=self.canvas_color)
+			segmented_image_act, color_segments_act, paint_colors, pallete_indeces = decompose(painting, self.colors,0,canvas_color=self.canvas_color)
 
 			# Generate corrections for canvas image
-			correction_segments, canvas_corrections = cam.correct_image(self.binImages,color_segments_act)
+			correction_segments, canvas_corrections = self.camera.correct_image(self.binImages,color_segments_act)
 
 			for index in range(len(correction_segments)):
 				seg = open_image(correction_segments[index], kernel_radius = 5)
 				output(seg, str(paint_colors[index])+" at "+str(pallete_indeces[index]) + " at " + str(time()),"resources/images/output/")
 			
 			lltListImg = self.recompose_helper(correction_segments,args,open_images)
-			lltListGantry = self.mapToGantry(lltListImg)
-			self.painter.paintMulti(lltListGantry,self.indeces)
+			lltListGantry = self.mapToGantry(lltListImg, self.camera)
+			self.painter.PaintMulti(lltListGantry,self.indeces)
 
 	####### HELPERS #######
 
@@ -151,8 +153,8 @@ class painter_bot():
 			if open_images: 
 				img = util.open_image(img, kernel_radius = 5)
 
-			# recomposer = iterativeBlendedRecomposer(img,args)
-			recomposer = medialAxisRecomposer(img,args)
+			recomposer = iterativeBlendedRecomposer(img,args)
+			# recomposer = medialAxisRecomposer(img,args)
 			LLT = recomposer.recompose()
 
 			if len(LLT)>0:

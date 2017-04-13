@@ -190,12 +190,12 @@ class paint_orders():
 		scale_val = 1
 
 		# Record Fergelli Height Values
-		down_val = 360
+		down_val = 370
 		up_val = 480
 		final_up_val = 800
 
 		# Record how far we've gone (0.1 mm)
-		MAX_DIST = 2000
+		MAX_DIST = 3500
 		MAX_DIST_END = 600
 		DOWN_COST = 50
 		paint_distance = MAX_DIST

@@ -45,19 +45,23 @@ canvas = bot.camera.get_canvas()
 img_width = canvas.shape[0]
 img_height = canvas.shape[1]
 
-mu_x, sigma_x = img_width/2, 30
-mu_y, sigma_y = img_height/2, 30
+var = min(img_width, img_height)/5
 
-num_points = 100
+mu_x, sigma_x = img_width/2, var
+mu_y, sigma_y = img_height/2, var
+
+num_points = 50
 number_of_colors = 3
 
 bot.connect_eth(ip = '192.168.178.7',port = 1234)
 
 bot.indeces=range(number_of_colors)
+print "indeces ", bot.indeces
+bot.lltListImg = []
 
 for i in range(number_of_colors):
-	bot.lltListImg = [gaussian_LLT(mu_x, sigma_x, mu_y, sigma_y, num_points)]
-	bot.paint()
+	bot.lltListImg.append(gaussian_LLT(mu_x, sigma_x, mu_y, sigma_y, num_points))
+bot.paint()
 
 print "Process Complete"
 

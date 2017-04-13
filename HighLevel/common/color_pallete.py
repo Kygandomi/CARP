@@ -22,7 +22,7 @@ colorMap = {
     "green" : [0,255,0],
     "yellow" : [15,152,146],
     "red" : [9,0,87],
-    "white" : [170,170,170],
+    "white" : [255,255,255],
     "black" : [0,0,0],
     "black_measured" : [10,10,10],
     "custom_yellow" : [65, 138, 156],
