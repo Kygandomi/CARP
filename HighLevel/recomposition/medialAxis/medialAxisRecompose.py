@@ -175,7 +175,7 @@ class medialAxisRecomposer(object):
 
         # output(graph.createNodeImg(pathImg,g),"nodes","images/output/")
 
-        paths = reduceLLT(paths,4.1)
+        paths = reduceLLT(paths,5.1)
         paths = self.addWidth(paths,rawPolyImg)
 
         # paths = mapLLT(paths,self.binImg.shape)
