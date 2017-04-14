@@ -21,11 +21,16 @@ import cv2
 
 # print "err: ", err, " | ",color1, " - ", color2
 
-desiredImg = readImage("boat2.png")
+desiredImg = readImage("cobblestone.png")
 
-pallete = [[0,0,0], [0,255,255], [255,255,255], [0,0,255]]
-pallete = color_pallete.build("black red yellow")
-segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,3,color_pallete.colorMap["white"])
+pallete = []
+canvas_color = None
+n_colors = 4
+
+canvas_color = [255,255,255]
+# pallete = [[0,0,0], [0,255,255], [255,255,255], [0,0,255]]
+# pallete = color_pallete.build("black red yellow")
+segmented_image, color_segments, colors, indeces = decompose(desiredImg, pallete,n_colors,canvas_color)
 
 display(desiredImg,"desired")
 display(segmented_image,"segmented")

@@ -70,6 +70,7 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
     original_n_colors = n_colors
 
     if not (canvas_color is None):
+        # canvas_color = np.array(canvas_color).astype('uint8').tolist()
         if len(pallete)>0:
             pallete.append(canvas_color)
         n_colors+=1
@@ -116,6 +117,8 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
         else:
             _,idx = mapColors([canvas_color],colors)
             canvas_index = idx[0]
+            pts = np.where(bin_images[canvas_index]==0)
+            image[pts[0],pts[1],:]=canvas_color
         bin_images.pop(canvas_index)
         colors.pop(canvas_index)
         indeces.pop(canvas_index)
@@ -123,7 +126,7 @@ def decompose(image,input_pallete,n_colors=0,canvas_color = None):
 
     return image , bin_images, np.array(colors).astype('uint8').tolist() , indeces
 
-def color_quantize(image, n_colors=2, size_to=500):
+def color_quantize(image, n_colors=2, size_to=400):
     if size_to>0:
         small_img = util.resize(image,size_to)
     else:
@@ -132,7 +135,7 @@ def color_quantize(image, n_colors=2, size_to=500):
     pixel = np.reshape(small_img,(small_img.shape[0]*small_img.shape[1],3))
 
     # performing the clustering
-    centroids,_ = kmeans(np.float32(pixel),n_colors,iter=300)
+    centroids,_ = kmeans(np.float32(pixel),n_colors,iter=250)
 
     return np.uint8(centroids)
 

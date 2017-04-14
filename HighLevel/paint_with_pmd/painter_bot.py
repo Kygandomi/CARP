@@ -35,7 +35,11 @@ class painter_bot():
 		self.camera = None
 		
 	def selectImage(self,fileName,path = ""):
-		self.inputImg = util.readImage(fileName, path)
+		inputImg = util.readImage(fileName, path)
+		self.setImage(inputImg)
+
+	def setImage(self,inputImg):
+		self.inputImg = inputImg
 
 		self.desiredImg = None
 		self.segmentedImg = None
@@ -55,6 +59,11 @@ class painter_bot():
 		if not cam.isOpened():
 			# raise Exception('Could not connect to Camera')
 			return False
+		try:
+			cam.generate_transform()
+		except:
+			return False
+			
 		self.camera = cam
 		if not self.inputImg is None:
 			self.desiredImg = util.resize_with_buffer(self.inputImg,self.camera.get_canvas())

@@ -272,7 +272,7 @@ class Camera(object):
         try:
             rect = cv2.minAreaRect(long_contours[0]) # Generate a rectangle based on the long contour surrounding the page
         except IndexError:
-            util.display(image)
+            # util.display(image)
             raise CameraTransformError("Unable to get contours from camera image, check that camera image isn't washed out. \n \
             Debug mode was off, try turning it on to isolate the issue. Raising error in 3...2...1...")
 
