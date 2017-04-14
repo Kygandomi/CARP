@@ -105,13 +105,13 @@ class PanelOne(wx.Panel):
 		
 		# wx.ColourDialog(self, data=None)
 		for i in range(self.MAX_COLORS):
-			panel = wx.Panel(self,name="color "+str(i+1),pos=(CONTROLS_OFFSET_LEFT+30*i, DY+50))
+			panel = wx.Panel(self,name="color "+str(i+1),pos=(CONTROLS_OFFSET_LEFT+30*i, DY+50),style=wx.SIMPLE_BORDER)
 			panel.BackgroundColour = wx.WHITE
 
 			panel.Bind(wx.EVT_LEFT_UP, lambda evt,index=i: self.pickColor(index))
 			self.paint_colors.append(panel)
 
-		panel = wx.Panel(self,name="color "+str(self.MAX_COLORS+1),pos=(CONTROLS_OFFSET_LEFT+90, DY+80))
+		panel = wx.Panel(self,name="color "+str(self.MAX_COLORS+1),pos=(CONTROLS_OFFSET_LEFT+90, DY+80),style=wx.SIMPLE_BORDER)
 		panel.BackgroundColour = wx.WHITE
 		panel.Bind(wx.EVT_LEFT_UP, lambda evt,index=self.MAX_COLORS: self.pickColor(self.MAX_COLORS))
 		self.paint_colors.append(panel)
@@ -218,26 +218,30 @@ class PanelOne(wx.Panel):
 		self.disable_paint()
 
 		pallete = []
+		num_colors = self.decomp_num_colors.GetValue()
 
 		if usePallete:
-			for i in range(self.decomp_num_colors.GetValue()):
+			for i in range(num_colors):
 				color = self.paint_colors[i].GetBackgroundColour()
 				pallete.append([int(color.Blue()),int(color.Green()),int(color.Red())])
+			num_colors = 0
 
 		canvas_color = None
 		if self.canvas_checkbox.GetValue():
 			color = self.paint_colors[self.MAX_COLORS].GetBackgroundColour()
 			canvas_color = [int(color.Blue()),int(color.Green()),int(color.Red())]
 
-		self.bot.decompose(self.decomp_num_colors.GetValue(),pallete,canvas_color)
+		self.bot.decompose(num_colors,pallete,canvas_color)
 
 		for i in range(len(self.bot.colors)):
 			color = self.bot.colors[i]
 			self.paint_colors[i].BackgroundColour = wx.Colour(color[2],color[1],color[0])
+			self.color_data.SetCustomColour(15-i, wx.Colour(color[2],color[1],color[0]))
 		i=i+1
 		if i<len(self.paint_colors):
 			for j in range(i,len(self.paint_colors)):
 				self.paint_colors[j].BackgroundColour = wx.Colour(255,255,255)
+
 
 		self.setImage(self.bot.segmentedImg)
 
