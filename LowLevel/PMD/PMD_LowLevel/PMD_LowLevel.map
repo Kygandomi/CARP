@@ -1,0 +1,1883 @@
+Archive member included because of file (symbol)
+
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+                              obj/PMD_LowLevel.o (sqrt)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o) (__ieee754_sqrt)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_isnan.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o) (isnan)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_lib_ver.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o) (__fdlib_version)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_matherr.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o) (matherr)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(errno.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o) (__errno)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+                              obj/startup.o (_impure_ptr)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+                              obj/PMDutil.o (free)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o) (_malloc_r)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(memcpy.o)
+                              obj/PMD_LowLevel.o (memcpy)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mlock.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o) (__malloc_lock)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o) (_free_r)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+                              obj/PMDutil.o (__udivsi3)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+                              obj/PMDutil.o (__umodsi3)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o) (__div0)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o) (__subdf3)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+                              obj/PMD_LowLevel.o (__muldf3)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o) (__ltdf2)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+                              obj/PMD_LowLevel.o (__fixdfsi)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+                              obj/PMD_LowLevel.o (__truncdfsf2)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+                              obj/PMD_LowLevel.o (__addsf3)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+                              obj/PMD_LowLevel.o (__mulsf3)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+                              obj/PMD_LowLevel.o (__ltsf2)
+c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+                              obj/PMD_LowLevel.o (__fixsfsi)
+
+Allocating common symbols
+Common symbol       size              file
+
+ACTUAL_RATE         0x4               obj/PMD_LowLevel.o
+inv                 0x600             obj/PMD_LowLevel.o
+m3v                 0x600             obj/PMD_LowLevel.o
+m1v                 0x600             obj/PMD_LowLevel.o
+m2v                 0x600             obj/PMD_LowLevel.o
+
+Discarded input sections
+
+ .text          0x00000000        0x0 obj/UserImport.o
+ .data          0x00000000        0x0 obj/UserImport.o
+ .bss           0x00000000        0x0 obj/UserImport.o
+ .text          0x00000000        0x0 obj/PMD_LowLevel.o
+ .data          0x00000000        0x0 obj/PMD_LowLevel.o
+ .bss           0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.inverseKinematics
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.parseDigitalIn
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.parseForce
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.StopController
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.filterAnalog
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.ConfigureAnalogFeedbackAxis
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.motionComplete
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.PMDGetRuntimeError
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.PMDGetProfileParameter
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.PMDSetProfileParameter
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text.SetupAxis4
+                0x00000000        0x0 obj/PMD_LowLevel.o
+ .text          0x00000000        0x0 obj/c-motion.o
+ .data          0x00000000        0x0 obj/c-motion.o
+ .bss           0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCMotionVersion
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDCalibrateAnalog
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetDriveCommandMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetUpdateMask
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetOvertemperatureLimit
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetStepRange
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetCANMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetSerialPortMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetTraceStop
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetTraceStart
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetTracePeriod
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetTraceMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetPhaseCorrectionMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetPhaseAngle
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetPhaseOffset
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetPhaseInitializeTime
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetPhasePrescale
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetPhaseInitializeMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetCommutationMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetInterruptMask
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetDriveValue
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetAnalogCalibration
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetDrivePWM
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetDriveFaultParameter
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCurrent
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDReadBuffer16
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetFOC
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCurrentLoop
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetBusVoltageLimits
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetEventAction
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCurrentFoldback
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetBreakpointUpdateMask
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDReadAnalog
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDReadIO
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTraceVariable
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPhaseCommand
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetBreakpoint
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetAnalogCalibration
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDDriveNVRAM
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetBusVoltageLimits
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetBreakpointUpdateMask
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDWriteIO
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetTraceVariable
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetDriveCommandMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetFaultOutMask
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetUpdateMask
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetDriveFaultStatus
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTemperature
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetOvertemperatureLimit
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetBusVoltage
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCurrentControlMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetActiveOperatingMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetOperatingMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetSynchronizationMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetStepRange
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetSPIMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCANMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetSerialPortMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetInstructionError
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTraceStatus
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTraceStop
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTraceStart
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTracePeriod
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTraceMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPhaseCorrectionMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPhaseAngle
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPhaseOffset
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPhaseInitializeTime
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPhaseCounts
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPhasePrescale
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPhaseInitializeMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCommutationMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPWMFrequency
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetOutputMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetActiveMotorCommand
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetMotorCommand
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetMotorType
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetEncoderModulus
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetAuxiliaryEncoderSource
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetEncoderSource
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCaptureSource
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetActualPositionUnits
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetSignalStatus
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetSignalSense
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetActivityStatus
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetEventStatus
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetInterruptAxis
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetInterruptMask
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetMotionCompleteMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTrackingWindow
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetSettleWindow
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetSettleTime
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetMotorBias
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetMotorLimit
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetStopMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetGearMaster
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetProfileMode
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetFeedbackParameter
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetFOCValue
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetDefault
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCurrentLoopValue
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPositionLoopValue
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPositionLoop
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetBufferReadIndex
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDReadBuffer
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetBufferLength
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetBufferStart
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetBreakpointValue
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetFeedbackParameter
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetDefault
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetBufferReadIndex
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDClearDriveFaultStatus
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDNoOperation
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDReset
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDInitializePhase
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDClearInterrupt
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetAxisOutMask
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetChecksum
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTime
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetVersion32
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetTraceCount
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCaptureValue
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetActualVelocity
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetActualPosition
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetSampleTime
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetPositionErrorLimit
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCommandedAcceleration
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetCommandedVelocity
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetGearRatio
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetJerk
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetDeceleration
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetAcceleration
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetStartVelocity
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetVelocity
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetVersion
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDGetEncoderToStepRatio
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDAdjustActualPosition
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetJerk
+                0x00000000        0x0 obj/c-motion.o
+ .text.PMDSetStartVelocity
+                0x00000000        0x0 obj/c-motion.o
+ .text          0x00000000        0x0 obj/PMDtrans.o
+ .data          0x00000000        0x0 obj/PMDtrans.o
+ .bss           0x00000000        0x0 obj/PMDtrans.o
+ .text.BuildCommand
+                0x00000000        0x0 obj/PMDtrans.o
+ .text.SendCommandWordWordGetWord
+                0x00000000        0x0 obj/PMDtrans.o
+ .text.SendCommandLongGetWord
+                0x00000000        0x0 obj/PMDtrans.o
+ .text.SendCommandGetWordLong
+                0x00000000        0x0 obj/PMDtrans.o
+ .text.SendCommandGetWordWordWord
+                0x00000000        0x0 obj/PMDtrans.o
+ .text.SendCommandGetWordWord
+                0x00000000        0x0 obj/PMDtrans.o
+ .text.SendCommandLongWord
+                0x00000000        0x0 obj/PMDtrans.o
+ .text          0x00000000        0x0 obj/PMDdiag.o
+ .data          0x00000000        0x0 obj/PMDdiag.o
+ .bss           0x00000000        0x0 obj/PMDdiag.o
+ .text.PMDGetOpcodeText
+                0x00000000        0x0 obj/PMDdiag.o
+ .data.PMDOpcodeText
+                0x00000000        0x0 obj/PMDdiag.o
+ .text          0x00000000        0x0 obj/PMDcommon.o
+ .data          0x00000000        0x0 obj/PMDcommon.o
+ .bss           0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDPeriphReceiveEvent
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDPeriphWrite
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDMemoryRead
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDMemoryWrite
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDWaitForEventPoll
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDWaitForEvent
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDDeviceGetEvent
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDDeviceClose
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDMemoryClose
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDAxisClose
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDPeriphIn
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDPeriphOut
+                0x00000000        0x0 obj/PMDcommon.o
+ .text.PMDPeriphFlush
+                0x00000000        0x0 obj/PMDcommon.o
+ .text          0x00000000        0x0 obj/PMDMB.o
+ .data          0x00000000        0x0 obj/PMDMB.o
+ .bss           0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBResetSSI
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBSetSSIRegister
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBClearResetCause
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBSetWatchdog
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBSetDACOutputEnable
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBSetAmplifierEnable
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBWriteDigitalOutput
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBGetSSIVersion
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBGetSSIAbsolutePosition
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBGetSSIRegister
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBGetResetCause
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBReadCardID
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBGetDACOutputEnable
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBGetAmplifierEnable
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBReadDigitalOutput
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBReadDigitalInput
+                0x00000000        0x0 obj/PMDMB.o
+ .text.PMDMBSetActualPositionToSSIPosition
+                0x00000000        0x0 obj/PMDMB.o
+ .text          0x00000000        0x0 obj/PMDutil.o
+ .data          0x00000000        0x0 obj/PMDutil.o
+ .bss           0x00000000        0x0 obj/PMDutil.o
+ .text.WaitForAlgorithmicPhaseInitialization
+                0x00000000        0x0 obj/PMDutil.o
+ .text.WaitForEvent
+                0x00000000        0x0 obj/PMDutil.o
+ .text.ReadBuffer
+                0x00000000        0x0 obj/PMDutil.o
+ .text.DisplayTraceResults
+                0x00000000        0x0 obj/PMDutil.o
+ .text.SetupTrace
+                0x00000000        0x0 obj/PMDutil.o
+ .text.PMDPeriphOpen
+                0x00000000        0x0 obj/PMDutil.o
+ .text.InitializePhase
+                0x00000000        0x0 obj/PMDutil.o
+ .text          0x00000000        0x0 obj/syscalls.o
+ .data          0x00000000        0x0 obj/syscalls.o
+ .bss           0x00000000        0x0 obj/syscalls.o
+ .text._read_r  0x00000000        0x0 obj/syscalls.o
+ .text._close_r
+                0x00000000        0x0 obj/syscalls.o
+ .text._lseek_r
+                0x00000000        0x0 obj/syscalls.o
+ .text._fstat_r
+                0x00000000        0x0 obj/syscalls.o
+ .text._isatty  0x00000000        0x0 obj/syscalls.o
+ .text.isatty   0x00000000        0x0 obj/syscalls.o
+ .text._write_r
+                0x00000000        0x0 obj/syscalls.o
+ .rodata.str1.4
+                0x00000000        0x0 obj/syscalls.o
+ .text._sbrk_r  0x00000000        0x0 obj/syscalls.o
+ .bss.heap_ptr  0x00000000        0x0 obj/syscalls.o
+ .text          0x00000000        0x0 obj/startup.o
+ .data          0x00000000        0x0 obj/startup.o
+ .bss           0x00000000        0x0 obj/startup.o
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_isnan.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_isnan.o)
+ .text          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_lib_ver.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_lib_ver.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_lib_ver.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_matherr.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_matherr.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(errno.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(errno.o)
+ .text          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+ .rodata        0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+ .text          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+ .text          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(memcpy.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(memcpy.o)
+ .text          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mlock.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mlock.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mlock.o)
+ .text          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+ .text          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .text          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+ .text          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+ .data          0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x00040000         0x00040000         xr
+RAM              0x04016000         0x00002000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD obj/UserImport.o
+LOAD obj/PMD_LowLevel.o
+LOAD obj/c-motion.o
+LOAD obj/PMDtrans.o
+LOAD obj/PMDdiag.o
+LOAD obj/PMDcommon.o
+LOAD obj/PMDMB.o
+LOAD obj/PMDutil.o
+LOAD obj/syscalls.o
+LOAD obj/startup.o
+LOAD c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a
+LOAD c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a
+START GROUP
+LOAD c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a
+LOAD c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a
+END GROUP
+
+.text           0x00040000     0x9ad0
+ *(header)
+ header         0x00040000       0x10 obj/PMD_LowLevel.o
+ FILL mask 0xff
+                0x00040018                . = 0x18
+ *fill*         0x00040010        0x8 ff
+ *(filename)
+ filename       0x00040018        0x4 obj/PMD_LowLevel.o
+ *(fileversion)
+ fileversion    0x0004001c        0x4 obj/PMD_LowLevel.o
+                0x00040020                . = 0x20
+ *(date)
+ date           0x00040020       0x18 obj/PMD_LowLevel.o
+                0x00040040                . = 0x40
+ *fill*         0x00040038        0x8 ff
+ *(funcstart)
+ funcstart      0x00040040        0x4 obj/PMD_LowLevel.o
+                0x00040060                . = 0x60
+ *fill*         0x00040044       0x1c ff
+ *(functable)
+ functable      0x00040060        0x4 obj/PMD_LowLevel.o
+                0x00040068                . = (. + 0x4)
+ *fill*         0x00040064        0x4 ff
+ *(funcstack)
+ funcstack      0x00040068        0x4 obj/PMD_LowLevel.o
+                0x00040070                . = (. + 0x4)
+ *fill*         0x0004006c        0x4 ff
+ *(funcnames)
+ funcnames      0x00040070        0xc obj/PMD_LowLevel.o
+ *(.text*)
+ .text.writeBuffers
+                0x0004007c      0x1a8 obj/PMD_LowLevel.o
+                0x0004007c                writeBuffers
+ .text.addPoint
+                0x00040224      0x324 obj/PMD_LowLevel.o
+                0x00040224                addPoint
+ .text.linear_move
+                0x00040548      0x1d0 obj/PMD_LowLevel.o
+                0x00040548                linear_move
+ .text.initBuffers
+                0x00040718      0x150 obj/PMD_LowLevel.o
+                0x00040718                initBuffers
+ .text.RunHoming
+                0x00040868      0x208 obj/PMD_LowLevel.o
+                0x00040868                RunHoming
+ .text.startMotion
+                0x00040a70      0x15c obj/PMD_LowLevel.o
+                0x00040a70                startMotion
+ .text.parsePacket
+                0x00040bcc      0x1d0 obj/PMD_LowLevel.o
+                0x00040bcc                parsePacket
+ .text.setupUPM
+                0x00040d9c      0x190 obj/PMD_LowLevel.o
+                0x00040d9c                setupUPM
+ .text.SetupAxis3
+                0x00040f2c      0xf78 obj/PMD_LowLevel.o
+                0x00040f2c                SetupAxis3
+ .text.SetupAxis2
+                0x00041ea4      0xb54 obj/PMD_LowLevel.o
+                0x00041ea4                SetupAxis2
+ .text.SetupAxis1
+                0x000429f8      0xbb8 obj/PMD_LowLevel.o
+                0x000429f8                SetupAxis1
+ .text.stopMotion
+                0x000435b0       0xd8 obj/PMD_LowLevel.o
+                0x000435b0                stopMotion
+ .text.RunController
+                0x00043688      0x14c obj/PMD_LowLevel.o
+                0x00043688                RunController
+ .text.setPaused
+                0x000437d4      0x238 obj/PMD_LowLevel.o
+                0x000437d4                setPaused
+ .text.pmd_control
+                0x00043a0c      0x64c obj/PMD_LowLevel.o
+                0x00043a0c                pmd_control
+ .text.PMDSetFaultOutMask
+                0x00044058       0x10 obj/c-motion.o
+                0x00044058                PMDSetFaultOutMask
+ .text.PMDSetCurrentControlMode
+                0x00044068       0x10 obj/c-motion.o
+                0x00044068                PMDSetCurrentControlMode
+ .text.PMDSetOperatingMode
+                0x00044078       0x10 obj/c-motion.o
+                0x00044078                PMDSetOperatingMode
+ .text.PMDSetSynchronizationMode
+                0x00044088       0x10 obj/c-motion.o
+                0x00044088                PMDSetSynchronizationMode
+ .text.PMDSetSPIMode
+                0x00044098       0x10 obj/c-motion.o
+                0x00044098                PMDSetSPIMode
+ .text.PMDSetPhaseCounts
+                0x000440a8       0x10 obj/c-motion.o
+                0x000440a8                PMDSetPhaseCounts
+ .text.PMDSetPWMFrequency
+                0x000440b8       0x10 obj/c-motion.o
+                0x000440b8                PMDSetPWMFrequency
+ .text.PMDSetOutputMode
+                0x000440c8       0x10 obj/c-motion.o
+                0x000440c8                PMDSetOutputMode
+ .text.PMDSetMotorCommand
+                0x000440d8       0x10 obj/c-motion.o
+                0x000440d8                PMDSetMotorCommand
+ .text.PMDSetMotorType
+                0x000440e8       0x10 obj/c-motion.o
+                0x000440e8                PMDSetMotorType
+ .text.PMDSetEncoderModulus
+                0x000440f8       0x10 obj/c-motion.o
+                0x000440f8                PMDSetEncoderModulus
+ .text.PMDSetAuxiliaryEncoderSource
+                0x00044108       0x14 obj/c-motion.o
+                0x00044108                PMDSetAuxiliaryEncoderSource
+ .text.PMDSetEncoderSource
+                0x0004411c       0x10 obj/c-motion.o
+                0x0004411c                PMDSetEncoderSource
+ .text.PMDSetCaptureSource
+                0x0004412c       0x10 obj/c-motion.o
+                0x0004412c                PMDSetCaptureSource
+ .text.PMDSetActualPositionUnits
+                0x0004413c       0x10 obj/c-motion.o
+                0x0004413c                PMDSetActualPositionUnits
+ .text.PMDSetSignalSense
+                0x0004414c       0x10 obj/c-motion.o
+                0x0004414c                PMDSetSignalSense
+ .text.PMDResetEventStatus
+                0x0004415c       0x10 obj/c-motion.o
+                0x0004415c                PMDResetEventStatus
+ .text.PMDMultiUpdate
+                0x0004416c       0x10 obj/c-motion.o
+                0x0004416c                PMDMultiUpdate
+ .text.PMDSetMotionCompleteMode
+                0x0004417c       0x10 obj/c-motion.o
+                0x0004417c                PMDSetMotionCompleteMode
+ .text.PMDSetTrackingWindow
+                0x0004418c       0x10 obj/c-motion.o
+                0x0004418c                PMDSetTrackingWindow
+ .text.PMDSetSettleWindow
+                0x0004419c       0x10 obj/c-motion.o
+                0x0004419c                PMDSetSettleWindow
+ .text.PMDSetSettleTime
+                0x000441ac       0x10 obj/c-motion.o
+                0x000441ac                PMDSetSettleTime
+ .text.PMDSetMotorBias
+                0x000441bc       0x10 obj/c-motion.o
+                0x000441bc                PMDSetMotorBias
+ .text.PMDSetMotorLimit
+                0x000441cc       0x10 obj/c-motion.o
+                0x000441cc                PMDSetMotorLimit
+ .text.PMDSetStopMode
+                0x000441dc       0x10 obj/c-motion.o
+                0x000441dc                PMDSetStopMode
+ .text.PMDSetGearMaster
+                0x000441ec       0x14 obj/c-motion.o
+                0x000441ec                PMDSetGearMaster
+ .text.PMDSetProfileMode
+                0x00044200       0x10 obj/c-motion.o
+                0x00044200                PMDSetProfileMode
+ .text.PMDGetHoldingCurrent
+                0x00044210       0x14 obj/c-motion.o
+                0x00044210                PMDGetHoldingCurrent
+ .text.PMDSetDrivePWM
+                0x00044224       0x18 obj/c-motion.o
+                0x00044224                PMDSetDrivePWM
+ .text.PMDSetDriveFaultParameter
+                0x0004423c       0x18 obj/c-motion.o
+                0x0004423c                PMDSetDriveFaultParameter
+ .text.PMDSetCurrent
+                0x00044254       0x18 obj/c-motion.o
+                0x00044254                PMDSetCurrent
+ .text.PMDSetFOC
+                0x0004426c       0x20 obj/c-motion.o
+                0x0004426c                PMDSetFOC
+ .text.PMDSetCurrentLoop
+                0x0004428c       0x20 obj/c-motion.o
+                0x0004428c                PMDSetCurrentLoop
+ .text.PMDSetEventAction
+                0x000442ac       0x18 obj/c-motion.o
+                0x000442ac                PMDSetEventAction
+ .text.PMDSetHoldingCurrent
+                0x000442c4       0x18 obj/c-motion.o
+                0x000442c4                PMDSetHoldingCurrent
+ .text.PMDSetCurrentFoldback
+                0x000442dc       0x18 obj/c-motion.o
+                0x000442dc                PMDSetCurrentFoldback
+ .text.PMDSetEncoderToStepRatio
+                0x000442f4       0x18 obj/c-motion.o
+                0x000442f4                PMDSetEncoderToStepRatio
+ .text.PMDSetBreakpoint
+                0x0004430c       0x24 obj/c-motion.o
+                0x0004430c                PMDSetBreakpoint
+ .text.PMDGetDriveStatus
+                0x00044330        0xc obj/c-motion.o
+                0x00044330                PMDGetDriveStatus
+ .text.PMDGetTraceValue
+                0x0004433c       0x14 obj/c-motion.o
+                0x0004433c                PMDGetTraceValue
+ .text.PMDGetBufferWriteIndex
+                0x00044350       0x14 obj/c-motion.o
+                0x00044350                PMDGetBufferWriteIndex
+ .text.PMDSetPositionLoop
+                0x00044364       0x14 obj/c-motion.o
+                0x00044364                PMDSetPositionLoop
+ .text.PMDSetBufferWriteIndex
+                0x00044378       0x14 obj/c-motion.o
+                0x00044378                PMDSetBufferWriteIndex
+ .text.PMDWriteBuffer
+                0x0004438c       0x14 obj/c-motion.o
+                0x0004438c                PMDWriteBuffer
+ .text.PMDSetBufferLength
+                0x000443a0       0x14 obj/c-motion.o
+                0x000443a0                PMDSetBufferLength
+ .text.PMDSetBufferStart
+                0x000443b4       0x14 obj/c-motion.o
+                0x000443b4                PMDSetBufferStart
+ .text.PMDSetBreakpointValue
+                0x000443c8       0x14 obj/c-motion.o
+                0x000443c8                PMDSetBreakpointValue
+ .text.PMDRestoreOperatingMode
+                0x000443dc        0x8 obj/c-motion.o
+                0x000443dc                PMDRestoreOperatingMode
+ .text.PMDUpdate
+                0x000443e4        0x8 obj/c-motion.o
+                0x000443e4                PMDUpdate
+ .text.PMDClearPositionError
+                0x000443ec        0x8 obj/c-motion.o
+                0x000443ec                PMDClearPositionError
+ .text.PMDSetAxisOutMask
+                0x000443f4       0x2c obj/c-motion.o
+                0x000443f4                PMDSetAxisOutMask
+ .text.PMDGetPositionError
+                0x00044420        0xc obj/c-motion.o
+                0x00044420                PMDGetPositionError
+ .text.PMDGetCommandedPosition
+                0x0004442c        0xc obj/c-motion.o
+                0x0004442c                PMDGetCommandedPosition
+ .text.PMDGetPosition
+                0x00044438        0xc obj/c-motion.o
+                0x00044438                PMDGetPosition
+ .text.PMDSetActualPosition
+                0x00044444        0xc obj/c-motion.o
+                0x00044444                PMDSetActualPosition
+ .text.PMDSetSampleTime
+                0x00044450        0xc obj/c-motion.o
+                0x00044450                PMDSetSampleTime
+ .text.PMDSetPositionErrorLimit
+                0x0004445c        0xc obj/c-motion.o
+                0x0004445c                PMDSetPositionErrorLimit
+ .text.PMDSetGearRatio
+                0x00044468        0xc obj/c-motion.o
+                0x00044468                PMDSetGearRatio
+ .text.PMDSetDeceleration
+                0x00044474        0xc obj/c-motion.o
+                0x00044474                PMDSetDeceleration
+ .text.PMDSetAcceleration
+                0x00044480        0xc obj/c-motion.o
+                0x00044480                PMDSetAcceleration
+ .text.PMDSetVelocity
+                0x0004448c        0xc obj/c-motion.o
+                0x0004448c                PMDSetVelocity
+ .text.PMDSetPosition
+                0x00044498        0xc obj/c-motion.o
+                0x00044498                PMDSetPosition
+ .text.SendCommand
+                0x000444a4       0x3c obj/PMDtrans.o
+                0x000444a4                SendCommand
+ .text.SendCommandWordGetLong
+                0x000444e0       0x5c obj/PMDtrans.o
+                0x000444e0                SendCommandWordGetLong
+ .text.SendCommandWordGetWord
+                0x0004453c       0x54 obj/PMDtrans.o
+                0x0004453c                SendCommandWordGetWord
+ .text.SendCommandGetLong
+                0x00044590       0x58 obj/PMDtrans.o
+                0x00044590                SendCommandGetLong
+ .text.SendCommandGetWord
+                0x000445e8       0x50 obj/PMDtrans.o
+                0x000445e8                SendCommandGetWord
+ .text.SendCommandWordLong
+                0x00044638       0x50 obj/PMDtrans.o
+                0x00044638                SendCommandWordLong
+ .text.SendCommandLong
+                0x00044688       0x48 obj/PMDtrans.o
+                0x00044688                SendCommandLong
+ .text.SendCommandWordWordWord
+                0x000446d0       0x50 obj/PMDtrans.o
+                0x000446d0                SendCommandWordWordWord
+ .text.SendCommandWordWord
+                0x00044720       0x48 obj/PMDtrans.o
+                0x00044720                SendCommandWordWord
+ .text.SendCommandWord
+                0x00044768       0x40 obj/PMDtrans.o
+                0x00044768                SendCommandWord
+ .text.PMDGetErrorMessage
+                0x000447a8      0x740 obj/PMDdiag.o
+                0x000447a8                PMDGetErrorMessage
+ .text.PMDPeriphReceive
+                0x00044ee8       0x88 obj/PMDcommon.o
+                0x00044ee8                PMDPeriphReceive
+ .text.PMDPeriphSend
+                0x00044f70       0x68 obj/PMDcommon.o
+                0x00044f70                PMDPeriphSend
+ .text.PMDPeriphRead
+                0x00044fd8       0x50 obj/PMDcommon.o
+                0x00044fd8                PMDPeriphRead
+ .text.PMDAtlasAxisOpen
+                0x00045028       0x20 obj/PMDcommon.o
+                0x00045028                PMDAtlasAxisOpen
+ .text.PMDPeriphClose
+                0x00045048       0x84 obj/PMDcommon.o
+                0x00045048                PMDPeriphClose
+ .text.WaitForAtlasToConnect
+                0x000450cc       0x68 obj/PMDutil.o
+                0x000450cc                WaitForAtlasToConnect
+ .text.CopyDataSectionToRAM
+                0x00045134       0x78 obj/startup.o
+                0x00045134                CopyDataSectionToRAM
+ .text          0x000451ac      0x110 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+                0x000451ac                sqrt
+ .text          0x000452bc      0x230 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+                0x000452bc                __ieee754_sqrt
+ .text          0x000454ec       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_isnan.o)
+                0x000454ec                isnan
+ .text          0x0004550c        0x8 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_matherr.o)
+                0x0004550c                matherr
+ .text          0x00045514       0x10 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(errno.o)
+                0x00045514                __errno
+ .text          0x00045524       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(memcpy.o)
+                0x00045524                memcpy
+ .text          0x00045544      0x400 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+                0x000458d8                __floatdidf
+                0x00045858                __floatsidf
+                0x00045830                __aeabi_ui2d
+                0x00045544                __aeabi_drsub
+                0x00045884                __extendsfdf2
+                0x00045550                __adddf3
+                0x00045830                __floatunsidf
+                0x00045550                __aeabi_dadd
+                0x000458c4                __aeabi_ul2d
+                0x0004554c                __aeabi_dsub
+                0x000458c4                __floatundidf
+                0x00045858                __aeabi_i2d
+                0x000458d8                __aeabi_l2d
+                0x00045884                __aeabi_f2d
+                0x0004554c                __subdf3
+ .text          0x00045944      0x470 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+                0x00045bb0                __aeabi_ddiv
+                0x00045944                __aeabi_dmul
+                0x00045bb0                __divdf3
+                0x00045944                __muldf3
+ .text          0x00045db4      0x128 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+                0x00045ea0                __aeabi_dcmple
+                0x00045dc4                __cmpdf2
+                0x00045dc4                __eqdf2
+                0x00045db4                __gtdf2
+                0x00045e64                __aeabi_cdcmple
+                0x00045e48                __aeabi_cdrcmple
+                0x00045dbc                __ltdf2
+                0x00045e8c                __aeabi_dcmplt
+                0x00045dbc                __ledf2
+                0x00045ec8                __aeabi_dcmpgt
+                0x00045eb4                __aeabi_dcmpge
+                0x00045dc4                __nedf2
+                0x00045e78                __aeabi_dcmpeq
+                0x00045e64                __aeabi_cdcmpeq
+                0x00045db4                __gedf2
+ .text          0x00045edc       0x5c c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+                0x00045edc                __fixdfsi
+                0x00045edc                __aeabi_d2iz
+ .text          0x00045f38       0xa0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+                0x00045f38                __aeabi_d2f
+                0x00045f38                __truncdfsf2
+ .text          0x00045fd8      0x2ac c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+                0x00045fe4                __aeabi_fadd
+                0x00045fe0                __subsf3
+                0x000461a8                __aeabi_i2f
+                0x00045fe0                __aeabi_fsub
+                0x000461d8                __floatdisf
+                0x000461a8                __floatsisf
+                0x000461c8                __floatundisf
+                0x000461a0                __aeabi_ui2f
+                0x000461d8                __aeabi_l2f
+                0x000461c8                __aeabi_ul2f
+                0x00045fd8                __aeabi_frsub
+                0x000461a0                __floatunsisf
+                0x00045fe4                __addsf3
+ .text          0x00046284      0x2f8 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+                0x0004641c                __divsf3
+                0x0004641c                __aeabi_fdiv
+                0x00046284                __mulsf3
+                0x00046284                __aeabi_fmul
+ .text          0x0004657c       0xf8 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+                0x00046660                __aeabi_fcmpgt
+                0x00046584                __lesf2
+                0x0004658c                __nesf2
+                0x0004664c                __aeabi_fcmpge
+                0x0004657c                __gtsf2
+                0x00046638                __aeabi_fcmple
+                0x0004658c                __eqsf2
+                0x0004658c                __cmpsf2
+                0x00046584                __ltsf2
+                0x000465fc                __aeabi_cfcmple
+                0x0004657c                __gesf2
+                0x00046610                __aeabi_fcmpeq
+                0x000465ec                __aeabi_cfrcmple
+                0x00046624                __aeabi_fcmplt
+                0x000465fc                __aeabi_cfcmpeq
+ .text          0x00046674       0x5c c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+                0x00046674                __fixsfsi
+                0x00046674                __aeabi_f2iz
+ *(.rodata*)
+ .rodata.str1.4
+                0x000466d0     0x10a2 obj/PMD_LowLevel.o
+                               0x10a4 (size before relaxing)
+ .rodata.C.3.4525
+                0x00047772        0x3 obj/PMD_LowLevel.o
+ .rodata.C.2.4524
+                0x00047775        0x3 obj/PMD_LowLevel.o
+ .rodata.UCFileName
+                0x00047778       0x10 obj/PMD_LowLevel.o
+ .rodata.str1.4
+                0x00047788     0x2133 obj/PMDdiag.o
+                               0x2134 (size before relaxing)
+ *fill*         0x000498bb        0x1 00
+ .rodata.str1.4
+                0x000498bc      0x1fe obj/PMDutil.o
+                                0x204 (size before relaxing)
+ *fill*         0x00049aba        0x2 00
+ .rodata.str1.4
+                0x00049abc        0x5 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+                                  0x8 (size before relaxing)
+ *fill*         0x00049ac1        0x3 00
+ .rodata        0x00049ac4        0x4 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_lib_ver.o)
+                0x00049ac4                __fdlib_version
+ .rodata.str1.4
+                0x00049ac8        0x4 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+                0x00049ad0                . = ALIGN (0x8)
+ *fill*         0x00049acc        0x4 ff
+                0x00049ad0                _etext = .
+
+.glue_7         0x00049ad0        0x0
+ .glue_7        0x00049ad0        0x0 obj/UserImport.o
+ .glue_7        0x00049ad0        0x0 obj/PMD_LowLevel.o
+ .glue_7        0x00049ad0        0x0 obj/c-motion.o
+ .glue_7        0x00049ad0        0x0 obj/PMDtrans.o
+ .glue_7        0x00049ad0        0x0 obj/PMDdiag.o
+ .glue_7        0x00049ad0        0x0 obj/PMDcommon.o
+ .glue_7        0x00049ad0        0x0 obj/PMDMB.o
+ .glue_7        0x00049ad0        0x0 obj/PMDutil.o
+ .glue_7        0x00049ad0        0x0 obj/syscalls.o
+ .glue_7        0x00049ad0        0x0 obj/startup.o
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_isnan.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_lib_ver.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_matherr.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(errno.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(memcpy.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mlock.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+ .glue_7        0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+
+.glue_7t        0x00049ad0        0x0
+ .glue_7t       0x00049ad0        0x0 obj/UserImport.o
+ .glue_7t       0x00049ad0        0x0 obj/PMD_LowLevel.o
+ .glue_7t       0x00049ad0        0x0 obj/c-motion.o
+ .glue_7t       0x00049ad0        0x0 obj/PMDtrans.o
+ .glue_7t       0x00049ad0        0x0 obj/PMDdiag.o
+ .glue_7t       0x00049ad0        0x0 obj/PMDcommon.o
+ .glue_7t       0x00049ad0        0x0 obj/PMDMB.o
+ .glue_7t       0x00049ad0        0x0 obj/PMDutil.o
+ .glue_7t       0x00049ad0        0x0 obj/syscalls.o
+ .glue_7t       0x00049ad0        0x0 obj/startup.o
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_isnan.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_lib_ver.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_matherr.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(errno.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(memcpy.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mlock.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+ .glue_7t       0x00049ad0        0x0 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+
+.data           0x04016000      0x408 load address 0x00049ad0
+                0x04016000                _data = .
+ *(.data)
+ .data          0x04016000      0x404 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+                0x04016000                _impure_ptr
+ *(.data*)
+ .data.BUFF_REMAINING
+                0x04016404        0x4 obj/PMD_LowLevel.o
+                0x04016404                BUFF_REMAINING
+                0x04016408                . = ALIGN (0x8)
+                0x04016408                _edata = .
+
+.bss            0x04016408     0x1838
+                0x04016408                _bss = .
+ *(.bss*)
+ .bss.M1_OFFSET
+                0x04016408        0x4 obj/PMD_LowLevel.o
+                0x04016408                M1_OFFSET
+ .bss.M2_OFFSET
+                0x0401640c        0x4 obj/PMD_LowLevel.o
+                0x0401640c                M2_OFFSET
+ .bss.COMMAND_INDEX
+                0x04016410        0x4 obj/PMD_LowLevel.o
+                0x04016410                COMMAND_INDEX
+ .bss.WRITE_INDEX
+                0x04016414        0x4 obj/PMD_LowLevel.o
+                0x04016414                WRITE_INDEX
+ .bss.RECEIVE_INDEX
+                0x04016418        0x4 obj/PMD_LowLevel.o
+                0x04016418                RECEIVE_INDEX
+ .bss.STOP_INDEX
+                0x0401641c        0x4 obj/PMD_LowLevel.o
+                0x0401641c                STOP_INDEX
+ .bss.isPaused  0x04016420        0x4 obj/PMD_LowLevel.o
+                0x04016420                isPaused
+ .bss.average.4897
+                0x04016424       0x18 obj/PMD_LowLevel.o
+ *(COMMON)
+ COMMON         0x0401643c     0x1804 obj/PMD_LowLevel.o
+                0x0401643c                ACTUAL_RATE
+                0x04016440                inv
+                0x04016a40                m3v
+                0x04017040                m1v
+                0x04017640                m2v
+                0x04017c40                . = ALIGN (0x8)
+                0x04017c40                end = .
+                0x04017c40                _end = .
+                0x04017c40                _ebss = .
+OUTPUT(PMD_LowLevel.elf elf32-littlearm)
+
+.comment        0x00000000      0x237
+ .comment       0x00000000       0x1b obj/PMD_LowLevel.o
+ .comment       0x0000001b       0x1b obj/c-motion.o
+ .comment       0x00000036       0x1b obj/PMDtrans.o
+ .comment       0x00000051       0x1b obj/PMDdiag.o
+ .comment       0x0000006c       0x1b obj/PMDcommon.o
+ .comment       0x00000087       0x1b obj/PMDMB.o
+ .comment       0x000000a2       0x1b obj/PMDutil.o
+ .comment       0x000000bd       0x1b obj/syscalls.o
+ .comment       0x000000d8       0x1b obj/startup.o
+ .comment       0x000000f3       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+ .comment       0x0000010e       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+ .comment       0x00000129       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_isnan.o)
+ .comment       0x00000144       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_lib_ver.o)
+ .comment       0x0000015f       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_matherr.o)
+ .comment       0x0000017a       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(errno.o)
+ .comment       0x00000195       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+ .comment       0x000001b0       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+ .comment       0x000001cb       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+ .comment       0x000001e6       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(memcpy.o)
+ .comment       0x00000201       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mlock.o)
+ .comment       0x0000021c       0x1b c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+
+.debug_frame    0x00000000       0x50
+ .debug_frame   0x00000000       0x28 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .debug_frame   0x00000028       0x28 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+
+.debug_line     0x00000000      0xac6
+ .debug_line    0x00000000       0x8c c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .debug_line    0x0000008c       0x75 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+ .debug_line    0x00000101       0x60 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+ .debug_line    0x00000161      0x1eb c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+ .debug_line    0x0000034c      0x1fc c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+ .debug_line    0x00000548       0xf2 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+ .debug_line    0x0000063a       0x75 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+ .debug_line    0x000006af       0x86 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+ .debug_line    0x00000735      0x116 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+ .debug_line    0x0000084b      0x120 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+ .debug_line    0x0000096b       0xe6 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+ .debug_line    0x00000a51       0x75 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+
+.debug_info     0x00000000      0x567
+ .debug_info    0x00000000       0x74 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .debug_info    0x00000074       0x74 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+ .debug_info    0x000000e8       0x74 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+ .debug_info    0x0000015c       0x73 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+ .debug_info    0x000001cf       0x73 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+ .debug_info    0x00000242       0x73 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+ .debug_info    0x000002b5       0x73 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+ .debug_info    0x00000328       0x73 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+ .debug_info    0x0000039b       0x73 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+ .debug_info    0x0000040e       0x73 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+ .debug_info    0x00000481       0x73 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+ .debug_info    0x000004f4       0x73 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+
+.debug_abbrev   0x00000000       0xf0
+ .debug_abbrev  0x00000000       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .debug_abbrev  0x00000014       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+ .debug_abbrev  0x00000028       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+ .debug_abbrev  0x0000003c       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+ .debug_abbrev  0x00000050       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+ .debug_abbrev  0x00000064       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+ .debug_abbrev  0x00000078       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+ .debug_abbrev  0x0000008c       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+ .debug_abbrev  0x000000a0       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+ .debug_abbrev  0x000000b4       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+ .debug_abbrev  0x000000c8       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+ .debug_abbrev  0x000000dc       0x14 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+
+.debug_aranges  0x00000000      0x180
+ .debug_aranges
+                0x00000000       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+ .debug_aranges
+                0x00000020       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+ .debug_aranges
+                0x00000040       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+ .debug_aranges
+                0x00000060       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+ .debug_aranges
+                0x00000080       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+ .debug_aranges
+                0x000000a0       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+ .debug_aranges
+                0x000000c0       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+ .debug_aranges
+                0x000000e0       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+ .debug_aranges
+                0x00000100       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+ .debug_aranges
+                0x00000120       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+ .debug_aranges
+                0x00000140       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+ .debug_aranges
+                0x00000160       0x20 c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+
+Cross Reference Table
+
+Symbol                                            File
+ACTUAL_RATE                                       obj/PMD_LowLevel.o
+BUFF_REMAINING                                    obj/PMD_LowLevel.o
+BuildCommand                                      obj/PMDtrans.o
+COMMAND_INDEX                                     obj/PMD_LowLevel.o
+ConfigureAnalogFeedbackAxis                       obj/PMD_LowLevel.o
+CopyDataSectionToRAM                              obj/startup.o
+                                                  obj/PMD_LowLevel.o
+DisplayTraceResults                               obj/PMDutil.o
+InitializePhase                                   obj/PMDutil.o
+M1_OFFSET                                         obj/PMD_LowLevel.o
+M2_OFFSET                                         obj/PMD_LowLevel.o
+PMDAdjustActualPosition                           obj/c-motion.o
+PMDAtlasAxisOpen                                  obj/PMDcommon.o
+                                                  obj/PMD_LowLevel.o
+PMDAxisClose                                      obj/PMDcommon.o
+PMDAxisOpen                                       obj/UserImport.o
+                                                  obj/PMDcommon.o
+                                                  obj/PMD_LowLevel.o
+PMDCalibrateAnalog                                obj/c-motion.o
+PMDClearDriveFaultStatus                          obj/c-motion.o
+PMDClearInterrupt                                 obj/c-motion.o
+                                                  obj/PMDcommon.o
+PMDClearPositionError                             obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDDeviceClose                                    obj/PMDcommon.o
+PMDDeviceGetDefault                               obj/UserImport.o
+PMDDeviceGetEvent                                 obj/PMDcommon.o
+PMDDeviceGetResetCause                            obj/UserImport.o
+PMDDeviceGetTickCount                             obj/UserImport.o
+                                                  obj/PMDutil.o
+                                                  obj/PMDcommon.o
+PMDDeviceGetVersion                               obj/UserImport.o
+PMDDeviceNoOperation                              obj/UserImport.o
+PMDDeviceReset                                    obj/UserImport.o
+PMDDeviceSetConsole                               obj/UserImport.o
+PMDDeviceSetDefault                               obj/UserImport.o
+PMDDeviceStoreUserCode                            obj/UserImport.o
+PMDDriveNVRAM                                     obj/c-motion.o
+PMDGetAcceleration                                obj/c-motion.o
+PMDGetActiveMotorCommand                          obj/c-motion.o
+PMDGetActiveOperatingMode                         obj/c-motion.o
+PMDGetActivityStatus                              obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetActualPosition                              obj/c-motion.o
+PMDGetActualPositionUnits                         obj/c-motion.o
+PMDGetActualVelocity                              obj/c-motion.o
+PMDGetAnalogCalibration                           obj/c-motion.o
+PMDGetAuxiliaryEncoderSource                      obj/c-motion.o
+PMDGetAxisOutMask                                 obj/c-motion.o
+PMDGetBreakpoint                                  obj/c-motion.o
+PMDGetBreakpointUpdateMask                        obj/c-motion.o
+PMDGetBreakpointValue                             obj/c-motion.o
+PMDGetBufferLength                                obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetBufferReadIndex                             obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetBufferStart                                 obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetBufferWriteIndex                            obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDGetBusVoltage                                  obj/c-motion.o
+PMDGetBusVoltageLimits                            obj/c-motion.o
+PMDGetCANMode                                     obj/c-motion.o
+PMDGetCMotionVersion                              obj/c-motion.o
+PMDGetCaptureSource                               obj/c-motion.o
+PMDGetCaptureValue                                obj/c-motion.o
+PMDGetChecksum                                    obj/c-motion.o
+PMDGetCommandedAcceleration                       obj/c-motion.o
+PMDGetCommandedPosition                           obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDGetCommandedVelocity                           obj/c-motion.o
+PMDGetCommutationMode                             obj/c-motion.o
+PMDGetCurrent                                     obj/c-motion.o
+PMDGetCurrentControlMode                          obj/c-motion.o
+PMDGetCurrentFoldback                             obj/c-motion.o
+PMDGetCurrentLoop                                 obj/c-motion.o
+PMDGetCurrentLoopValue                            obj/c-motion.o
+PMDGetDeceleration                                obj/c-motion.o
+PMDGetDefault                                     obj/c-motion.o
+PMDGetDriveCommandMode                            obj/c-motion.o
+PMDGetDriveFaultParameter                         obj/c-motion.o
+PMDGetDriveFaultStatus                            obj/c-motion.o
+PMDGetDrivePWM                                    obj/c-motion.o
+PMDGetDriveStatus                                 obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetDriveValue                                  obj/c-motion.o
+PMDGetEncoderModulus                              obj/c-motion.o
+PMDGetEncoderSource                               obj/c-motion.o
+PMDGetEncoderToStepRatio                          obj/c-motion.o
+PMDGetErrorMessage                                obj/PMDdiag.o
+                                                  obj/PMD_LowLevel.o
+PMDGetEventAction                                 obj/c-motion.o
+PMDGetEventStatus                                 obj/c-motion.o
+                                                  obj/PMDutil.o
+                                                  obj/PMDcommon.o
+PMDGetFOC                                         obj/c-motion.o
+PMDGetFOCValue                                    obj/c-motion.o
+PMDGetFaultOutMask                                obj/c-motion.o
+PMDGetFeedbackParameter                           obj/c-motion.o
+PMDGetGearMaster                                  obj/c-motion.o
+PMDGetGearRatio                                   obj/c-motion.o
+PMDGetHoldingCurrent                              obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDGetInstructionError                            obj/c-motion.o
+PMDGetInterruptAxis                               obj/c-motion.o
+                                                  obj/PMDcommon.o
+PMDGetInterruptMask                               obj/c-motion.o
+                                                  obj/PMDcommon.o
+PMDGetJerk                                        obj/c-motion.o
+PMDGetMotionCompleteMode                          obj/c-motion.o
+PMDGetMotorBias                                   obj/c-motion.o
+PMDGetMotorCommand                                obj/c-motion.o
+PMDGetMotorLimit                                  obj/c-motion.o
+PMDGetMotorType                                   obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetOpcodeText                                  obj/PMDdiag.o
+PMDGetOperatingMode                               obj/c-motion.o
+PMDGetOutputMode                                  obj/c-motion.o
+PMDGetOvertemperatureLimit                        obj/c-motion.o
+PMDGetPWMFrequency                                obj/c-motion.o
+PMDGetPhaseAngle                                  obj/c-motion.o
+PMDGetPhaseCommand                                obj/c-motion.o
+PMDGetPhaseCorrectionMode                         obj/c-motion.o
+PMDGetPhaseCounts                                 obj/c-motion.o
+PMDGetPhaseInitializeMode                         obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetPhaseInitializeTime                         obj/c-motion.o
+PMDGetPhaseOffset                                 obj/c-motion.o
+PMDGetPhasePrescale                               obj/c-motion.o
+PMDGetPosition                                    obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDGetPositionError                               obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDGetPositionErrorLimit                          obj/c-motion.o
+PMDGetPositionLoop                                obj/c-motion.o
+PMDGetPositionLoopValue                           obj/c-motion.o
+PMDGetProfileMode                                 obj/c-motion.o
+PMDGetProfileParameter                            obj/PMD_LowLevel.o
+PMDGetRuntimeError                                obj/PMD_LowLevel.o
+PMDGetSPIMode                                     obj/c-motion.o
+PMDGetSampleTime                                  obj/c-motion.o
+PMDGetSerialPortMode                              obj/c-motion.o
+PMDGetSettleTime                                  obj/c-motion.o
+PMDGetSettleWindow                                obj/c-motion.o
+PMDGetSignalSense                                 obj/c-motion.o
+PMDGetSignalStatus                                obj/c-motion.o
+PMDGetStartVelocity                               obj/c-motion.o
+PMDGetStepRange                                   obj/c-motion.o
+PMDGetStopMode                                    obj/c-motion.o
+PMDGetSynchronizationMode                         obj/c-motion.o
+PMDGetTemperature                                 obj/c-motion.o
+PMDGetTime                                        obj/c-motion.o
+PMDGetTraceCount                                  obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetTraceMode                                   obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetTracePeriod                                 obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetTraceStart                                  obj/c-motion.o
+PMDGetTraceStatus                                 obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetTraceStop                                   obj/c-motion.o
+PMDGetTraceValue                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDGetTraceVariable                               obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDGetTrackingWindow                              obj/c-motion.o
+PMDGetUpdateMask                                  obj/c-motion.o
+PMDGetUserCodeFileDate                            obj/UserImport.o
+PMDGetUserCodeFileName                            obj/UserImport.o
+PMDGetUserCodeFileVersion                         obj/UserImport.o
+PMDGetVelocity                                    obj/c-motion.o
+PMDGetVersion                                     obj/c-motion.o
+PMDGetVersion32                                   obj/c-motion.o
+PMDInitializePhase                                obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDInterruptWait                                  obj/UserImport.o
+PMDMBClearResetCause                              obj/PMDMB.o
+PMDMBGetAmplifierEnable                           obj/PMDMB.o
+PMDMBGetDACOutputEnable                           obj/PMDMB.o
+PMDMBGetResetCause                                obj/PMDMB.o
+PMDMBGetSSIAbsolutePosition                       obj/PMDMB.o
+PMDMBGetSSIRegister                               obj/PMDMB.o
+PMDMBGetSSIVersion                                obj/PMDMB.o
+PMDMBReadCardID                                   obj/PMDMB.o
+PMDMBReadDigitalInput                             obj/PMDMB.o
+PMDMBReadDigitalOutput                            obj/PMDMB.o
+PMDMBResetSSI                                     obj/PMDMB.o
+PMDMBSetActualPositionToSSIPosition               obj/PMDMB.o
+PMDMBSetAmplifierEnable                           obj/PMDMB.o
+PMDMBSetDACOutputEnable                           obj/PMDMB.o
+PMDMBSetSSIRegister                               obj/PMDMB.o
+PMDMBSetWatchdog                                  obj/PMDMB.o
+PMDMBWriteDigitalOutput                           obj/PMDMB.o
+PMDMPDeviceOpen                                   obj/UserImport.o
+PMDMemoryClose                                    obj/PMDcommon.o
+                                                  obj/PMDutil.o
+PMDMemoryOpen                                     obj/UserImport.o
+                                                  obj/PMDutil.o
+PMDMemoryRead                                     obj/PMDcommon.o
+                                                  obj/PMDutil.o
+PMDMemoryWrite                                    obj/PMDcommon.o
+PMDMultiUpdate                                    obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDNoOperation                                    obj/c-motion.o
+PMDOpcodeText                                     obj/PMDdiag.o
+PMDPeriphClose                                    obj/PMDcommon.o
+                                                  obj/PMD_LowLevel.o
+PMDPeriphFlush                                    obj/PMDcommon.o
+PMDPeriphIn                                       obj/PMDcommon.o
+PMDPeriphOpen                                     obj/PMDutil.o
+PMDPeriphOpenCAN                                  obj/UserImport.o
+PMDPeriphOpenCANRange                             obj/UserImport.o
+PMDPeriphOpenCME                                  obj/UserImport.o
+PMDPeriphOpenCOM                                  obj/UserImport.o
+                                                  obj/PMDutil.o
+PMDPeriphOpenISA                                  obj/UserImport.o
+PMDPeriphOpenMultiDrop                            obj/UserImport.o
+PMDPeriphOpenPIO                                  obj/UserImport.o
+                                                  obj/PMD_LowLevel.o
+PMDPeriphOpenTCP                                  obj/UserImport.o
+                                                  obj/PMDutil.o
+                                                  obj/PMD_LowLevel.o
+PMDPeriphOpenUDP                                  obj/UserImport.o
+PMDPeriphOut                                      obj/PMDcommon.o
+PMDPeriphRead                                     obj/PMDcommon.o
+                                                  obj/PMD_LowLevel.o
+PMDPeriphReceive                                  obj/PMDcommon.o
+                                                  obj/PMD_LowLevel.o
+PMDPeriphReceiveEvent                             obj/PMDcommon.o
+PMDPeriphSend                                     obj/PMDcommon.o
+                                                  obj/PMD_LowLevel.o
+PMDPeriphWrite                                    obj/PMDcommon.o
+PMDRPDeviceOpen                                   obj/UserImport.o
+PMDReadAnalog                                     obj/c-motion.o
+PMDReadBuffer                                     obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDReadBuffer16                                   obj/c-motion.o
+PMDReadIO                                         obj/c-motion.o
+                                                  obj/PMDMB.o
+PMDReset                                          obj/c-motion.o
+PMDResetEventStatus                               obj/c-motion.o
+                                                  obj/PMDutil.o
+                                                  obj/PMDcommon.o
+                                                  obj/PMD_LowLevel.o
+PMDRestoreOperatingMode                           obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetAcceleration                                obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetActualPosition                              obj/c-motion.o
+                                                  obj/PMDMB.o
+                                                  obj/PMD_LowLevel.o
+PMDSetActualPositionUnits                         obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetAnalogCalibration                           obj/c-motion.o
+PMDSetAuxiliaryEncoderSource                      obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetAxisOutMask                                 obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetBreakpoint                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetBreakpointUpdateMask                        obj/c-motion.o
+PMDSetBreakpointValue                             obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetBufferLength                                obj/c-motion.o
+                                                  obj/PMDutil.o
+                                                  obj/PMD_LowLevel.o
+PMDSetBufferReadIndex                             obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDSetBufferStart                                 obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetBufferWriteIndex                            obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetBusVoltageLimits                            obj/c-motion.o
+PMDSetCANMode                                     obj/c-motion.o
+PMDSetCaptureSource                               obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetCommutationMode                             obj/c-motion.o
+PMDSetCurrent                                     obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetCurrentControlMode                          obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetCurrentFoldback                             obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetCurrentLoop                                 obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetDeceleration                                obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetDefault                                     obj/c-motion.o
+PMDSetDriveCommandMode                            obj/c-motion.o
+PMDSetDriveFaultParameter                         obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetDrivePWM                                    obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetEncoderModulus                              obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetEncoderSource                               obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetEncoderToStepRatio                          obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetEventAction                                 obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetFOC                                         obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetFaultOutMask                                obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetFeedbackParameter                           obj/c-motion.o
+PMDSetGearMaster                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetGearRatio                                   obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetHoldingCurrent                              obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetInterruptMask                               obj/c-motion.o
+PMDSetJerk                                        obj/c-motion.o
+PMDSetMotionCompleteMode                          obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetMotorBias                                   obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetMotorCommand                                obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetMotorLimit                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetMotorType                                   obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetOperatingMode                               obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetOutputMode                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetOvertemperatureLimit                        obj/c-motion.o
+PMDSetPWMFrequency                                obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetPhaseAngle                                  obj/c-motion.o
+PMDSetPhaseCorrectionMode                         obj/c-motion.o
+PMDSetPhaseCounts                                 obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetPhaseInitializeMode                         obj/c-motion.o
+PMDSetPhaseInitializeTime                         obj/c-motion.o
+PMDSetPhaseOffset                                 obj/c-motion.o
+PMDSetPhasePrescale                               obj/c-motion.o
+PMDSetPosition                                    obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetPositionErrorLimit                          obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetPositionLoop                                obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetProfileMode                                 obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetProfileParameter                            obj/PMD_LowLevel.o
+PMDSetSPIMode                                     obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetSampleTime                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetSerialPortMode                              obj/c-motion.o
+PMDSetSettleTime                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetSettleWindow                                obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetSignalSense                                 obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetStartVelocity                               obj/c-motion.o
+PMDSetStepRange                                   obj/c-motion.o
+PMDSetStopMode                                    obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetSynchronizationMode                         obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetTraceMode                                   obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDSetTracePeriod                                 obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDSetTraceStart                                  obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDSetTraceStop                                   obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDSetTraceVariable                               obj/c-motion.o
+                                                  obj/PMDutil.o
+PMDSetTrackingWindow                              obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDSetUpdateMask                                  obj/c-motion.o
+PMDSetVelocity                                    obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDTaskAbort                                      obj/UserImport.o
+                                                  obj/PMD_LowLevel.o
+PMDTaskEnterCritical                              obj/UserImport.o
+PMDTaskExitCritical                               obj/UserImport.o
+PMDTaskGetAbortCode                               obj/UserImport.o
+PMDTaskGetState                                   obj/UserImport.o
+PMDTaskSetPriority                                obj/UserImport.o
+PMDTaskStart                                      obj/UserImport.o
+PMDTaskWait                                       obj/UserImport.o
+                                                  obj/PMD_LowLevel.o
+PMDTaskWaitUntil                                  obj/UserImport.o
+PMDTimerInit                                      obj/UserImport.o
+PMDTimerWait                                      obj/UserImport.o
+PMDUpdate                                         obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDWaitForEvent                                   obj/PMDcommon.o
+                                                  obj/UserImport.o
+PMDWaitForEventPoll                               obj/PMDcommon.o
+PMDWriteBuffer                                    obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+PMDWriteIO                                        obj/c-motion.o
+                                                  obj/PMDMB.o
+PMDprintf                                         obj/UserImport.o
+                                                  obj/PMDutil.o
+                                                  obj/PMD_LowLevel.o
+PMDputch                                          obj/UserImport.o
+                                                  obj/syscalls.o
+PMDputs                                           obj/UserImport.o
+PMDsprintf                                        obj/UserImport.o
+RECEIVE_INDEX                                     obj/PMD_LowLevel.o
+ReadBuffer                                        obj/PMDutil.o
+ReadPIObus                                        obj/UserImport.o
+RunController                                     obj/PMD_LowLevel.o
+RunHoming                                         obj/PMD_LowLevel.o
+STOP_INDEX                                        obj/PMD_LowLevel.o
+SendCommand                                       obj/PMDtrans.o
+                                                  obj/c-motion.o
+SendCommandGetLong                                obj/PMDtrans.o
+                                                  obj/c-motion.o
+SendCommandGetWord                                obj/PMDtrans.o
+                                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+SendCommandGetWordLong                            obj/PMDtrans.o
+SendCommandGetWordWord                            obj/PMDtrans.o
+                                                  obj/c-motion.o
+SendCommandGetWordWordWord                        obj/PMDtrans.o
+                                                  obj/c-motion.o
+SendCommandLong                                   obj/PMDtrans.o
+                                                  obj/c-motion.o
+SendCommandLongGetWord                            obj/PMDtrans.o
+SendCommandLongWord                               obj/PMDtrans.o
+SendCommandWord                                   obj/PMDtrans.o
+                                                  obj/c-motion.o
+SendCommandWordGetLong                            obj/PMDtrans.o
+                                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+SendCommandWordGetWord                            obj/PMDtrans.o
+                                                  obj/c-motion.o
+SendCommandWordLong                               obj/PMDtrans.o
+                                                  obj/c-motion.o
+                                                  obj/PMD_LowLevel.o
+SendCommandWordWord                               obj/PMDtrans.o
+                                                  obj/c-motion.o
+SendCommandWordWordGetWord                        obj/PMDtrans.o
+SendCommandWordWordWord                           obj/PMDtrans.o
+                                                  obj/c-motion.o
+SetupAxis1                                        obj/PMD_LowLevel.o
+SetupAxis2                                        obj/PMD_LowLevel.o
+SetupAxis3                                        obj/PMD_LowLevel.o
+SetupAxis4                                        obj/PMD_LowLevel.o
+SetupTrace                                        obj/PMDutil.o
+StopController                                    obj/PMD_LowLevel.o
+WRITE_INDEX                                       obj/PMD_LowLevel.o
+WaitForAlgorithmicPhaseInitialization             obj/PMDutil.o
+WaitForAtlasToConnect                             obj/PMDutil.o
+                                                  obj/PMD_LowLevel.o
+WaitForEvent                                      obj/PMDutil.o
+WritePIObus                                       obj/UserImport.o
+__adddf3                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+__addsf3                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+                                                  obj/PMD_LowLevel.o
+__aeabi_cdcmpeq                                   c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__aeabi_cdcmple                                   c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__aeabi_cdrcmple                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__aeabi_cfcmpeq                                   c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__aeabi_cfcmple                                   c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__aeabi_cfrcmple                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__aeabi_d2f                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+__aeabi_d2iz                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+__aeabi_dadd                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__aeabi_dcmpeq                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__aeabi_dcmpge                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__aeabi_dcmpgt                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__aeabi_dcmple                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__aeabi_dcmplt                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__aeabi_ddiv                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+__aeabi_dmul                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+__aeabi_drsub                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__aeabi_dsub                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__aeabi_f2d                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__aeabi_f2iz                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+__aeabi_fadd                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__aeabi_fcmpeq                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__aeabi_fcmpge                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__aeabi_fcmpgt                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__aeabi_fcmple                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__aeabi_fcmplt                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__aeabi_fdiv                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+__aeabi_fmul                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+__aeabi_frsub                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__aeabi_fsub                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__aeabi_i2d                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__aeabi_i2f                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__aeabi_idiv0                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+__aeabi_l2d                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__aeabi_l2f                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__aeabi_ldiv0                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+__aeabi_ui2d                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__aeabi_ui2f                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__aeabi_uidiv                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+__aeabi_uidivmod                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+__aeabi_ul2d                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__aeabi_ul2f                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__cmpdf2                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__cmpsf2                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__div0                                            c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_dvmd_tls.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+__divdf3                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+__divsf3                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+                                                  obj/PMD_LowLevel.o
+__eqdf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__eqsf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__errno                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(errno.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+__extendsfdf2                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+                                                  obj/PMD_LowLevel.o
+__fdlib_version                                   c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_lib_ver.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+__fixdfsi                                         c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixdfsi.o)
+                                                  obj/PMD_LowLevel.o
+__fixsfsi                                         c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_fixsfsi.o)
+                                                  obj/PMD_LowLevel.o
+__floatdidf                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__floatdisf                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__floatsidf                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+                                                  obj/PMD_LowLevel.o
+__floatsisf                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+                                                  obj/PMD_LowLevel.o
+__floatundidf                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__floatundisf                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__floatunsidf                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+__floatunsisf                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__gedf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__gesf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__gtdf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__gtsf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__ieee754_sqrt                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+__ledf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__lesf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__ltdf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+__ltsf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+                                                  obj/PMD_LowLevel.o
+__malloc_av_                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+__malloc_current_mallinfo                         c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+__malloc_lock                                     c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mlock.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+__malloc_max_sbrked_mem                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+__malloc_max_total_mem                            c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+__malloc_sbrk_base                                c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+__malloc_top_pad                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+__malloc_trim_threshold                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+__malloc_unlock                                   c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mlock.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+__muldf3                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivdf3.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+                                                  obj/PMD_LowLevel.o
+__mulsf3                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_muldivsf3.o)
+                                                  obj/PMD_LowLevel.o
+__nedf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpdf2.o)
+__nesf2                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_cmpsf2.o)
+__subdf3                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubdf3.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(e_sqrt.o)
+__subsf3                                          c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_addsubsf3.o)
+__truncdfsf2                                      c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_truncdfsf2.o)
+                                                  obj/PMD_LowLevel.o
+__udivsi3                                         c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_udivsi3.o)
+                                                  obj/PMDutil.o
+__umodsi3                                         c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1\libgcc.a(_umodsi3.o)
+                                                  obj/PMDutil.o
+_bss                                              obj/startup.o
+_close_r                                          obj/syscalls.o
+_data                                             obj/startup.o
+_ebss                                             obj/startup.o
+_edata                                            obj/startup.o
+_etext                                            obj/startup.o
+_free_r                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+_fstat_r                                          obj/syscalls.o
+_global_impure_ptr                                c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+_impure_ptr                                       c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(impure.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(errno.o)
+                                                  obj/startup.o
+_isatty                                           obj/syscalls.o
+_lseek_r                                          obj/syscalls.o
+_malloc_r                                         c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+_malloc_trim_r                                    c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+_read_r                                           obj/syscalls.o
+_sbrk_r                                           obj/syscalls.o
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(freer.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(mallocr.o)
+_write_r                                          obj/syscalls.o
+addPoint                                          obj/PMD_LowLevel.o
+end                                               obj/syscalls.o
+filterAnalog                                      obj/PMD_LowLevel.o
+free                                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+                                                  obj/PMDutil.o
+initBuffers                                       obj/PMD_LowLevel.o
+inv                                               obj/PMD_LowLevel.o
+inverseKinematics                                 obj/PMD_LowLevel.o
+isPaused                                          obj/PMD_LowLevel.o
+isatty                                            obj/syscalls.o
+isnan                                             c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_isnan.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+linear_move                                       obj/PMD_LowLevel.o
+m1v                                               obj/PMD_LowLevel.o
+m2v                                               obj/PMD_LowLevel.o
+m3v                                               obj/PMD_LowLevel.o
+malloc                                            c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(malloc.o)
+                                                  obj/PMDutil.o
+matherr                                           c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(s_matherr.o)
+                                                  c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+memcpy                                            c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libc.a(memcpy.o)
+                                                  obj/PMD_LowLevel.o
+motionComplete                                    obj/PMD_LowLevel.o
+parseDigitalIn                                    obj/PMD_LowLevel.o
+parseForce                                        obj/PMD_LowLevel.o
+parsePacket                                       obj/PMD_LowLevel.o
+pmd_control                                       obj/PMD_LowLevel.o
+setPaused                                         obj/PMD_LowLevel.o
+setupUPM                                          obj/PMD_LowLevel.o
+sqrt                                              c:/program files (x86)/pmd/gnu/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib\libm.a(w_sqrt.o)
+                                                  obj/PMD_LowLevel.o
+startMotion                                       obj/PMD_LowLevel.o
+stopMotion                                        obj/PMD_LowLevel.o
+writeBuffers                                      obj/PMD_LowLevel.o
