@@ -109,11 +109,11 @@ class painter_bot():
 		self.lltListImg = []
 		self.lltListGantry = []
 
-	def recompose(self,args,open_images = True):
+	def recompose(self,args,recomp_fun = None,open_images = True):
 		if self.segmentedImg is None or len(self.binImages)==0:
 			return
 
-		self.lltListImg = self.recompose_helper(self.binImages,args,open_images)
+		self.lltListImg = self.recompose_helper(self.binImages,args,recomp_fun,open_images)
 		self.lltImg = self.makeImgLLT(self.segmentedImg.shape,self.lltListImg,self.colors,args[0])
 		self.lltListGantry = []
 
@@ -154,7 +154,7 @@ class painter_bot():
 			lltListGantry.append(cam.canvas_to_gantry(LLT))
 		return lltListGantry
 
-	def recompose_helper(self,binImages,args,open_images = True):
+	def recompose_helper(self,binImages,args,recomp_fun = None,open_images = True):
 		listLLT = []
 		for index in range(len(binImages)):
 			img = binImages[index]
@@ -162,9 +162,15 @@ class painter_bot():
 			if open_images: 
 				img = util.open_image(img, kernel_radius = 5)
 
-			recomposer = iterativeBlendedRecomposer(img,args)
-			# recomposer = medialAxisRecomposer(img,args)
-			LLT = recomposer.recompose()
+			if not recomp_fun is None:
+				# try:
+				LLT = recomp_fun(img,args)
+				# except:
+				# 	raise Exception('Invalid Recompose function. Must be of the form fun(bin_img,args)')
+			else:
+				recomposer = iterativeBlendedRecomposer(img,args)
+				# recomposer = medialAxisRecomposer(img,args)
+				LLT = recomposer.recompose()
 
 			if len(LLT)>0:
 				LLT = util.arrangeLLT(LLT)

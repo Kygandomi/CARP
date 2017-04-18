@@ -127,7 +127,7 @@ class medialAxisRecomposer(object):
 
     def __init__(self, image, args):
         # opened = open_image(image,5,1);
-        self.binImg = cv2.erode(image,circleKernel(1),iterations=1)
+        self.binImg = cv2.erode(image,circleKernel(1),iterations=2)
         # self.binImg = image
 
     def recompose(self):

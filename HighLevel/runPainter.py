@@ -9,9 +9,9 @@ if not bot.connect_camera([1]):
 	raise Exception('Could not connect to Camera')
 	pass
 
-bot.selectImage("bluejay.png", "resources/images/input/")
+bot.selectImage("circle.png", "resources/images/input/")
 
-n_colors = 4
+n_colors = 1
 canvas_color = None 
 pallete = []
 
@@ -25,14 +25,17 @@ canvas_color = color_pallete.colorMap["white"]
 # pallete = [[161,168,207], [74,93,197], [42,45,172], [19,10,128], [21, 93, 83]] # apple
 # pallete = [[158,171,181], [116,129,143], [82,93,105], [44,51,58]] # kitten
 # pallete = [[64,220,245], [12,178,211], [132,136,135], [30,30,30]] # car
-pallete = [[224,189,181], [197,134,113], [151,82,47], [30,30,30]] # bluejay
-
+# pallete = [[224,189,181], [197,134,113], [151,82,47], [30,30,30]] # bluejay
 
 # pallete = color_pallete.build("black_measured")
 
 display(bot.desiredImg,"desired")
 print "DECOMPOSE"
 bot.decompose(n_colors,pallete,canvas_color)
+
+print "colors: ", bot.colors
+print "indeces: ",bot.indeces
+
 display(bot.segmentedImg,"segmented")
 print "RECOMPOSE"
 bot.recompose([3], False)

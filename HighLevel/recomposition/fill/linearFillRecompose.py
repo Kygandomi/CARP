@@ -1,4 +1,4 @@
-from Highlevel.common.util import *
+from common.util import *
 
 #Fills in an area of black with vertical lines
 

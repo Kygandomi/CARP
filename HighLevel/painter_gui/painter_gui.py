@@ -11,6 +11,7 @@ import numpy as np
 import wx.grid as gridlib
 from wx.lib.masked import NumCtrl
 from common.util import *
+from recomposition.recomp_funcs import *
 from paint_with_pmd.painter_bot import *
 import PIL
 
@@ -256,7 +257,16 @@ class PanelOne(wx.Panel):
 
 		radius = self.recomp_brush_radius.GetValue()
 
-		self.bot.recompose([radius],True)
+		re_func = None
+
+		if self.rb1.GetValue():
+			re_func = iterativeErosionRecomp
+		elif self.rb2.GetValue():
+			re_func = medialAxisRecomp
+		elif self.rb3.GetValue():
+			re_func = iterativeBlendedRecomp
+
+		self.bot.recompose([radius],recomp_fun = re_func,open_images = True)
 		self.setImage(self.bot.lltImg)
 
 		self.enable_recomp()
