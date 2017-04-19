@@ -3,89 +3,7 @@ import sys
 import graph
 import cv2
 import math
-
-def parents(hierarchy):
-    # [Next, Prev, 1st Child, Parent]
-    i=0
-    h_out = []
-    for count in range(len(hierarchy)):
-        if(hierarchy[i][0] == -1):
-            h_out.append(i)
-            return h_out
-        else:
-            h_out.append(i)
-            i=hierarchy[i][0]
-    return h_out
-
-def childrenOf(hierarchy, i):
-    # [Next, Prev, 1st Child, Parent]
-    h_out = []
-    for count in range(len(hierarchy)):
-        if(hierarchy[count][3] == i):
-            h_out.append(count)
-    return h_out
-
-def ptsInContours(contours,hierarchy,shape):
-    cntr_pts = []
-    # For each list of contour points...
-    for i in range(len(contours)):
-        # Create a mask image that contains the contour filled in
-        cimg = np.zeros(shape)
-        cv2.drawContours(cimg, contours, i, color=255, thickness=-1)
-        if(hierarchy[i][2]!=-1):
-            cimg = cv2.erode(cimg, circleKernel(1))
-            for child_i in childrenOf(hierarchy,i):
-                cv2.drawContours(cimg, contours, child_i, color=0, thickness=-1)
-            cimg = cv2.dilate(cimg, circleKernel(1))
-        # Access the image pixels and create a 1D numpy array then add to list
-        cntr_pts.append(getPoints(cimg))
-    return cntr_pts
-
-def rawPolyDist(binImg):
-    contourImg, contours, hierarchy = cv2.findContours(binImg.copy(),cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
-    rawPolyImg = np.array(-1.0*np.ones(binImg.shape),dtype='float32')
-
-    if hierarchy is None :
-        return rawPolyImg, contours, hierarchy, [] 
-
-    hierarchy = hierarchy[0]
-
-    cntr_pts = ptsInContours(contours,hierarchy,binImg.shape)
-    i_parents = parents(hierarchy)
-    count = 1
-    max_count = len(i_parents)
-    for cnt_i in i_parents:
-        # print "Analyzing Contour "+str(count)+" of "+str(max_count)
-        list_pts = cntr_pts[cnt_i]
-        for pt in list_pts:
-            value = cv2.pointPolygonTest(contours[cnt_i],(pt[1],pt[0]),True)
-            if(hierarchy[cnt_i][2]!=-1):
-                min_val2 = -value
-                for child_i in childrenOf(hierarchy,cnt_i):
-                    value2 = cv2.pointPolygonTest(contours[child_i],(pt[1],pt[0]),True)
-                    min_val2 = max(min_val2,value2)
-                value = min(value,-(min_val2))
-            rawPolyImg.itemset(pt,value)
-        count = count + 1
-    # print "Contour Analysis Complete"
-    return rawPolyImg, contours, hierarchy, cntr_pts
-
-def scaledPolyDist(rawPolyImg):
-    mini,maxi = np.abs(cv2.minMaxLoc(rawPolyImg)[:2])          # Find minimum and maximum to adjust colors
-    #print "Min: "+str(mini)+" | Max: "+str(maxi)
-    if maxi != 0:
-        maxi = 1.0/maxi
-
-    scaledPolyImg = np.array(-1*np.ones(rawPolyImg.shape),dtype='float32')
-
-    for i in xrange(rawPolyImg.shape[0]):                              
-        for j in xrange(rawPolyImg.shape[1]):
-            if rawPolyImg.item((i,j))>0:
-                scaledPolyImg.itemset((i,j),1.0-rawPolyImg.item(i,j)*maxi)        # If inside, gradient to dark
-            else:
-                scaledPolyImg.itemset((i,j),1.0)        # If outside, white
-
-    return scaledPolyImg
+from skimage.morphology import medial_axis
 
 def visualPolyDist(rawPolyImg):
     mini,maxi = np.abs(cv2.minMaxLoc(rawPolyImg)[:2])          # Find minimum and maximum to adjust colors
@@ -127,7 +45,7 @@ class medialAxisRecomposer(object):
 
     def __init__(self, image, args):
         # opened = open_image(image,5,1);
-        self.binImg = cv2.erode(image,circleKernel(1),iterations=2)
+        self.binImg = cv2.erode(image,circleKernel(1),iterations=1)
         # self.binImg = image
 
     def recompose(self):
@@ -137,13 +55,14 @@ class medialAxisRecomposer(object):
         # (thresh, binImg) = cv2.threshold(self.desiredImage, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
         # display(self.binImg)
 
-        rawPolyImg,contours,hierarchy,cntr_pts = rawPolyDist(255-self.binImg)
+        skel, polyImg = medial_axis((255-self.binImg)/255, return_distance=True)
+
+        # print distance
         # display(visualPolyDist(rawPolyImg))
 
-        if contours is None or hierarchy is None :
-            return []
-
-        polyImg = scaledPolyDist(rawPolyImg)
+        # mini,maxi = np.abs(cv2.minMaxLoc(distance)[:2])
+        # polyImg = 1.0-distance/maxi
+        # polyImg = scaledPolyDist(distance)
         # display(polyImg)
 
         ## Sobel/Scharr
@@ -157,7 +76,7 @@ class medialAxisRecomposer(object):
         # Convert to int scale. 0-255
         mini,maxi = cv2.minMaxLoc(sobel)[:2]
         sobel = (sobel * (255/maxi)).astype('uint8')
-        sobel[np.where(cv2.dilate(self.binImg,circleKernel(2),iterations=1)==255)]=255
+        sobel[np.where(cv2.dilate(self.binImg,circleKernel(1),iterations=2)==255)]=255
 
         # display(sobel)
 
@@ -175,8 +94,8 @@ class medialAxisRecomposer(object):
 
         # output(graph.createNodeImg(pathImg,g),"nodes","images/output/")
 
-        paths = reduceLLT(paths,5.1)
-        paths = self.addWidth(paths,rawPolyImg)
+        paths = reduceLLT(paths,2.9)
+        paths = self.addWidth(paths,polyImg)
 
         # paths = mapLLT(paths,self.binImg.shape)
 
@@ -207,4 +126,3 @@ class medialAxisRecomposer(object):
                     if np.count_nonzero(img[neighbors[:,0]+point[0],neighbors[:,1]+point[1]]) <= n_limit:
                         img[point]=0
         return img
-

@@ -9,7 +9,7 @@ import user
 import cv2
 import numpy as np
 import wx.grid as gridlib
-from wx.lib.masked import NumCtrl
+from wx.lib.masked import NumCtrl, EVT_NUM
 from common.util import *
 from recomposition.recomp_funcs import *
 from paint_with_pmd.painter_bot import *
@@ -95,6 +95,7 @@ class PanelOne(wx.Panel):
 		txt31 = wx.StaticText(self, label="# of Colors: ", pos=(CONTROLS_OFFSET_LEFT, DY+23))
 		# self.decomp_num_colors = wx.TextCtrl(self, value=self.num_colors, pos=(CONTROLS_OFFSET_LEFT, 150))
 		self.decomp_num_colors = NumCtrl(self, value=self.MAX_COLORS,size=(40,20),pos=(CONTROLS_OFFSET_LEFT+70, DY+20),integerWidth = 2,limitOnFieldChange = True,min = 0, max = self.MAX_COLORS)
+		self.decomp_num_colors.Bind(EVT_NUM,self.showColors)
 
 		self.auto_colors_button = wx.Button(self, label="Auto", pos=(CONTROLS_OFFSET_LEFT+110, DY+19))
 		self.auto_colors_button.Bind(wx.EVT_BUTTON, lambda evt,var=False: self.decomp(evt,var))
@@ -277,6 +278,11 @@ class PanelOne(wx.Panel):
 	    image = image.Scale(width, height, wx.IMAGE_QUALITY_HIGH)
 	    result = wx.BitmapFromImage(image)
 	    return result
+
+	def showColors(self,event):
+		n = self.decomp_num_colors.GetValue()
+		for i in range(self.MAX_COLORS):
+			self.paint_colors[i].Show(i<n)
 
 	def setImage(self,input_image):
 		ideal = np.zeros([400, 400, 3])

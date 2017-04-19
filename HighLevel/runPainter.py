@@ -38,9 +38,10 @@ print "indeces: ",bot.indeces
 
 display(bot.segmentedImg,"segmented")
 print "RECOMPOSE"
-bot.recompose([3], False)
+bot.recompose([3], open_images = False)
 display(bot.lltImg,"LLT simulation")
 
 bot.connect_eth(ip = '192.168.178.7',port = 1234)
 bot.paint()
+print "Starting feedback"
 bot.paint_with_feedback([4])
