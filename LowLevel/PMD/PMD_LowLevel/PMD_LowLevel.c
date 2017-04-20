@@ -34,6 +34,7 @@
 
 #define MAX_RATE (0x10000)
 #define BUFF_SAFETY 20
+#define MIN_INV_DIFF 10
 
 // Contour value buffers, these will be written to RAM on the MC58113 devices.
 PMDint32 inv[MAXPTS];
@@ -140,7 +141,6 @@ USER_CODE_TASK( pmd_control ){
 	PMDPeriphHandle hPeriphIO;
 	PMDuint8 data[BUFSIZE]; 
 	PMDuint32 bytesReceived;
-	PMDint32 positionError;
 	PMDresult result = 0;
 	//PMDuint16 status;
 	PMDint32 prev_command_index=COMMAND_INDEX;
@@ -188,12 +188,11 @@ USER_CODE_TASK( pmd_control ){
 	
 	while(1){
 		PMDGetTraceValue(&hAxis[0], PMDTraceActiveRateScalar, &ACTUAL_RATE);
-		PMDGetRuntimeError(&hAxis[0], &error);
+		if((ACTUAL_RATE!=0) && !isPaused){
+			PMDGetTraceValue(&hAxis[0], PMDTraceDataStreamIndex, &COMMAND_INDEX);
+		}
 		
-		//PMDGetEventStatus(&hAxis[0], &status);
-		PMDGetTraceValue(&hAxis[0], PMDTraceDataStreamValue, &ACTUAL_INV);
-		PMDGetTraceValue(&hAxis[0], PMDTraceContourOutput, &ACTUAL_M1);
-		PMDGetProfileParameter(&hAxis[0], PMDProfileParameterStopValue, &STOP_VAL);
+		PMDGetRuntimeError(&hAxis[0], &error);
 		
 		PMDPeriphRead(&hPeriphIO, &din_values, PMDMachineIO_DI, 1);
 		//PMDPeriphRead(&hPeriphIO,&dout_values,PMDMachineIO_DORead,1);
@@ -209,17 +208,19 @@ USER_CODE_TASK( pmd_control ){
 			setPaused(hAxis,&hPeriphIO,0);
 		}
 		
-		if((ACTUAL_RATE!=0) && !isPaused){
-			PMDGetTraceValue(&hAxis[0], PMDTraceDataStreamIndex, &COMMAND_INDEX);
-		}
-		
 		if(error){
+			//PMDGetEventStatus(&hAxis[0], &status);
+			PMDGetTraceValue(&hAxis[0], PMDTraceDataStreamValue, &ACTUAL_INV);
+			PMDGetTraceValue(&hAxis[0], PMDTraceContourOutput, &ACTUAL_M1);
+			PMDGetProfileParameter(&hAxis[0], PMDProfileParameterStopValue, &STOP_VAL);
 			PMDprintf("error: %x \n",error);
 			PMDprintf("I_val: %d, I_ind: %d, P_val: %d, rate: %d \n",ACTUAL_INV, COMMAND_INDEX, ACTUAL_M1,ACTUAL_RATE);
 			PMDprintf("Stop_val: %d\n",STOP_VAL);
 		}
 		
 		if(prev_command_index!=COMMAND_INDEX && ACTUAL_RATE!=0){
+			PMDprintf("command index was: %d",prev_command_index);
+			PMDprintf(" now: %d\n",COMMAND_INDEX);
 			if(COMMAND_INDEX!=STOP_INDEX){
 				PMDSetPosition(&hAxis[2],m3v[COMMAND_INDEX+1]);
 				PMDUpdate(&hAxis[2]);
@@ -234,7 +235,7 @@ USER_CODE_TASK( pmd_control ){
 			
 			done_sent = 0;
 			
-			//PMDprintf("Going To: %d, %d, %d\n",m1v[COMMAND_INDEX],m2v[COMMAND_INDEX],m3v[COMMAND_INDEX])
+			//PMDprintf("Going To: %d, %d, %d\n",m1v[COMMAND_INDEX],m2v[COMMAND_INDEX],m3v[COMMAND_INDEX]);
 			//PMDprintf("i = %d | stop = %d | recv = %d \n",COMMAND_INDEX,STOP_INDEX,RECEIVE_INDEX);
 			//PMDprintf("Remaining: %d\n",BUFF_REMAINING);
 			
@@ -266,7 +267,8 @@ USER_CODE_TASK( pmd_control ){
 					
 					//PMDprintf("i = %d | stop = %d | recv = %d \n",COMMAND_INDEX,STOP_INDEX,RECEIVE_INDEX);
 					//PMDprintf("Remaining: %d\n",BUFF_REMAINING);
-					//ready_sent=0;
+					ready_sent=0;
+					done_sent=0;
 				break;
 			}
 			// Send Ready message if buffer can receive more data
@@ -283,6 +285,7 @@ USER_CODE_TASK( pmd_control ){
 					}
 				}
 			}
+			//TODO: will this always find when done?
 			if(open && ready_sent && !done_sent && COMMAND_INDEX==(RECEIVE_INDEX-1)){
 				PMDprintf("Send Done: ");
 				result = PMDPeriphSend(&hPeriph, doneMessage, 3, 5);
@@ -558,6 +561,7 @@ int motionComplete(PMDAxisHandle* hAxis){
 	if (complete){
 		return 0;
 	}
+	
 	return 1;
 }
 void parsePacket(PMDuint8* buffer, PMDAxisHandle* hAxis, int start_index, PMDint32* a1_pos, PMDint32* a2_pos, PMDint32* a3_pos){
@@ -580,10 +584,12 @@ void parsePacket(PMDuint8* buffer, PMDAxisHandle* hAxis, int start_index, PMDint
 	
 	//Fix because current position is not what we are moving relative to
 	if(!xy_abs_flag){
+		PMDprintf("Relative XY");
 		*a1_pos += curr_m1;
 		*a2_pos += curr_m2;
 	}
 	if(!z_abs_flag){
+		PMDprintf("Relative Z");
 		*a3_pos += curr_z;
 	}
 	
@@ -600,7 +606,7 @@ void parsePacket(PMDuint8* buffer, PMDAxisHandle* hAxis, int start_index, PMDint
 	//PMDSetBreakpoint(&hAxis[0], 1, PMDAxis1,
 	//		PMDBreakpointNoAction, PMDBreakpointGreaterOrEqualIndex);
 	
-	if(go_flag || (ACTUAL_RATE!=0 && BUFF_REMAINING<(BUFF_SAFETY+10))){
+	if(go_flag || (ACTUAL_RATE==0 && BUFF_REMAINING<(BUFF_SAFETY+10))){
 		if(!isPaused){
 			startMotion(hAxis);
 		}
@@ -638,8 +644,8 @@ void addPoint(PMDint32 a1_pos,PMDint32 a2_pos,PMDint32 a3_pos){
 		//Firgelli just goes
 		m3v[RECEIVE_INDEX] = a3_pos;
 		
-		if(inv[RECEIVE_INDEX]-inv[RECEIVE_INDEX-1]<3){
-			inv[RECEIVE_INDEX]=inv[RECEIVE_INDEX-1]+3;
+		if(inv[RECEIVE_INDEX]-inv[RECEIVE_INDEX-1]<MIN_INV_DIFF){
+			inv[RECEIVE_INDEX]=inv[RECEIVE_INDEX-1]+MIN_INV_DIFF;
 		}
 		
 		RECEIVE_INDEX++;
@@ -658,7 +664,7 @@ void addPoint(PMDint32 a1_pos,PMDint32 a2_pos,PMDint32 a3_pos){
 	//PMDprintf("prev_inv: %d \n",inv[RECEIVE_INDEX-1]);
 	//PMDprintf("x: %d, y: %d, z: %d \n",x,y,z);
 	//PMDprintf("inv: %d \n", inv[RECEIVE_INDEX]);
-	//PMDprintf("m1: %d, m2: %d, m3: %d \n",a1_pos,a2_pos,a3_pos);
+	PMDprintf("m1: %d, m2: %d, m3: %d \n",a1_pos,a2_pos,a3_pos);
 	
 	//Write to the buffer
 	//writeBuffers(hAxis);
@@ -672,11 +678,12 @@ void addPoint(PMDint32 a1_pos,PMDint32 a2_pos,PMDint32 a3_pos){
 
 void startMotion(PMDAxisHandle* hAxis){
 
-	PMDSetProfileParameter(&hAxis[0], PMDProfileParameterStopValue, inv[RECEIVE_INDEX-1]);
-	PMDSetProfileParameter(&hAxis[1], PMDProfileParameterStopValue, inv[RECEIVE_INDEX-1]);
+	//PMDSetProfileParameter(&hAxis[0], PMDProfileParameterStopValue, inv[RECEIVE_INDEX-1]);
+	//PMDSetProfileParameter(&hAxis[1], PMDProfileParameterStopValue, inv[RECEIVE_INDEX-1]);
 	
 	PMDGetTraceValue(&hAxis[0], PMDTraceActiveRateScalar, &ACTUAL_RATE);
 	if(ACTUAL_RATE==0){
+		//stopMotion(hAxis);
 		//M1_OFFSET = m1v[COMMAND_INDEX];
 		//M2_OFFSET = m2v[COMMAND_INDEX];
 		PMDGetPosition(&hAxis[0],&M1_OFFSET);
@@ -689,6 +696,7 @@ void startMotion(PMDAxisHandle* hAxis){
 		PMDGetTraceValue(&hAxis[1], PMDTraceContourOffset, &M2_OFFSET);
 		PMDprintf("Continuing...\n");
 	}
+	PMDprintf("Current Index: %d\n",COMMAND_INDEX);
 	PMDprintf("m1_off: %d, m2_off: %d \n",M1_OFFSET,M2_OFFSET);
 	
 	STOP_INDEX = RECEIVE_INDEX-1;
@@ -750,7 +758,7 @@ void setPaused(PMDAxisHandle* hAxis,PMDPeriphHandle* phPeriphIO,int pause){
 		// Move XY to 0,0
 		linear_move(hAxis,0,0,FIRGELLI(FIRGELLI_MAX_HEIGHT));
 		PMDTaskWait(100);
-		while(!done && !motionComplete(hAxis)){
+		while(!done || !motionComplete(hAxis)){
 			done = RunController(&hAxis[2],200,phPeriphIO,PMDMachineIO_AICh1);
 		}
 		PMDprintf("At Home\n");
@@ -759,7 +767,7 @@ void setPaused(PMDAxisHandle* hAxis,PMDPeriphHandle* phPeriphIO,int pause){
 		// Move XY To Current Command XY
 		linear_move(hAxis,m1v[COMMAND_INDEX],m2v[COMMAND_INDEX],FIRGELLI(FIRGELLI_MAX_HEIGHT));
 		PMDTaskWait(100);
-		while(!done && !motionComplete(hAxis)){
+		while(!done || !motionComplete(hAxis)){
 			done = RunController(&hAxis[2],200,phPeriphIO,PMDMachineIO_AICh1);
 		}
 		PMDprintf("At Goal\n");

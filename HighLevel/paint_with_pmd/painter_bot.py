@@ -109,11 +109,11 @@ class painter_bot():
 		self.lltListImg = []
 		self.lltListGantry = []
 
-	def recompose(self,args,recomp_fun = None,open_images = True):
+	def recompose(self,args,recomp_fun = None,open_images = False):
 		if self.segmentedImg is None or len(self.binImages)==0:
 			return
 
-		self.lltListImg = self.recompose_helper(self.binImages,args,recomp_fun,open_images)
+		self.lltListImg = self.recompose_helper(self.binImages,args,recomp_fun=recomp_fun,open_images=open_images)
 		self.lltImg = self.makeImgLLT(self.segmentedImg.shape,self.lltListImg,self.colors,args[0])
 		self.lltListGantry = []
 
@@ -121,12 +121,12 @@ class painter_bot():
 		self.lltListGantry = self.mapToGantry(self.lltListImg,self.camera)
 		self.painter.PaintMulti(self.lltListGantry,self.indeces)
 
-	def paint_with_feedback(self,args,open_images=True,max_iter = 400):
+	def paint_with_feedback(self,args,recomp_fun = None,open_images=False,max_iter = 400):
 		if self.segmentedImg is None or len(self.binImages)==0:
 			return
 
 		if len(self.binImages)==0:
-			self.recompose(args,open_images)
+			self.recompose(args,recomp_fun=recomp_fun,open_images=open_images)
 
 		for i in range(max_iter):
 			# Get a canvas image
@@ -138,11 +138,11 @@ class painter_bot():
 			# Generate corrections for canvas image
 			correction_segments, canvas_corrections = self.camera.correct_image(self.binImages,color_segments_act)
 
-			for index in range(len(correction_segments)):
-				seg = open_image(correction_segments[index], kernel_radius = 5)
-				output(seg, str(paint_colors[index])+" at "+str(pallete_indeces[index]) + " at " + str(time()),"resources/images/output/")
+			# for index in range(len(correction_segments)):
+			# 	seg = open_image(correction_segments[index], kernel_radius = 5)
+			# 	output(seg, str(paint_colors[index])+" at "+str(pallete_indeces[index]) + " at " + str(time()),"resources/images/output/")
 			
-			lltListImg = self.recompose_helper(correction_segments,args,open_images)
+			lltListImg = self.recompose_helper(correction_segments,args,recomp_fun=recomp_fun,open_images=open_images)
 			lltListGantry = self.mapToGantry(lltListImg, self.camera)
 			self.painter.PaintMulti(lltListGantry,self.indeces)
 
@@ -154,7 +154,7 @@ class painter_bot():
 			lltListGantry.append(cam.canvas_to_gantry(LLT))
 		return lltListGantry
 
-	def recompose_helper(self,binImages,args,recomp_fun = None,open_images = True):
+	def recompose_helper(self,binImages,args,recomp_fun = None,open_images = False):
 		listLLT = []
 		for index in range(len(binImages)):
 			img = binImages[index]

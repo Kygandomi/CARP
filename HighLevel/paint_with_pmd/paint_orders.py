@@ -28,8 +28,11 @@ class paint_orders():
 		# self.well_offsets = [[3340,75],[3340, 565],[3340,1060],[3830,1555],[3340,2050],[3340,2545]]
 
 		# self.brush_offsets = [[3862,75],[3863, 565],[3845,1052],[3840,1555],[3840,1555],[3840,1555]] # Last two sets of values are wrong, please calibrate
-		self.brush_offsets = [[3840,75],[3838, 565],[3835,1052],[3835,1540],[3830,2037],[3830,2523]] # Last two sets of values are wrong, please calibrate
-		self.well_offsets =  [[3340,75],[3338, 565],[3335,1052],[3435,1540],[3430,2037],[3430,2523]] # Last two sets of values are wrong, please calibrate
+		# self.brush_offsets = [[3840,75],[3838, 565],[3835,1052],[3835,1540],[3830,2037],[3830,2523]] # Last two sets of values are wrong, please calibrate
+		# self.well_offsets =  [[3340,75],[3338, 565],[3335,1052],[3435,1540],[3430,2037],[3430,2523]] # Last two sets of values are wrong, please calibrate
+		
+		self.brush_offsets = [[3815,55],[3810, 545],[3835,1052],[3835,1540],[3830,2037],[3830,2523]] # Last two sets of values are wrong, please calibrate
+		self.well_offsets =  [[3350,110],[3338, 545],[3335,1052],[3435,1540],[3430,2037],[3430,2523]] # Last two sets of values are wrong, please calibrate
 
 	'Routine for sending a standard packet via Serial' 
 	def send_standard_packet(self, packet, wait=False):
@@ -76,8 +79,8 @@ class paint_orders():
 	def getBrush(self, new_brush_index):
 		print "Switching Brushes ..."
 
-		firgelli_extract_height = 550 # 550
-		firgelli_insert_height = 530 # 630 
+		firgelli_extract_height = 540 # 550
+		firgelli_insert_height = 510 # 630 
 		firgelli_lift_out_height = 800 # 950 
 		x_depth = 200
 
@@ -135,7 +138,7 @@ class paint_orders():
 		print "Getting Paint ..."
 
 		# Fergelli Height Values
-		down_val = 390
+		down_val = 370
 		up_val = 800
 
 		offX=self.well_offsets[self.well_index][0]
@@ -149,7 +152,7 @@ class paint_orders():
 		firgelli_up = [0, 0, up_val, 800, 0, 1, 1]
 		self.send_standard_packet(firgelli_up)
 		
-		element = [min(random.randint(offX,offX+80), 4000), min(random.randint(offY,offY+5), 2440), 0, 800, 1, 0, 0]
+		element = [min(random.randint(offX,offX+80), 4000), min(random.randint(offY,offY+80), 2440), 0, 800, 1, 0, 0]
 		self.send_standard_packet(element)
 
 		firgelli_down = [0, 0, down_val, 800, 0, 1, 1]
@@ -190,7 +193,7 @@ class paint_orders():
 		scale_val = 1
 
 		# Record Fergelli Height Values
-		down_val = 370
+		down_val = 350
 		up_val = 480
 		final_up_val = 800
 

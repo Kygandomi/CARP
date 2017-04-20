@@ -267,7 +267,7 @@ class PanelOne(wx.Panel):
 		elif self.rb3.GetValue():
 			re_func = iterativeBlendedRecomp
 
-		self.bot.recompose([radius],recomp_fun = re_func,open_images = True)
+		self.bot.recompose([radius],recomp_fun = re_func)
 		self.setImage(self.bot.lltImg)
 
 		self.enable_recomp()

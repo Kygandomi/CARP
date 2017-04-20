@@ -32,7 +32,15 @@ packet_list=[]
 #     packet_list.append([offset*i, size+offset*i, 600, 800, 1, 1, 0])
 #     packet_list.append([offset*i, offset*i, 600, 800, 1, 1, 0])
 
-packet_list.append([383, 252, 850, 800, 1, 1, 1])
+packet_list.append([3815, 55, 800, 800, 1, 1, 1])
+
+# packet_list.append([3820, 55, 800, 800, 1, 1, 1])
+# packet_list.append([3820, 55, 520, 800, 1, 1, 1])
+# packet_list.append([3420, 55, 520, 800, 1, 1, 1])
+
+# packet_list.append([3820, 55, 520, 800, 1, 1, 1])
+# packet_list.append([3820, 55, 800, 800, 1, 1, 1])
+# packet_list.append([100, 100, 800, 800, 1, 1, 1])
 
 for packet in packet_list:
     print "sending"

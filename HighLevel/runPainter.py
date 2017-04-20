@@ -6,12 +6,12 @@ from common.util import *
 bot = painter_bot()
 
 if not bot.connect_camera([1]):
-	raise Exception('Could not connect to Camera')
+	# raise Exception('Could not connect to Camera')
 	pass
 
-bot.selectImage("circle.png", "resources/images/input/")
+bot.selectImage("abstract1.png", "resources/images/input/")
 
-n_colors = 1
+n_colors = 3
 canvas_color = None 
 pallete = []
 
@@ -38,7 +38,11 @@ print "indeces: ",bot.indeces
 
 display(bot.segmentedImg,"segmented")
 print "RECOMPOSE"
-bot.recompose([3], open_images = False)
+bot.recompose([4], open_images = False)
+
+# for llt in bot.lltListImg:
+# 	display(testLLT(llt,paper_size=bot.desiredImg.shape))
+
 display(bot.lltImg,"LLT simulation")
 
 bot.connect_eth(ip = '192.168.178.7',port = 1234)

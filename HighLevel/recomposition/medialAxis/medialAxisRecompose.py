@@ -45,17 +45,19 @@ class medialAxisRecomposer(object):
 
     def __init__(self, image, args):
         # opened = open_image(image,5,1);
-        self.binImg = cv2.erode(image,circleKernel(1),iterations=1)
-        # self.binImg = image
+        # self.binImg = cv2.erode(image,circleKernel(1),iterations=2)
+        self.binImg = image
 
     def recompose(self):
         if np.count_nonzero(255-self.binImg)==0:
             return []
 
+        binImg = cv2.erode(self.binImg,circleKernel(1),iterations=1)
+
         # (thresh, binImg) = cv2.threshold(self.desiredImage, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
         # display(self.binImg)
 
-        skel, polyImg = medial_axis((255-self.binImg)/255, return_distance=True)
+        skel, polyImg = medial_axis((255-binImg)/255.0, return_distance=True)
 
         # print distance
         # display(visualPolyDist(rawPolyImg))
@@ -76,7 +78,7 @@ class medialAxisRecomposer(object):
         # Convert to int scale. 0-255
         mini,maxi = cv2.minMaxLoc(sobel)[:2]
         sobel = (sobel * (255/maxi)).astype('uint8')
-        sobel[np.where(cv2.dilate(self.binImg,circleKernel(1),iterations=2)==255)]=255
+        sobel[np.where(cv2.dilate(binImg,circleKernel(1),iterations=2)==255)]=255
 
         # display(sobel)
 
