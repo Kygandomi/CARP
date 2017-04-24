@@ -2,6 +2,7 @@
 from paint_with_pmd.painter_bot import *
 from common import color_pallete
 from common.util import *
+from recomposition.recomp_funcs import *
 
 bot = painter_bot()
 
@@ -9,7 +10,7 @@ if not bot.connect_camera([1]):
 	# raise Exception('Could not connect to Camera')
 	pass
 
-bot.selectImage("abstract1.png", "resources/images/input/")
+bot.selectImage("boat2.png", "resources/images/input/")
 
 n_colors = 3
 canvas_color = None 
@@ -38,10 +39,10 @@ print "indeces: ",bot.indeces
 
 display(bot.segmentedImg,"segmented")
 print "RECOMPOSE"
-bot.recompose([4], open_images = False)
+bot.recompose([8], recomp_fun = medialAxisRecomp,open_images = True)
 
-# for llt in bot.lltListImg:
-# 	display(testLLT(llt,paper_size=bot.desiredImg.shape))
+for llt in bot.lltListImg:
+	display(testLLT(llt,paper_size=bot.desiredImg.shape,thickness=4))
 
 display(bot.lltImg,"LLT simulation")
 

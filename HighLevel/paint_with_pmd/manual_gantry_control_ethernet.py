@@ -32,7 +32,7 @@ packet_list=[]
 #     packet_list.append([offset*i, size+offset*i, 600, 800, 1, 1, 0])
 #     packet_list.append([offset*i, offset*i, 600, 800, 1, 1, 0])
 
-packet_list.append([3815, 55, 800, 800, 1, 1, 1])
+packet_list.append([3350, 590, 400, 800, 1, 1, 1])
 
 # packet_list.append([3820, 55, 800, 800, 1, 1, 1])
 # packet_list.append([3820, 55, 520, 800, 1, 1, 1])

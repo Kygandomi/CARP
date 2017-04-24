@@ -31,8 +31,8 @@ class paint_orders():
 		# self.brush_offsets = [[3840,75],[3838, 565],[3835,1052],[3835,1540],[3830,2037],[3830,2523]] # Last two sets of values are wrong, please calibrate
 		# self.well_offsets =  [[3340,75],[3338, 565],[3335,1052],[3435,1540],[3430,2037],[3430,2523]] # Last two sets of values are wrong, please calibrate
 		
-		self.brush_offsets = [[3815,55],[3810, 545],[3835,1052],[3835,1540],[3830,2037],[3830,2523]] # Last two sets of values are wrong, please calibrate
-		self.well_offsets =  [[3350,110],[3338, 545],[3335,1052],[3435,1540],[3430,2037],[3430,2523]] # Last two sets of values are wrong, please calibrate
+		self.brush_offsets = [[3815,55],[3810, 545],[3810,1045],[3810,1525],[3810,2020],[3810,2500]] # Last two sets of values are wrong, please calibrate
+		self.well_offsets =  [[3350,110],[3350,590],[3350,1070],[3350,1550],[3350,2030],[3350,2510]] # Last two sets of values are wrong, please calibrate
 
 	'Routine for sending a standard packet via Serial' 
 	def send_standard_packet(self, packet, wait=False):
